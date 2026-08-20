@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -11,8 +11,6 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/inicio.css" />
-    <link rel="stylesheet" href="css/calendario.css" />
 </head>
   <body data-section="home" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -196,9 +194,19 @@
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
+      (async function iniciarHome() {
       if (protegerRuta()) {
+        await Promise.all([obtenerUsuariosRegistrados(), obtenerResponsablesTareaRegistrados()]);
         const usuarioActual = obtenerUsuarioActual();
         const puedeVerKanban = usuarioPuedeAccederACalendarioTA(usuarioActual);
         const seccionKanban = document.getElementById('kanban-section');
@@ -242,18 +250,22 @@
             return html;
           }
 
-          function opcionesTecnicosHtml(seleccionado) {
-            const tecnicos = obtenerTecnicosDelPlantel();
+          function opcionesResponsablesTareaHtml(seleccionado) {
+            const responsables = obtenerResponsablesTareaDelPlantel();
+            if (responsables.length === 0) {
+              return '<option value="" disabled selected>No hay responsables activos</option>';
+            }
             let html = '';
-            for (let i = 0; i < tecnicos.length; i++) {
-              const selected = tecnicos[i].id === seleccionado ? ' selected' : '';
+            for (let i = 0; i < responsables.length; i++) {
+              const selected = responsables[i].id === seleccionado ? ' selected' : '';
+              const etiquetaRol = obtenerEtiquetaRol(responsables[i].rol).replace('Usuario ', '');
               html +=
                 '<option value="' +
-                escaparHtml(tecnicos[i].id) +
+                escaparHtml(responsables[i].id) +
                 '"' +
                 selected +
                 '>' +
-                escaparHtml(tecnicos[i].nombreCompleto) +
+                escaparHtml(responsables[i].nombreCompleto + ' - ' + etiquetaRol) +
                 '</option>';
             }
             return html;
@@ -263,8 +275,8 @@
             mostrarMensajeFormulario('mensaje-kanban', texto, tipo);
           }
 
-          function renderKanban() {
-            const tareas = obtenerTareasCalendarioTA();
+          async function renderKanban() {
+            const tareas = await obtenerTareasCalendarioTA();
             let html = '';
             for (let i = 0; i < estadosKanbanTA.length; i++) {
               const estado = estadosKanbanTA[i];
@@ -285,8 +297,8 @@
             mostrarEn('kanban-tareas', html);
           }
 
-          function renderTodo() {
-            renderKanban();
+          async function renderTodo() {
+            await renderKanban();
             dibujarIconos();
           }
 
@@ -297,12 +309,12 @@
             }
           }
 
-          function moverTareaKanban(tareaId, estadoDestino) {
-            const tarea = obtenerTareaCalendarioPorId(tareaId);
+          async function moverTareaKanban(tareaId, estadoDestino) {
+            const tarea = await obtenerTareaCalendarioPorId(tareaId);
             if (!tarea || !estadoDestino || tarea.estado === estadoDestino) {
               return;
             }
-            const resultado = actualizarTareaCalendarioTA(tareaId, {
+            const resultado = await actualizarTareaCalendarioTA(tareaId, {
               titulo: tarea.titulo,
               descripcion: tarea.descripcion,
               dificultad: tarea.dificultad,
@@ -316,7 +328,7 @@
             });
             mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
             if (resultado.ok) {
-              renderTodo();
+              await renderTodo();
             }
           }
 
@@ -332,7 +344,7 @@
               fechaAgregada: hoy,
               plazoInicio: hoy,
               plazoFin: hoy,
-              tecnicoId: obtenerTecnicoIdValido(''),
+              tecnicoId: obtenerResponsableTareaIdValido(''),
               color: '#16A34A',
             };
           }
@@ -361,9 +373,15 @@
               dificultadesTareaTA,
               tareaFormulario.dificultad,
             );
-            document.getElementById('tarea-tecnico').innerHTML = opcionesTecnicosHtml(
+            const selectResponsable = document.getElementById('tarea-tecnico');
+            selectResponsable.innerHTML = opcionesResponsablesTareaHtml(
               tareaFormulario.tecnicoId,
             );
+            selectResponsable.value = obtenerResponsableTareaIdValido(tareaFormulario.tecnicoId);
+            if (!selectResponsable.value && selectResponsable.options.length > 0) {
+              selectResponsable.selectedIndex = 0;
+            }
+            inicializarSelectsPersonalizados(selectResponsable);
             document.querySelector('[data-task-delete]').hidden = !tarea;
             document.getElementById('tarea-detalle-resumen').innerHTML =
               '<strong>Plazo:</strong><span>' +
@@ -390,8 +408,8 @@
             };
           }
 
-          function abrirDetalleTarea(tareaId) {
-            const tarea = obtenerTareaCalendarioPorId(tareaId);
+          async function abrirDetalleTarea(tareaId) {
+            const tarea = await obtenerTareaCalendarioPorId(tareaId);
             if (!tarea) {
               mostrarMensajeKanban('No encontramos esa tarea.', 'error');
               return;
@@ -401,7 +419,7 @@
             dibujarIconos();
           }
 
-          document.addEventListener('click', function (evento) {
+          document.addEventListener('click', async function (evento) {
             const botonNueva = evento.target.closest('[data-task-new]');
             if (botonNueva) {
               llenarFormularioTarea(null);
@@ -415,7 +433,7 @@
                 suprimirClickKanban = false;
                 return;
               }
-              abrirDetalleTarea(botonAbrir.getAttribute('data-task-open'));
+              await abrirDetalleTarea(botonAbrir.getAttribute('data-task-open'));
               return;
             }
             const botonEliminar = evento.target.closest('[data-task-delete]');
@@ -428,11 +446,11 @@
               if (!confirmar) {
                 return;
               }
-              const resultado = eliminarTareaCalendarioTA(tareaId);
+              const resultado = await eliminarTareaCalendarioTA(tareaId);
               mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
               if (resultado.ok) {
                 cerrarModal('modal-tarea');
-                renderTodo();
+                await renderTodo();
               }
             }
           });
@@ -473,14 +491,14 @@
             columna.classList.remove('kanban-column--drop-target');
           });
 
-          document.addEventListener('drop', function (evento) {
+          document.addEventListener('drop', async function (evento) {
             const columna = evento.target.closest('[data-kanban-drop]');
             if (!columna) {
               return;
             }
             evento.preventDefault();
             columna.classList.remove('kanban-column--drop-target');
-            moverTareaKanban(
+            await moverTareaKanban(
               evento.dataTransfer.getData('text/plain'),
               columna.getAttribute('data-kanban-drop'),
             );
@@ -520,7 +538,7 @@
             }
           });
 
-          document.addEventListener('mouseup', function (evento) {
+          document.addEventListener('mouseup', async function (evento) {
             if (!kanbanPointerDrag) {
               return;
             }
@@ -539,12 +557,12 @@
               .elementFromPoint(evento.clientX, evento.clientY)
               ?.closest('[data-kanban-drop]');
             if (columnaDestino) {
-              moverTareaKanban(dragActual.tareaId, columnaDestino.getAttribute('data-kanban-drop'));
+              await moverTareaKanban(dragActual.tareaId, columnaDestino.getAttribute('data-kanban-drop'));
             }
           });
 
           const formTareaCalendario = document.getElementById('form-tarea-calendario');
-          formTareaCalendario.addEventListener('submit', function (evento) {
+          formTareaCalendario.addEventListener('submit', async function (evento) {
             evento.preventDefault();
             if (!validarFormularioCliente(formTareaCalendario, mostrarMensajeKanban)) {
               return;
@@ -553,21 +571,22 @@
               const datos = obtenerDatosFormularioTarea();
               const tareaId = document.getElementById('tarea-id').value;
               const resultado = tareaId
-                ? actualizarTareaCalendarioTA(tareaId, datos)
-                : guardarNuevaTareaCalendarioTA(datos);
+                ? await actualizarTareaCalendarioTA(tareaId, datos)
+                : await guardarNuevaTareaCalendarioTA(datos);
               mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
               if (resultado.ok) {
                 cerrarModal('modal-tarea');
-                renderTodo();
+                await renderTodo();
               }
             } catch (error) {
               manejarErrorCliente(error, mostrarMensajeKanban);
             }
           });
 
-          renderTodo();
+          await renderTodo();
         }
       }
+      })();
     </script>
   </body>
 </html>

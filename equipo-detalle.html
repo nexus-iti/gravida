@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -10,25 +10,34 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/equipo-detalle.css" />
+    <link rel="stylesheet" href="css/global.css?v=baja-modal-cancel-2" />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
     <main>
+      <div id="mensaje-equipo-detalle"></div>
       <div id="cuadrilla-de-detalle" class="detail-grid regla-diseno-007"></div>
       <div id="contenedor-modal"></div>
     </main>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=baja-modal-cancel-2"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
       
       if (protegerRuta()) {
+        (async function () {
         const equipoId = obtenerParametroDeUrl('id');
-        const equipo = obtenerEquipoInventarioPorId(equipoId);
+        const equipo = await obtenerEquipoInventarioPorId(equipoId);
 
         if (!equipo) {
           mostrarEn(
@@ -51,59 +60,165 @@
             }),
           );
           dibujarIconos();
-        } else {
-          const tipoEquipo = obtenerEtiquetaTipoEquipoInventario(equipo.tipo);
-          const iconoEquipo = obtenerIconoEquipoInventario(equipo.tipo);
-
-          mostrarEn(
-            'cabecera-superior',
-            crearCabeceraCompleta([
-              { etiqueta: 'Home', enlace: 'home.html' },
-              { etiqueta: 'Inventario', enlace: 'inventario.html' },
-              { etiqueta: 'Secciones', enlace: 'secciones.html' },
-              {
-                etiqueta: equipo.seccion,
-                enlace: 'seccion-detalle.html?id=' + encodeURIComponent(equipo.seccionId),
-              },
-              { etiqueta: equipo.nombre },
-            ]),
-          );
-          const historial = obtenerHistorialInventario().slice(0, 5);
-          let historialHtml = '';
-          if (historial.length === 0) {
-            historialHtml =
-              '<div class="empty-inline regla-diseno-043">Sin movimientos registrados todavia.</div>';
-          } else {
-            for (let i = 0; i < historial.length; i++) {
-              historialHtml += crearItemHistorialCompacto(historial[i]);
-            }
-          }
-          const observaciones = equipo.observaciones || 'Sin observaciones cargadas.';
-          const detalleHtml = ` <section class="tarjeta detail-card regla-diseno-044"> <header class="detail-title-row regla-diseno-045"> <div class="detail-title-with-icon regla-diseno-046"> <span class="list-row__icon-wrap list-row__icon-wrap--muted regla-diseno-047">${crearIcono(iconoEquipo, 'icon-md')}</span> <h2 class="detail-title regla-diseno-048">${obtenerTextoSeguro(equipo.nombre)}</h2> </div> <span class="etiqueta etiqueta--success regla-diseno-049">${obtenerTextoSeguro(equipo.estado)}</span> </header> <div class="detail-fields regla-diseno-050"> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">ID</span> <span class="detail-field__value mono regla-diseno-041">${obtenerTextoSeguro(equipo.id)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="seccion">Seccion</span> <a class="detail-field__value detail-field__value--link regla-diseno-041" href="seccion-detalle.html?id=${encodeURIComponent(equipo.seccionId)}">${obtenerTextoSeguro(equipo.seccion)}</a> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="tipo">Tipo</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(tipoEquipo)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">Alta</span> <span class="detail-field__value regla-diseno-041">${obtenerFechaSegura(equipo.fechaAlta)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="actualizacion">Actualizacion</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(equipo.actualizado)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="estado">Estado</span> <span class="detail-field__value detail-field__value--success regla-diseno-041">${obtenerTextoSeguro(equipo.estado)}</span> </div> </div> <div class="detail-section regla-diseno-053"> <span class="detail-section__label regla-diseno-054">Observaciones</span> <p class="detail-section__text regla-diseno-055">${obtenerTextoSeguro(observaciones)}</p> </div> <div class="detail-actions regla-diseno-056"> <button class="boton boton--sm boton--outline-danger regla-diseno-034" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}"> ${crearIcono('trash-2', 'icon-sm')} <span>Dar de baja</span> </button> </div> </section> <aside class="tarjeta"> <h3 style="font-size:18px;font-weight:600;margin-bottom:20px;">Historial reciente</h3> <div class="timeline-compact">${historialHtml}</div> </aside> `;
-          mostrarEn('cuadrilla-de-detalle', detalleHtml);
-          document.addEventListener('click', function (evento) {
-            const botonBaja = evento.target.closest('[data-delete-equipo]');
-            if (!botonBaja) {
-              return;
-            }
-            const seccionDestino = equipo.seccionId;
-            const resultado = eliminarEquipoInventario(botonBaja.getAttribute('data-delete-equipo'));
-            if (resultado.ok) {
-              window.location.href = 'seccion-detalle.html?id=' + encodeURIComponent(seccionDestino);
-            }
-          });
-          dibujarIconos();
+          return;
         }
+
+        const tipoEquipo = obtenerEtiquetaTipoEquipoInventario(equipo.tipo);
+        const iconoEquipo = obtenerIconoEquipoInventario(equipo.tipo);
+        const seccionesInventario = await obtenerSeccionesInventario();
+        const seccionesDestino = seccionesInventario.filter(function (seccion) {
+          return seccion.id !== equipo.seccionId;
+        });
+
+        function mostrarMensajeEquipo(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-equipo-detalle', texto, tipo);
+        }
+
+        function opcionesSeccionesDestinoHtml() {
+          if (seccionesDestino.length === 0) {
+            return '<option value="" disabled>No hay otra seccion disponible</option>';
+          }
+          let opciones = '<option value="">Elegir seccion</option>';
+          for (let i = 0; i < seccionesDestino.length; i++) {
+            opciones +=
+              '<option value="' +
+              obtenerTextoSeguro(seccionesDestino[i].id) +
+              '">' +
+              obtenerTextoSeguro(seccionesDestino[i].nombre) +
+              '</option>';
+          }
+          return opciones;
+        }
+
+        async function trasladarEquipoDesdeDetalle(equipoId, seccionDestinoId) {
+          if (typeof window.moverEquipoInventario === 'function') {
+            return window.moverEquipoInventario(equipoId, seccionDestinoId);
+          }
+          const usuarioActual = obtenerUsuarioActual();
+          if (!usuarioPuedeAccederAInventario(usuarioActual)) {
+            return { ok: false, mensaje: 'Tu perfil no tiene permiso para trasladar equipos.' };
+          }
+          const seccionDestino = await obtenerSeccionInventarioPorId(seccionDestinoId);
+          if (!seccionDestino) {
+            return { ok: false, mensaje: 'Elegi una seccion de destino valida.' };
+          }
+          if (equipo.seccionId === seccionDestino.id) {
+            return { ok: false, mensaje: 'El equipo ya esta en esa seccion.' };
+          }
+          await solicitarApi('api/equipos.php', {
+            method: 'PATCH',
+            body: JSON.stringify({ id: equipoId, seccionId: seccionDestino.id }),
+          });
+          return { ok: true, mensaje: 'Equipo trasladado a ' + seccionDestino.nombre + '.' };
+        }
+
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Secciones', enlace: 'secciones.html' },
+            {
+              etiqueta: equipo.seccion,
+              enlace: 'seccion-detalle.html?id=' + encodeURIComponent(equipo.seccionId),
+            },
+            { etiqueta: equipo.nombre },
+          ]),
+        );
+        const historial = (await obtenerHistorialInventario()).slice(0, 5);
+        let historialHtml = '';
+        if (historial.length === 0) {
+          historialHtml =
+            '<div class="empty-inline regla-diseno-043">Sin movimientos registrados todavia.</div>';
+        } else {
+          for (let i = 0; i < historial.length; i++) {
+            historialHtml += crearItemHistorialCompacto(historial[i]);
+          }
+        }
+        const cuerpoModalTraslado =
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="equipo-seccion-destino">Seccion destino</label>' +
+          '<select class="select-input regla-diseno-026" id="equipo-seccion-destino">' +
+          opcionesSeccionesDestinoHtml() +
+          '</select>' +
+          '</div>';
+        const pieModalTraslado =
+          '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close>Cancelar</button>' +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-move-equipo="' +
+          obtenerTextoSeguro(equipo.id) +
+          '"' +
+          (seccionesDestino.length === 0 ? ' disabled' : '') +
+          '>Confirmar traslado</button>';
+        mostrarEn(
+          'contenedor-modal',
+          crearModal({
+            id: 'modal-traslado-equipo',
+            titulo: 'Trasladar equipo',
+            icono: 'move-right',
+            claseDialogo: 'dialogo--traslado-equipo',
+            cuerpo: cuerpoModalTraslado,
+            pieDeModal: pieModalTraslado,
+          }) +
+            crearModalBajaEquipoInventario('modal-baja-equipo'),
+        );
+        const observaciones = equipo.observaciones || 'Sin observaciones cargadas.';
+        const botonTrasladoDeshabilitado =
+          seccionesDestino.length === 0 ? ' disabled title="No hay otra seccion disponible"' : '';
+        const detalleHtml = ` <section class="tarjeta detail-card regla-diseno-044"> <header class="detail-title-row regla-diseno-045"> <div class="detail-title-with-icon regla-diseno-046"> <span class="list-row__icon-wrap list-row__icon-wrap--muted regla-diseno-047">${crearIcono(iconoEquipo, 'icon-md')}</span> <h2 class="detail-title regla-diseno-048">${obtenerTextoSeguro(equipo.nombre)}</h2> </div> <span class="etiqueta etiqueta--success regla-diseno-049">${obtenerTextoSeguro(equipo.estado)}</span> </header> <div class="detail-fields regla-diseno-050"> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">ID</span> <span class="detail-field__value mono regla-diseno-041">${obtenerTextoSeguro(equipo.id)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="seccion">Seccion</span> <a class="detail-field__value detail-field__value--link regla-diseno-041" href="seccion-detalle.html?id=${encodeURIComponent(equipo.seccionId)}">${obtenerTextoSeguro(equipo.seccion)}</a> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="tipo">Tipo</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(tipoEquipo)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">Alta</span> <span class="detail-field__value regla-diseno-041">${obtenerFechaSegura(equipo.fechaAlta)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="actualizacion">Actualizacion</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(equipo.actualizado)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="estado">Estado</span> <span class="detail-field__value detail-field__value--success regla-diseno-041">${obtenerTextoSeguro(equipo.estado)}</span> </div> </div> <div class="detail-section regla-diseno-053"> <span class="detail-section__label regla-diseno-054">Observaciones</span> <p class="detail-section__text regla-diseno-055">${obtenerTextoSeguro(observaciones)}</p> </div> <div class="detail-actions regla-diseno-056"> <button class="boton boton--sm boton--outline regla-diseno-034" type="button" data-modal-open="modal-traslado-equipo"${botonTrasladoDeshabilitado}> ${crearIcono('move-right', 'icon-sm')} <span>Trasladar</span> </button> <button class="boton boton--sm boton--outline-danger regla-diseno-034" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}" data-equipo-nombre="${obtenerTextoSeguro(equipo.nombre)}"> ${crearIcono('trash-2', 'icon-sm')} <span>Dar de baja</span> </button> </div> </section> <aside class="tarjeta"> <h3 style="font-size:18px;font-weight:600;margin-bottom:20px;">Historial reciente</h3> <div class="timeline-compact">${historialHtml}</div> </aside> `;
+        mostrarEn('cuadrilla-de-detalle', detalleHtml);
+        document.addEventListener('click', async function (evento) {
+          const botonCancelarBaja = evento.target.closest('[data-cancel-delete-equipo]');
+          if (botonCancelarBaja) {
+            cancelarBajaEquipoInventario('modal-baja-equipo');
+            return;
+          }
+          const botonMover = evento.target.closest('[data-move-equipo]');
+          if (botonMover) {
+            const seccionDestinoId = document.getElementById('equipo-seccion-destino').value;
+            try {
+              const resultado = await trasladarEquipoDesdeDetalle(
+                botonMover.getAttribute('data-move-equipo'),
+                seccionDestinoId,
+              );
+              mostrarMensajeEquipo(resultado.mensaje, resultado.ok ? 'success' : 'error');
+              if (resultado.ok) {
+                cerrarModal('modal-traslado-equipo');
+                window.location.href = 'equipo-detalle.html?id=' + encodeURIComponent(equipo.id);
+              }
+            } catch (error) {
+              mostrarMensajeEquipo(error.message, 'error');
+            }
+            return;
+          }
+          const botonConfirmarBaja = evento.target.closest('[data-confirm-delete-equipo]');
+          if (botonConfirmarBaja) {
+            const equipoBaja = obtenerEquipoBajaSeleccionado('modal-baja-equipo');
+            const seccionDestino = equipo.seccionId;
+            try {
+              const resultado = await eliminarEquipoInventario(equipoBaja.id);
+              if (resultado.ok) {
+                cerrarModal('modal-baja-equipo');
+                limpiarModalBajaEquipoInventario('modal-baja-equipo');
+                window.location.href = 'seccion-detalle.html?id=' + encodeURIComponent(seccionDestino);
+              }
+            } catch (error) {
+              mostrarMensajeEquipo(error.message, 'error');
+            }
+            return;
+          }
+          const botonBaja = evento.target.closest('[data-delete-equipo]');
+          if (!botonBaja) {
+            return;
+          }
+          abrirModalBajaEquipoInventario(
+            'modal-baja-equipo',
+            botonBaja.getAttribute('data-delete-equipo'),
+            botonBaja.getAttribute('data-equipo-nombre'),
+          );
+        });
+        dibujarIconos();
+        })();
       }
     </script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-

@@ -1,0 +1,13 @@
+config.php
+/vendor/
+*.log
+*.tmp
+*.temp
+cache/
+tmp/
+.DS_Store
+Thumbs.db
+/proyecto
+uploads/perfiles/*
+!uploads/perfiles/.htaccess
+!uploads/perfiles/.gitkeep

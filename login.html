@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -134,7 +134,15 @@
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
       
       (function iniciarPaginaLogin() {
@@ -152,7 +160,7 @@
           mostrarMensajeFormulario(mensajeLogin, mensaje, tipo);
         }
 
-        formLogin.addEventListener('submit', function (evento) {
+        formLogin.addEventListener('submit', async function (evento) {
           evento.preventDefault();
           if (!validarFormularioCliente(formLogin, mostrarMensaje)) {
             return;
@@ -160,7 +168,7 @@
 
           try {
 
-            const respuesta = iniciarSesion(
+            const respuesta = await iniciarSesion(
               document.getElementById('login-identificador').value,
               document.getElementById('login-contrasena').value,
               { recordarme: checkRecordarme.checked },
@@ -184,7 +192,4 @@
     </script>
   </body>
 </html>
-
-
-
 

@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -11,7 +11,6 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/soporte.css" />
 </head>
   <body data-section="soporte" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -90,9 +89,17 @@
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
-      
+      (async function iniciarPaginaSoporte() {
       if (protegerRuta()) {
         
         mostrarEn(
@@ -189,20 +196,25 @@
           inicializarSelectsPersonalizados(selectCategoria);
         }
         
-        function renderLugares() {
-          const lugares = obtenerLugaresDisponibles();
+        async function renderLugares() {
+          const lugares = await obtenerLugaresDisponibles();
           let opciones = '<option value="" data-clave="elige_lugar">Elige un lugar</option>';
-          for (let i = 0; i < lugares.length; i++) {
+          if (lugares.length === 0) {
             opciones +=
-              '<option value="' + lugares[i] + '">' + lugares[i] + '</option>';
+              '<option value="" disabled data-clave="no_hay_secciones_cargadas">No hay secciones cargadas</option>';
+          }
+          for (let i = 0; i < lugares.length; i++) {
+            const lugarSeguro = escaparHtml(lugares[i]);
+            opciones +=
+              '<option value="' + lugarSeguro + '">' + lugarSeguro + '</option>';
           }
           selectUbicacion.innerHTML = opciones;
           inicializarSelectsPersonalizados(selectUbicacion);
         }
         
-        function renderFiltrosSoporte() {
+        async function renderFiltrosSoporte() {
           const filtrosActuales = guardarValoresCampos(idsFiltrosSoporte);
-          const tickets = obtenerTicketsVisibles();
+          const tickets = await obtenerTicketsVisibles();
           filtrosSoporte.innerHTML =
             crearCampoFiltroSelect(
               'filtro-soporte-creador',
@@ -237,8 +249,11 @@
           ];
         }
         
-        function renderLista() {
-          const tickets = filtrarRegistrosPorCampos(obtenerTicketsVisibles(), obtenerFiltrosSoporte());
+        async function renderLista() {
+          const tickets = filtrarRegistrosPorCampos(
+            await obtenerTicketsVisibles(),
+            obtenerFiltrosSoporte(),
+          );
           let html = '';
           if (tickets.length === 0) {
             html =
@@ -255,24 +270,28 @@
           mostrarEn('lista-soporte', html);
         }
         
-        document.addEventListener('click', function (evento) {
+        document.addEventListener('click', async function (evento) {
           const botonGestion = evento.target.closest('[data-update-ticket]');
           if (!botonGestion || !puedeGestionar) {
             return;
           }
-          actualizarEstadoTicket(
-            botonGestion.getAttribute('data-update-ticket'),
-            botonGestion.getAttribute('data-ticket-status'),
-          );
-          renderFiltrosSoporte();
-          renderLista();
-          dibujarIconos();
+          try {
+            await actualizarEstadoTicket(
+              botonGestion.getAttribute('data-update-ticket'),
+              botonGestion.getAttribute('data-ticket-status'),
+            );
+            await renderFiltrosSoporte();
+            await renderLista();
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error);
+          }
         });
 
         filtrosSoporte.addEventListener('input', renderLista);
         filtrosSoporte.addEventListener('change', renderLista);
         
-        formSoporte.addEventListener('submit', function (evento) {
+        formSoporte.addEventListener('submit', async function (evento) {
           evento.preventDefault();
           if (!puedeSolicitar) {
             return;
@@ -281,27 +300,28 @@
             return;
           }
           try {
-            guardarNuevoTicket({
+            await guardarNuevoTicket({
               asunto: document.getElementById('soporte-asunto').value,
               categoria: document.getElementById('soporte-categoria').value,
               ubicacion: document.getElementById('soporte-ubicacion').value,
               mensaje: document.getElementById('soporte-mensaje').value,
             });
             formSoporte.reset();
-            renderFiltrosSoporte();
-            renderLista();
+            await renderFiltrosSoporte();
+            await renderLista();
             dibujarIconos();
           } catch (error) {
             manejarErrorCliente(error);
           }
         });
-        
+
         renderCategorias();
-        renderLugares();
-        renderFiltrosSoporte();
-        renderLista();
+        await renderLugares();
+        await renderFiltrosSoporte();
+        await renderLista();
         dibujarIconos();
       }
+      })();
     </script>
   </body>
 </html>

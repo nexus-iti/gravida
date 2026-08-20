@@ -315,7 +315,13 @@ function crearTarjetaDeTicket(ticket, accionesHtml) {
 function crearTarjetaDeSolicitud(solicitud, accionesHtml) {
   const acciones = crearAccionesActividad(accionesHtml);
   const gestion = crearMetaGestion(solicitud);
-  return ` <article class="activity-card regla-diseno-137"> <header class="activity-card__header regla-diseno-138"> <div> <h3 class="activity-card__title regla-diseno-139">${obtenerTextoSeguro(solicitud.titulo || solicitud.tipo)}</h3> <p class="activity-card__meta regla-diseno-041">${obtenerFechaSegura(solicitud.fecha)} | ${obtenerTextoSeguro(solicitud.lugar)}</p> </div> ${crearInsigniaDeEstado(solicitud.estado)} </header> <p class="activity-card__desc regla-diseno-140">${obtenerTextoSeguro(solicitud.detalle)}</p> <div class="activity-card__info-grid regla-diseno-141"> <span><strong>Fecha:</strong> ${obtenerFechaSegura(solicitud.fecha)}</span> <span><strong>Lugar:</strong> ${obtenerTextoSeguro(solicitud.lugar)}</span> <span><strong>Solicitante:</strong> ${obtenerTextoSeguro(solicitud.solicitante)}</span> ${gestion} </div> ${acciones} <footer class="activity-card__footer regla-diseno-142"> <span class="mono">${obtenerTextoSeguro(solicitud.id)}</span> <span>${obtenerFechaSegura(solicitud.creadoEn)}</span> </footer> </article> `;
+  const fechaDeseada =
+    solicitud && solicitud.fechaDeseada
+      ? '<span><strong>Fecha deseada:</strong> ' +
+        obtenerFechaSegura(solicitud.fechaDeseada) +
+        '</span>'
+      : '';
+  return ` <article class="activity-card regla-diseno-137"> <header class="activity-card__header regla-diseno-138"> <div> <h3 class="activity-card__title regla-diseno-139">${obtenerTextoSeguro(solicitud.titulo || solicitud.tipo)}</h3> <p class="activity-card__meta regla-diseno-041">${obtenerFechaSegura(solicitud.fechaDeseada || solicitud.fecha)} | ${obtenerTextoSeguro(solicitud.lugar)}</p> </div> ${crearInsigniaDeEstado(solicitud.estado)} </header> <p class="activity-card__desc regla-diseno-140">${obtenerTextoSeguro(solicitud.detalle)}</p> <div class="activity-card__info-grid regla-diseno-141"> <span><strong>Solicitado:</strong> ${obtenerFechaSegura(solicitud.fecha)}</span> ${fechaDeseada} <span><strong>Lugar:</strong> ${obtenerTextoSeguro(solicitud.lugar)}</span> <span><strong>Solicitante:</strong> ${obtenerTextoSeguro(solicitud.solicitante)}</span> ${gestion} </div> ${acciones} <footer class="activity-card__footer regla-diseno-142"> <span class="mono">${obtenerTextoSeguro(solicitud.id)}</span> <span>${obtenerFechaSegura(solicitud.creadoEn)}</span> </footer> </article> `;
 }
 
 function crearParcelaPlanillaTA(parcela, puedeEditar) {
@@ -348,14 +354,14 @@ function crearParcelaPlanillaTA(parcela, puedeEditar) {
     usuarioEsTecnico(miembro);
   let opcionesTareasKanban = '<option value="">Elegir una tarea pendiente del kanban</option>';
   let tareasKanbanHtml = '';
-  if (typeof obtenerTareasPendientesCalendarioTA === 'function') {
-    const tareasPendientes = obtenerTareasPendientesCalendarioTA();
+  {
+    const tareasPendientes = parcela.tareasPendientes || [];
     for (let i = 0; i < tareasPendientes.length; i++) {
       const tarea = tareasPendientes[i];
       const tecnico =
         typeof obtenerNombreUsuarioPorId === 'function'
           ? obtenerNombreUsuarioPorId(tarea.tecnicoId)
-          : 'Tecnico sin asignar';
+          : 'Responsable sin asignar';
       opcionesTareasKanban +=
         '<option value="' +
         obtenerTextoSeguro(tarea.id) +
@@ -396,7 +402,7 @@ function crearTarjetaTareaKanban(tarea) {
   const tecnico =
     typeof obtenerNombreUsuarioPorId === 'function'
       ? obtenerNombreUsuarioPorId(tarea.tecnicoId)
-      : 'Tecnico sin asignar';
+      : 'Responsable sin asignar';
   return ` <button class="kanban-task-card regla-diseno-083" type="button" draggable="true" data-task-open="${obtenerTextoSeguro(tarea.id)}" data-task-drag="${obtenerTextoSeguro(tarea.id)}" style="--task-color:${color}"> <span class="kanban-task-card__bar"></span> <span class="kanban-task-card__body regla-diseno-086"> <span class="kanban-task-card__title regla-diseno-143">${obtenerTextoSeguro(tarea.titulo)}</span> <span class="kanban-task-card__desc regla-diseno-145">${obtenerTextoSeguro(tarea.descripcion)}</span> <span class="kanban-task-card__meta regla-diseno-146"> <span>${obtenerTextoSeguro(tarea.categoria)}</span> <span>${obtenerTextoSeguro(tarea.dificultad)}</span> </span> <span class="kanban-task-card__footer regla-diseno-147"> <span>${crearIcono('user-check', 'icon-sm')} ${obtenerTextoSeguro(tecnico)}</span> <span>${crearIcono('calendar-clock', 'icon-sm')} ${obtenerFechaSegura(tarea.plazoInicio)} - ${obtenerFechaSegura(tarea.plazoFin)}</span> </span> </span> </button> `;
 }
 
@@ -425,8 +431,10 @@ function crearFilaDeSeccion(seccion, opciones) {
   const permitirBaja = opciones && opciones.permitirBaja;
   const textoActualizado = obtenerTextoActualizadoInventario(seccion.actualizado);
   const botonBaja = permitirBaja
-    ? '<button class="boton-icono boton-icono--peligro regla-diseno-016" type="button" data-delete-seccion="' +
+    ? '<button class="boton-icono boton-icono--peligro regla-diseno-016" type="button" data-open-delete-seccion="' +
       obtenerTextoSeguro(seccion.id) +
+      '" data-seccion-nombre="' +
+      obtenerTextoSeguro(seccion.nombre) +
       '" aria-label="Dar de baja ' +
       obtenerTextoSeguro(seccion.nombre) +
       '" title="Dar de baja seccion">' +
@@ -438,22 +446,34 @@ function crearFilaDeSeccion(seccion, opciones) {
 
 function crearFilaDeEquipo(equipo, opciones) {
   const permitirBaja = opciones && opciones.permitirBaja;
+  const permitirTraslado = opciones && opciones.permitirTraslado;
   const iconoEquipo = obtenerIconoSeguroEquipo(equipo);
   let puntitoActivo = '';
   if (equipo.estaActivo) {
     puntitoActivo = '<span class="status-dot" title="Activo"></span>';
   }
   const textoActualizado = obtenerTextoActualizadoInventario(equipo.actualizado);
+  const botonTraslado = permitirTraslado
+    ? '<button class="boton-icono regla-diseno-016" type="button" data-open-move-equipo="' +
+      obtenerTextoSeguro(equipo.id) +
+      '" aria-label="Trasladar ' +
+      obtenerTextoSeguro(equipo.nombre) +
+      '" title="Trasladar equipo">' +
+      crearIcono('move-right', 'icon-md') +
+      '</button>'
+    : '';
   const botonBaja = permitirBaja
     ? '<button class="boton-icono boton-icono--peligro regla-diseno-016" type="button" data-delete-equipo="' +
       obtenerTextoSeguro(equipo.id) +
+      '" data-equipo-nombre="' +
+      obtenerTextoSeguro(equipo.nombre) +
       '" aria-label="Dar de baja ' +
       obtenerTextoSeguro(equipo.nombre) +
       '" title="Dar de baja equipo">' +
       crearIcono('trash-2', 'icon-md') +
       '</button>'
     : '';
-  return ` <a class="list-row regla-diseno-149" href="equipo-detalle.html?id=${encodeURIComponent(equipo.id)}"> <span class="list-row__icon-wrap list-row__icon-wrap--muted list-row__icon-wrap--sm regla-diseno-047"> ${crearIcono(iconoEquipo, 'icon-sm')} </span> <div class="list-row__body regla-diseno-150"> <div class="list-row__title list-row__title--sm regla-diseno-151"> ${obtenerTextoSeguro(equipo.nombre)}${puntitoActivo} </div> <div class="list-row__meta regla-diseno-011"> <span>${obtenerTextoSeguro(equipo.tipoEtiqueta || '')}</span> <span class="mono">ID: ${obtenerTextoSeguro(equipo.id)}</span> <span class="list-row__meta--sub regla-diseno-152">${obtenerTextoSeguro(textoActualizado)}</span> </div> </div> <div class="list-row__actions regla-diseno-136"> ${botonBaja} ${crearIcono('chevron-right', 'icon-md')} </div> </a> `;
+  return ` <a class="list-row regla-diseno-149" href="equipo-detalle.html?id=${encodeURIComponent(equipo.id)}"> <span class="list-row__icon-wrap list-row__icon-wrap--muted list-row__icon-wrap--sm regla-diseno-047"> ${crearIcono(iconoEquipo, 'icon-sm')} </span> <div class="list-row__body regla-diseno-150"> <div class="list-row__title list-row__title--sm regla-diseno-151"> ${obtenerTextoSeguro(equipo.nombre)}${puntitoActivo} </div> <div class="list-row__meta regla-diseno-011"> <span>${obtenerTextoSeguro(equipo.tipoEtiqueta || '')}</span> <span class="mono">ID: ${obtenerTextoSeguro(equipo.id)}</span> <span class="list-row__meta--sub regla-diseno-152">${obtenerTextoSeguro(textoActualizado)}</span> </div> </div> <div class="list-row__actions regla-diseno-136"> ${botonTraslado} ${botonBaja} ${crearIcono('chevron-right', 'icon-md')} </div> </a> `;
 }
 
 function crearTablaDeEquipos(equipos) {
@@ -472,9 +492,9 @@ function crearTablaDeEquipos(equipos) {
   for (let i = 0; i < equipos.length; i++) {
     const equipo = equipos[i];
     const iconoEquipo = obtenerIconoSeguroEquipo(equipo);
-    filasHtml += ` <tr> <td data-label="Equipo"> <div class="cell-name"> <span class="cell-icon">${crearIcono(iconoEquipo, 'icon-sm')}</span> <span>${obtenerTextoSeguro(equipo.nombre)}</span> </div> </td> <td data-label="ID" class="cell-id">${obtenerTextoSeguro(equipo.id)}</td> <td data-label="Tipo">${obtenerTextoSeguro(equipo.tipoEtiqueta || '')}</td> <td data-label="Seccion">${obtenerTextoSeguro(equipo.seccion)}</td> <td data-label="Actualizacion">${obtenerTextoSeguro(equipo.actualizado)}</td> <td data-label="Acciones"> <div class="cell-actions regla-diseno-136"> <a class="boton-icono regla-diseno-016" href="equipo-detalle.html?id=${encodeURIComponent(equipo.id)}" aria-label="Ver detalle">${crearIcono('eye', 'icon-sm')}</a> <button class="boton-icono boton-icono--peligro regla-diseno-016" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}" aria-label="Dar de baja equipo">${crearIcono('trash-2', 'icon-sm')}</button> </div> </td> </tr> `;
+    filasHtml += ` <tr> <td data-label="Equipo"> <div class="cell-name"> <span class="cell-icon">${crearIcono(iconoEquipo, 'icon-sm')}</span> <span>${obtenerTextoSeguro(equipo.nombre)}</span> </div> </td> <td data-label="ID" class="cell-id">${obtenerTextoSeguro(equipo.id)}</td> <td data-label="Tipo">${obtenerTextoSeguro(equipo.tipoEtiqueta || '')}</td> <td data-label="Seccion">${obtenerTextoSeguro(equipo.seccion)}</td> <td data-label="Actualizacion">${obtenerTextoSeguro(equipo.actualizado)}</td> <td data-label="Acciones"> <div class="cell-actions regla-diseno-136"> <a class="boton-icono regla-diseno-016" href="equipo-detalle.html?id=${encodeURIComponent(equipo.id)}" aria-label="Ver detalle" title="Ver detalle">${crearIcono('eye', 'icon-sm')}</a> <button class="boton-icono regla-diseno-016" type="button" data-open-move-equipo="${obtenerTextoSeguro(equipo.id)}" aria-label="Trasladar equipo" title="Trasladar equipo">${crearIcono('move-right', 'icon-sm')}</button> <button class="boton-icono boton-icono--peligro regla-diseno-016" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}" data-equipo-nombre="${obtenerTextoSeguro(equipo.nombre)}" aria-label="Dar de baja equipo" title="Dar de baja equipo">${crearIcono('trash-2', 'icon-sm')}</button> </div> </td> </tr> `;
   }
-  return ` <div class="table-wrap"> <table class="tabla"> <thead> <tr> <th>Equipo</th> <th style="width:120px">ID</th> <th style="width:140px">Tipo</th> <th style="width:180px">Seccion</th> <th style="width:160px">Actualizacion</th> <th style="width:100px">Acciones</th> </tr> </thead> <tbody>${filasHtml}</tbody> </table> </div> `;
+  return ` <div class="table-wrap"> <table class="tabla"> <thead> <tr> <th>Equipo</th> <th style="width:120px">ID</th> <th style="width:140px">Tipo</th> <th style="width:180px">Seccion</th> <th style="width:160px">Actualizacion</th> <th style="width:132px">Acciones</th> </tr> </thead> <tbody>${filasHtml}</tbody> </table> </div> `;
 }
 
 function crearTarjetaDeHistorial(evento) {
@@ -504,7 +524,8 @@ function crearModal(opciones) {
   if (!nombreIcono) {
     nombreIcono = 'triangle-alert';
   }
-  return ` <div class="dialogo-overlay regla-diseno-018" id="${opciones.id}" style="display:none" data-modal> <div class="dialogo regla-diseno-159"> <header class="dialogo__header regla-diseno-020"> <h3 class="dialogo__title regla-diseno-021"> ${crearIcono(nombreIcono, 'icon-md')} <span>${opciones.titulo}</span> </h3> <button class="dialogo__close regla-diseno-022" data-modal-close>${crearIcono('x', 'icon-md')}</button> </header> <div class="dialogo__body regla-diseno-023">${opciones.cuerpo}</div> <footer class="dialogo__footer regla-diseno-027">${opciones.pieDeModal}</footer> </div> </div> `;
+  const claseDialogo = opciones.claseDialogo ? ' ' + opciones.claseDialogo : '';
+  return ` <div class="dialogo-overlay regla-diseno-018" id="${opciones.id}" style="display:none" data-modal> <div class="dialogo regla-diseno-159${claseDialogo}"> <header class="dialogo__header regla-diseno-020"> <h3 class="dialogo__title regla-diseno-021"> ${crearIcono(nombreIcono, 'icon-md')} <span>${opciones.titulo}</span> </h3> <button class="dialogo__close regla-diseno-022" data-modal-close>${crearIcono('x', 'icon-md')}</button> </header> <div class="dialogo__body regla-diseno-023">${opciones.cuerpo}</div> <footer class="dialogo__footer regla-diseno-027">${opciones.pieDeModal}</footer> </div> </div> `;
 }
 
 function crearCabeceraCompleta(migas) {

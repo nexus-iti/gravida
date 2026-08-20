@@ -222,23 +222,6 @@ const tareasCalendarioTASemilla = [];
 
 const solicitudesServicioSemilla = []; 
 
-const secciones = [
-  { id: 'laboratorio-1', nombre: 'Laboratorio 1', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'laboratorio-2', nombre: 'Laboratorio 2', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'laboratorio-3', nombre: 'Laboratorio 3', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'laboratorio-4', nombre: 'Laboratorio 4', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'laboratorio-5', nombre: 'Laboratorio 5', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'teorico-1', nombre: 'Teorico 1', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'teorico-2', nombre: 'Teorico 2', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'teorico-3', nombre: 'Teorico 3', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'teorico-4', nombre: 'Teorico 4', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'teorico-5', nombre: 'Teorico 5', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'adscripcion-1', nombre: 'Adscripcion 1', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'adscripcion-2', nombre: 'Adscripcion 2', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'direccion', nombre: 'Direccion', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-  { id: 'administracion', nombre: 'Administracion', icono: 'building-2', actualizado: 'hoy', cantidadEquipos: 0 },
-];
-
 const tiposDeEquipoInventario = [
   { valor: 'tv', etiqueta: 'Televisor', prefijo: 'TV', icono: 'tv' },
   { valor: 'all-in-one', etiqueta: 'All in one', prefijo: 'AIO', icono: 'monitor' },
@@ -250,10 +233,6 @@ const tiposDeEquipoInventario = [
 ];
 
 
-const equiposPorSeccion = {};
-const todosLosEquipos = [];
-const equipoDetalle = null;
-const historialDeCambios = [];
 const imagenesDeSecciones = [];
 
 const coloresPorNombre = {

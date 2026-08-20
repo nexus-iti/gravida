@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -11,7 +11,6 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/prestamos.css" />
 </head>
   <body data-section="prestamos" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -112,9 +111,17 @@
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
-      
+      (async function iniciarPaginaPrestamos() {
       if (protegerRuta()) {
         
         mostrarEn(
@@ -142,12 +149,7 @@
         const esAdministrativo = usuarioEsAdministrativo(usuarioActual);
         const puedeSolicitar = usuarioPuedeSolicitar(usuarioActual);
         const puedeGestionar = usuarioPuedeGestionarOperaciones(usuarioActual);
-        const categoriasPrestamoDisponibles = ['PCs', 'Perifericos', 'Monitores'];
-        const recursosPrestamoDisponibles = {
-          PCs: ['Torres', 'All in ones'],
-          Perifericos: ['Mouse', 'Teclados', 'Parlantes'],
-          Monitores: ['Monitores'],
-        };
+        let equiposPrestamoDisponibles = [];
         const opcionesEstadoPrestamo = [
           {
             estado: 'Aprobado',
@@ -203,11 +205,20 @@
           
         }
         
-        function renderCategorias() {
+        async function renderCategorias() {
+          equiposPrestamoDisponibles = await obtenerEquiposDisponiblesParaPrestamo();
           let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoria</option>';
-          for (let i = 0; i < categoriasPrestamoDisponibles.length; i++) {
-            const categoria = categoriasPrestamoDisponibles[i];
-            opciones += '<option value="' + categoria + '">' + categoria + '</option>';
+          const categoriasDisponibles = [];
+          for (let i = 0; i < equiposPrestamoDisponibles.length; i++) {
+            const categoria = String(equiposPrestamoDisponibles[i].tipo || 'Otro');
+            if (!categoriasDisponibles.includes(categoria)) {
+              categoriasDisponibles.push(categoria);
+            }
+          }
+          for (let i = 0; i < categoriasDisponibles.length; i++) {
+            const categoria = categoriasDisponibles[i];
+            opciones +=
+              '<option value="' + escaparHtml(categoria) + '">' + escaparHtml(categoria) + '</option>';
           }
           selectCategoria.innerHTML = opciones;
           inicializarSelectsPersonalizados(selectCategoria);
@@ -215,7 +226,9 @@
         
         function renderRecursosPorCategoria() {
           const categoria = selectCategoria.value;
-          const recursos = recursosPrestamoDisponibles[categoria] || [];
+          const recursos = equiposPrestamoDisponibles.filter(function (equipo) {
+            return equipo.tipo === categoria;
+          });
           if (recursos.length === 0) {
             contenedorRecursos.innerHTML =
               '<div class="empty-inline regla-diseno-043">Primero elegi una categoria para ver los recursos disponibles.</div>';
@@ -225,7 +238,7 @@
           for (let i = 0; i < recursos.length; i++) {
             const recurso = recursos[i];
             const id = 'prestamo-recurso-' + i;
-            html += ` <div class="loan-resource-option regla-diseno-107"> <label class="loan-resource-option__check regla-diseno-015" for="${id}"> <input id="${id}" type="checkbox" value="${escaparHtml(recurso)}" data-loan-resource /> <span>${escaparHtml(recurso)}</span> </label> <label class="loan-resource-option__qty regla-diseno-015"> <span>Cantidad</span> <input class="text-input regla-diseno-026" type="number" min="1" placeholder="0" disabled data-loan-quantity aria-label="Cantidad de ${escaparHtml(recurso)}" /> </label> </div> `;
+            html += ` <div class="loan-resource-option regla-diseno-107"> <label class="loan-resource-option__check regla-diseno-015" for="${id}"> <input id="${id}" type="checkbox" value="${escaparHtml(recurso.nombre)}" data-equipo-id="${escaparHtml(recurso.id)}" data-loan-resource /> <span>${escaparHtml(recurso.nombre)}</span> </label> <label class="loan-resource-option__qty regla-diseno-015"> <span>Cantidad</span> <input class="text-input regla-diseno-026" type="number" min="1" max="${escaparHtml(recurso.cantidad)}" placeholder="0" disabled data-loan-quantity aria-label="Cantidad de ${escaparHtml(recurso.nombre)}" /> </label> </div> `;
           }
           contenedorRecursos.innerHTML = html;
         }
@@ -255,29 +268,41 @@
                 total: 0,
               };
             }
-            recursos.push({ nombre: seleccionados[i].value, cantidad: cantidad });
+            const idEquipo = Number(seleccionados[i].dataset.equipoId);
+            const cantidadDisponible = Number(inputCantidad.max);
+            if (!Number.isInteger(idEquipo) || idEquipo < 1 || cantidad > cantidadDisponible) {
+              return {
+                ok: false,
+                mensaje: 'La cantidad solicitada debe corresponder a un equipo disponible.',
+                recursos: [],
+                total: 0,
+              };
+            }
+            recursos.push({ idEquipo: idEquipo, nombre: seleccionados[i].value, cantidad: cantidad });
             total += cantidad;
           }
           return { ok: true, mensaje: '', recursos: recursos, total: total };
         }
         
-        function renderLugares() {
+        async function renderLugares() {
+          const lugares = await obtenerLugaresDisponibles();
           let opciones = '<option value="" data-clave="elegir_lugar">Elegir lugar</option>';
-          for (let i = 0; i < lugaresDePrestamo.length; i++) {
+          if (lugares.length === 0) {
             opciones +=
-              '<option value="' +
-              lugaresDePrestamo[i] +
-              '">' +
-              lugaresDePrestamo[i] +
-              '</option>';
+              '<option value="" disabled data-clave="no_hay_secciones_cargadas">No hay secciones cargadas</option>';
+          }
+          for (let i = 0; i < lugares.length; i++) {
+            const lugarSeguro = escaparHtml(lugares[i]);
+            opciones +=
+              '<option value="' + lugarSeguro + '">' + lugarSeguro + '</option>';
           }
           selectUbicacion.innerHTML = opciones;
           inicializarSelectsPersonalizados(selectUbicacion);
         }
         
-        function renderFiltrosPrestamos() {
+        async function renderFiltrosPrestamos() {
           const filtrosActuales = guardarValoresCampos(idsFiltrosPrestamos);
-          const prestamos = obtenerPrestamosVisibles();
+          const prestamos = await obtenerPrestamosVisibles();
           filtrosPrestamos.innerHTML =
             crearCampoFiltroSelect(
               'filtro-prestamo-creador',
@@ -306,8 +331,11 @@
           ];
         }
         
-        function renderListaPrestamos() {
-          const prestamos = filtrarRegistrosPorCampos(obtenerPrestamosVisibles(), obtenerFiltrosPrestamos());
+        async function renderListaPrestamos() {
+          const prestamos = filtrarRegistrosPorCampos(
+            await obtenerPrestamosVisibles(),
+            obtenerFiltrosPrestamos(),
+          );
           let html = '';
           if (prestamos.length === 0) {
             html =
@@ -324,17 +352,17 @@
           mostrarEn('lista-prestamos', html);
         }
         
-        document.addEventListener('click', function (evento) {
+        document.addEventListener('click', async function (evento) {
           const botonGestion = evento.target.closest('[data-update-prestamo]');
           if (!botonGestion || !puedeGestionar) {
             return;
           }
-          actualizarEstadoPrestamo(
+          await actualizarEstadoPrestamo(
             botonGestion.getAttribute('data-update-prestamo'),
             botonGestion.getAttribute('data-prestamo-status'),
           );
-          renderFiltrosPrestamos();
-          renderListaPrestamos();
+          await renderFiltrosPrestamos();
+          await renderListaPrestamos();
           dibujarIconos();
         });
         
@@ -362,7 +390,7 @@
           }
         });
         
-        formPrestamo.addEventListener('submit', function (evento) {
+        formPrestamo.addEventListener('submit', async function (evento) {
           evento.preventDefault();
           if (!puedeSolicitar) {
             return;
@@ -375,7 +403,7 @@
             if (!recursosSeleccionados.ok) {
               return;
             }
-            guardarNuevoPrestamo({
+            await guardarNuevoPrestamo({
               categoria: document.getElementById('prestamo-categoria').value,
               recursosDetalle: recursosSeleccionados.recursos,
               cantidad: recursosSeleccionados.total,
@@ -386,28 +414,25 @@
             });
             formPrestamo.reset();
             renderRecursosPorCategoria();
-            renderFiltrosPrestamos();
-            renderListaPrestamos();
+            await renderFiltrosPrestamos();
+            await renderListaPrestamos();
             dibujarIconos();
           } catch (error) {
             manejarErrorCliente(error);
           }
         });
         
-        renderCategorias();
+        await renderCategorias();
         renderRecursosPorCategoria();
-        renderLugares();
-        renderFiltrosPrestamos();
-        renderListaPrestamos();
+        await renderLugares();
+        await renderFiltrosPrestamos();
+        await renderListaPrestamos();
         dibujarIconos();
       }
+      })();
     </script>
   </body>
 </html>
-
-
-
-
 
 
 

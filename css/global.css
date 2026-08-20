@@ -1088,6 +1088,8 @@
 
   .tabla .cell-actions {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 12px;
     color: var(--color-texto-secundario);
   }
@@ -1441,6 +1443,28 @@
   .dialogo__info-row .value {
     color: var(--color-texto-principal);
     font-weight: 600;
+  }
+
+  .dialogo__move-summary {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .dialogo__confirm-title {
+    margin: 0;
+    color: var(--color-texto-principal);
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .dialogo__confirm-text {
+    margin: 0;
+    color: var(--color-texto-secundario);
+    font-size: 14px;
+    line-height: 1.5;
   }
 
   .dialogo__arrow {
@@ -4667,8 +4691,38 @@
     font-size: 11px;
   }
 
-  .dialogo--wide {
+  .dialogo.dialogo--wide {
     max-width: 760px;
+  }
+
+  .dialogo.dialogo--traslado-equipo {
+    max-width: min(92vw, 560px);
+    min-height: 460px;
+  }
+
+  .dialogo.dialogo--traslado-equipo .dialogo__header {
+    padding: 24px 32px;
+  }
+
+  .dialogo.dialogo--traslado-equipo .dialogo__body {
+    min-height: 250px;
+    padding: 32px;
+  }
+
+  .dialogo.dialogo--traslado-equipo .dialogo__footer {
+    padding: 20px 32px 24px;
+  }
+
+  .dialogo.dialogo--confirmacion-baja {
+    max-width: min(92vw, 520px);
+  }
+
+  .dialogo.dialogo--confirmacion-baja .dialogo__body {
+    padding: 28px 32px;
+  }
+
+  .dialogo.dialogo--confirmacion-baja .dialogo__title .icon {
+    color: var(--color-peligro-texto);
   }
 
   .color-input {
@@ -5856,5 +5910,3 @@
 .regla-diseno-157 { display: flex; min-height: 16rem; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: var(--radio-borde-grande); border: 1px solid var(--color-borde-suave); padding: 2rem; text-align: center; }
 .regla-diseno-158 { max-width: 20rem; font-size: 0.875rem; line-height: 1.25rem; line-height: 1.5rem; }
 .regla-diseno-159 { display: flex; max-height: 100vh; width: 100%; max-width: 32rem; flex-direction: column; border-radius: var(--radio-borde-extra-grande); box-shadow: var(--sombra-modal); }
-
-

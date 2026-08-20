@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -11,7 +11,6 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/cuenta.css" />
 </head>
   <body class="account-redesign" data-section="cuenta" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -58,6 +57,26 @@
               </div>
               <div class="field-grid regla-diseno-024">
                 <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-fecha-registro" data-clave="fecha_registro">Fecha de registro</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-fecha-registro"
+                    type="text"
+                    readonly
+                  />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-rol" data-clave="rol">Rol</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-rol"
+                    type="text"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
                   <label for="cuenta-area" data-clave="area">Area</label>
                   <input
                     class="text-input regla-diseno-026"
@@ -67,12 +86,12 @@
                   data-clave-placeholder="ej_gestion_tecnologica" />
                 </div>
                 <div class="input-stack regla-diseno-025">
-                  <label for="cuenta-rol" data-clave="rol">Rol</label>
+                  <label for="cuenta-foto" data-clave="foto_perfil">Foto de perfil</label>
                   <input
                     class="text-input regla-diseno-026"
-                    id="cuenta-rol"
-                    type="text"
-                    readonly
+                    id="cuenta-foto"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
                   />
                 </div>
               </div>
@@ -93,7 +112,15 @@
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
       
       if (protegerRuta()) {
@@ -122,6 +149,8 @@
           rol: document.getElementById('cuenta-rol'),
           area: document.getElementById('cuenta-area'),
           descripcion: document.getElementById('cuenta-descripcion'),
+          fechaRegistro: document.getElementById('cuenta-fecha-registro'),
+          foto: document.getElementById('cuenta-foto'),
         };
         
         function mostrarMensaje(texto, tipo) {
@@ -130,10 +159,13 @@
         
         function renderPerfil() {
           const usuarioActual = obtenerUsuarioActual();
-          const avatarGrande =
-            '<span class="profile-card__avatar-fallback">' +
-            crearIcono('user', 'icon-lg') +
-            '</span>';
+          const avatarGrande = usuarioActual.fotoPerfil
+            ? '<img class="profile-card__avatar" src="' +
+              escaparHtml(usuarioActual.fotoPerfil) +
+              '" alt="Foto de perfil" />'
+            : '<span class="profile-card__avatar-fallback">' +
+              crearIcono('user', 'icon-lg') +
+              '</span>';
           mostrarEn(
             'perfil-resumen',
               ` <article class="profile-card regla-diseno-037"> <div class="profile-card__cover regla-diseno-038"> ${avatarGrande} <h2 class="profile-card__name regla-diseno-039">${escaparHtml(usuarioActual.nombreCompleto)}</h2> <p class="profile-card__role regla-diseno-011">${escaparHtml(obtenerEtiquetaRol(usuarioActual.rol))} | ${escaparHtml(usuarioActual.correo)}</p> </div> <div class="profile-card__body regla-diseno-012"> <button class="boton boton--outline profile-card__logout regla-diseno-005" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span data-clave="cerrar_sesion">Cerrar sesion</span> </button> </div> </article> `,
@@ -143,7 +175,34 @@
           camposCuenta.rol.value = obtenerEtiquetaRol(usuarioActual.rol) || '';
           camposCuenta.area.value = usuarioActual.area || '';
           camposCuenta.descripcion.value = usuarioActual.descripcion || '';
+          camposCuenta.fechaRegistro.value = usuarioActual.fechaRegistro
+            ? formatearFechaHumana(usuarioActual.fechaRegistro)
+            : '';
         }
+
+        camposCuenta.foto.addEventListener('change', async function () {
+          const archivo = camposCuenta.foto.files && camposCuenta.foto.files[0];
+          if (!archivo) {
+            return;
+          }
+          try {
+            await subirFotoPerfil(archivo);
+            mostrarMensaje('Foto de perfil actualizada.', 'success');
+            renderPerfil();
+            mostrarEn(
+              'cabecera-superior',
+              crearCabeceraCompleta([
+                { etiqueta: 'Home', enlace: 'home.html' },
+                { etiqueta: 'Cuenta' },
+              ]),
+            );
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error, mostrarMensaje);
+          } finally {
+            camposCuenta.foto.value = '';
+          }
+        });
         
         formCuenta.addEventListener('submit', async function (evento) {
           evento.preventDefault();
@@ -151,7 +210,7 @@
             return;
           }
           try {
-            actualizarPerfil({
+            await actualizarPerfil({
               nombreCompleto: camposCuenta.nombre.value.trim(),
               correo: camposCuenta.correo.value.trim(),
               area: camposCuenta.area.value.trim(),
@@ -181,9 +240,6 @@
     </script>
   </body>
 </html>
-
-
-
 
 
 

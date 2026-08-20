@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Prueba aislada de API</title>
+    <style>body{font-family:system-ui;margin:2rem;max-width:80rem}button{margin:.2rem}pre{padding:1rem;background:#111;color:#e8e8e8;overflow:auto}</style>
+  </head>
+  <body>
+    <h1>Prueba aislada de endpoints</h1>
+    <p>Selecciona una colección para probar su lectura sin iniciar sesión.</p>
+    <div id="botones"></div>
+    <pre id="salida">Selecciona un endpoint.</pre>
+    <script>
+      const endpoints = ['usuarios','solicitudes_registro','prestamos','incidencias','servicios','planilla_ta','tareas','ubicaciones','equipos','historial'];
+      const botones = document.getElementById('botones');
+      const salida = document.getElementById('salida');
+      endpoints.forEach(function (endpoint) {
+        const boton = document.createElement('button');
+        boton.type = 'button';
+        boton.textContent = 'GET api/' + endpoint + '.php';
+        boton.addEventListener('click', async function () {
+          salida.textContent = 'Consultando…';
+          try {
+            const respuesta = await fetch('api/' + endpoint + '.php');
+            const datos = await respuesta.json();
+            salida.textContent = JSON.stringify({ estado: respuesta.status, datos: datos }, null, 2);
+          } catch (error) {
+            salida.textContent = String(error);
+          }
+        });
+        botones.appendChild(boton);
+      });
+    </script>
+  </body>
+</html>

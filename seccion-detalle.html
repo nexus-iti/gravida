@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -10,8 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/seccion-detalle.css" />
+    <link rel="stylesheet" href="css/global.css?v=baja-modal-cancel-2" />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -23,15 +22,25 @@
     </main>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=baja-modal-cancel-2"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
       
       if (protegerRuta()) {
+        (async function () {
         let idSeccion = obtenerParametroDeUrl('id');
-        let seccionActual = obtenerSeccionInventarioPorId(idSeccion);
-        const seccionesInventario = obtenerSeccionesInventario();
+        let seccionActual = await obtenerSeccionInventarioPorId(idSeccion);
+        const seccionesInventario = await obtenerSeccionesInventario();
+        let equipoTrasladoSeleccionado = null;
         if (!seccionActual && seccionesInventario.length > 0) {
           seccionActual = seccionesInventario[0];
           idSeccion = seccionActual.id;
@@ -51,7 +60,7 @@
             },
           );
         }
-        function renderCabecera() {
+        async function renderCabecera() {
           if (!seccionActual) {
             mostrarEn(
               'cabecera-superior',
@@ -71,7 +80,7 @@
             );
             return;
           }
-          const equiposDeLaSeccion = obtenerEquiposPorSeccionInventario(seccionActual.id);
+          const equiposDeLaSeccion = await obtenerEquiposPorSeccionInventario(seccionActual.id);
           mostrarEn(
             'cabecera-superior',
             crearCabeceraCompleta([
@@ -96,7 +105,7 @@
             }),
           );
         }
-        function renderEquipos() {
+        async function renderEquipos() {
           if (!seccionActual) {
             mostrarEn(
               'lista-de-equipos',
@@ -109,7 +118,7 @@
             dibujarIconos();
             return;
           }
-          const equiposDeLaSeccion = obtenerEquiposPorSeccionInventario(seccionActual.id);
+          const equiposDeLaSeccion = await obtenerEquiposPorSeccionInventario(seccionActual.id);
           let htmlDeFilas = '';
           if (equiposDeLaSeccion.length === 0) {
             htmlDeFilas = crearEstadoVacio({
@@ -119,7 +128,10 @@
             });
           } else {
             for (let i = 0; i < equiposDeLaSeccion.length; i++) {
-              htmlDeFilas += crearFilaDeEquipo(equiposDeLaSeccion[i], { permitirBaja: true });
+              htmlDeFilas += crearFilaDeEquipo(equiposDeLaSeccion[i], {
+                permitirBaja: true,
+                permitirTraslado: true,
+              });
             }
           }
           mostrarEn('lista-de-equipos', htmlDeFilas);
@@ -144,6 +156,17 @@
         const pieModalEquipo =
           '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
           '<button class="boton boton--primary regla-diseno-005" type="button" data-save-equipo>Dar de alta</button>';
+        const cuerpoModalTraslado =
+          '<p class="dialogo__move-summary" id="equipo-traslado-resumen">Selecciona un equipo para trasladar.</p>' +
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="equipo-seccion-destino-lista">Seccion destino</label>' +
+          '<select class="select-input regla-diseno-026" id="equipo-seccion-destino-lista">' +
+          '<option value="">Elegir seccion</option>' +
+          '</select>' +
+          '</div>';
+        const pieModalTraslado =
+          '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close>Cancelar</button>' +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-confirm-move-equipo>Confirmar traslado</button>';
         mostrarEn(
           'contenedor-modal',
           crearModal({
@@ -152,7 +175,16 @@
             icono: 'monitor',
             cuerpo: cuerpoModalEquipo,
             pieDeModal: pieModalEquipo,
-          }),
+          }) +
+            crearModal({
+              id: 'modal-traslado-equipo-lista',
+              titulo: 'Trasladar equipo',
+              icono: 'move-right',
+              claseDialogo: 'dialogo--traslado-equipo',
+              cuerpo: cuerpoModalTraslado,
+              pieDeModal: pieModalTraslado,
+          }) +
+            crearModalBajaEquipoInventario('modal-baja-equipo'),
         );
 
         function limpiarFormularioEquipo() {
@@ -161,33 +193,127 @@
           document.getElementById('nuevo-equipo-observaciones').value = '';
         }
 
-        function guardarEquipoDesdeModal() {
-          const resultado = guardarNuevoEquipoInventario({
-            nombre: document.getElementById('nuevo-equipo-nombre').value,
-            tipo: document.getElementById('nuevo-equipo-tipo').value,
-            seccionId: seccionActual ? seccionActual.id : '',
-            observaciones: document.getElementById('nuevo-equipo-observaciones').value,
-          });
-          mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
-          if (!resultado.ok) {
-            return;
+        function opcionesSeccionesDestinoTraslado(equipo) {
+          let opciones = '<option value="">Elegir seccion</option>';
+          let cantidadDestinos = 0;
+          for (let i = 0; i < seccionesInventario.length; i++) {
+            if (String(seccionesInventario[i].id) === String(equipo.seccionId)) {
+              continue;
+            }
+            cantidadDestinos++;
+            opciones +=
+              '<option value="' +
+              obtenerTextoSeguro(seccionesInventario[i].id) +
+              '">' +
+              obtenerTextoSeguro(seccionesInventario[i].nombre) +
+              '</option>';
           }
-          limpiarFormularioEquipo();
-          cerrarModal('modal-equipo');
-          renderCabecera();
-          renderEquipos();
+          if (cantidadDestinos === 0) {
+            return '<option value="" disabled>No hay otra seccion disponible</option>';
+          }
+          return opciones;
         }
 
-        function eliminarEquipoDesdeSeccion(botonBaja) {
-          const resultado = eliminarEquipoInventario(botonBaja.getAttribute('data-delete-equipo'));
-          mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
-          if (resultado.ok) {
-            renderCabecera();
-            renderEquipos();
+        async function abrirModalTrasladoEquipo(equipoId) {
+          equipoTrasladoSeleccionado = await obtenerEquipoInventarioPorId(equipoId);
+          if (!equipoTrasladoSeleccionado) {
+            mostrarMensajeSeccion('No encontramos ese equipo.', 'error');
+            return;
+          }
+          document.getElementById('equipo-traslado-resumen').textContent =
+            equipoTrasladoSeleccionado.nombre + ' | Seccion actual: ' + equipoTrasladoSeleccionado.seccion;
+          const selectDestino = document.getElementById('equipo-seccion-destino-lista');
+          selectDestino.innerHTML = opcionesSeccionesDestinoTraslado(equipoTrasladoSeleccionado);
+          const botonConfirmar = document.querySelector('[data-confirm-move-equipo]');
+          botonConfirmar.disabled = seccionesInventario.length < 2;
+          abrirModal('modal-traslado-equipo-lista');
+        }
+
+        async function confirmarTrasladoEquipo() {
+          if (!equipoTrasladoSeleccionado) {
+            return;
+          }
+          try {
+            const resultado = await moverEquipoInventario(
+              equipoTrasladoSeleccionado.id,
+              document.getElementById('equipo-seccion-destino-lista').value,
+            );
+            mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (!resultado.ok) {
+              return;
+            }
+            cerrarModal('modal-traslado-equipo-lista');
+            equipoTrasladoSeleccionado = null;
+            await renderCabecera();
+            await renderEquipos();
+          } catch (error) {
+            mostrarMensajeSeccion(error.message, 'error');
+          }
+        }
+
+        async function guardarEquipoDesdeModal() {
+          try {
+            const resultado = await guardarNuevoEquipoInventario({
+              nombre: document.getElementById('nuevo-equipo-nombre').value,
+              tipo: document.getElementById('nuevo-equipo-tipo').value,
+              seccionId: seccionActual ? seccionActual.id : '',
+              observaciones: document.getElementById('nuevo-equipo-observaciones').value,
+            });
+            mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (!resultado.ok) {
+              return;
+            }
+            limpiarFormularioEquipo();
+            cerrarModal('modal-equipo');
+            await renderCabecera();
+            await renderEquipos();
+          } catch (error) {
+            mostrarMensajeSeccion(error.message, 'error');
+          }
+        }
+
+        async function eliminarEquipoDesdeSeccion(equipoId) {
+          if (!equipoId) {
+            return;
+          }
+          try {
+            const resultado = await eliminarEquipoInventario(equipoId);
+            mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (resultado.ok) {
+              cerrarModal('modal-baja-equipo');
+              limpiarModalBajaEquipoInventario('modal-baja-equipo');
+              await renderCabecera();
+              await renderEquipos();
+            }
+          } catch (error) {
+            mostrarMensajeSeccion(error.message, 'error');
           }
         }
 
         document.addEventListener('click', function (evento) {
+          const botonCancelarBaja = evento.target.closest('[data-cancel-delete-equipo]');
+          if (botonCancelarBaja) {
+            cancelarBajaEquipoInventario('modal-baja-equipo');
+            return;
+          }
+          const botonTraslado = evento.target.closest('[data-open-move-equipo]');
+          if (botonTraslado) {
+            evento.preventDefault();
+            evento.stopPropagation();
+            abrirModalTrasladoEquipo(botonTraslado.getAttribute('data-open-move-equipo'));
+            return;
+          }
+          const botonConfirmarTraslado = evento.target.closest('[data-confirm-move-equipo]');
+          if (botonConfirmarTraslado) {
+            confirmarTrasladoEquipo();
+            return;
+          }
+          const botonConfirmarBaja = evento.target.closest('[data-confirm-delete-equipo]');
+          if (botonConfirmarBaja) {
+            const equipoBaja = obtenerEquipoBajaSeleccionado('modal-baja-equipo');
+            eliminarEquipoDesdeSeccion(equipoBaja.id);
+            return;
+          }
           const botonGuardar = evento.target.closest('[data-save-equipo]');
           if (botonGuardar) {
             guardarEquipoDesdeModal();
@@ -199,21 +325,17 @@
           }
           evento.preventDefault();
           evento.stopPropagation();
-          eliminarEquipoDesdeSeccion(botonBaja);
+          abrirModalBajaEquipoInventario(
+            'modal-baja-equipo',
+            botonBaja.getAttribute('data-delete-equipo'),
+            botonBaja.getAttribute('data-equipo-nombre'),
+          );
         });
-        renderCabecera();
-        renderEquipos();
+        await renderCabecera();
+        await renderEquipos();
         dibujarIconos();
+        })();
       }
     </script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-

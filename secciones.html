@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="es" data-tema="claro" data-idioma="es">
   <head>
     <meta charset="UTF-8" />
@@ -10,8 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/global.css" />
-    <link rel="stylesheet" href="css/secciones.css" />
+    <link rel="stylesheet" href="css/global.css?v=baja-seccion-modal-2" />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -23,9 +22,17 @@
     </main>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=baja-seccion-modal-2"></script>
     <script src="js/traducciones.js"></script>
-    <script src="js/app.js?v=responsive"></script>
+    <script src="js/core/ui.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=modular-1"></script>
+    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/modules/inventario.js?v=modular-1"></script>
+    <script src="js/modules/usuarios.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/app.js?v=modular-1"></script>
     <script>
       
       if (protegerRuta()) {
@@ -67,14 +74,15 @@
             icono: 'building-2',
             cuerpo: cuerpoModalSeccion,
             pieDeModal: pieModalSeccion,
-          }),
+          }) +
+            crearModalBajaSeccionInventario('modal-baja-seccion'),
         );
         function mostrarMensajeSecciones(texto, tipo) {
           mostrarMensajeFormulario('mensaje-secciones', texto, tipo);
         }
         
-        function renderSecciones() {
-          const seccionesInventario = obtenerSeccionesInventario();
+        async function renderSecciones() {
+          const seccionesInventario = await obtenerSeccionesInventario();
           let htmlDeFilas = '';
           if (seccionesInventario.length === 0) {
             htmlDeFilas = crearEstadoVacio({
@@ -92,39 +100,79 @@
           dibujarIconos();
         }
 
-        function guardarSeccionDesdeModal() {
+        async function guardarSeccionDesdeModal() {
           const inputNombre = document.getElementById('nueva-seccion-nombre');
-          const resultado = guardarNuevaSeccionInventario({ nombre: inputNombre.value });
-          mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
-          if (!resultado.ok) {
+          try {
+            const resultado = await guardarNuevaSeccionInventario({ nombre: inputNombre.value });
+            mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (!resultado.ok) {
+              return;
+            }
+            inputNombre.value = '';
+            cerrarModal('modal-seccion');
+            await renderSecciones();
+          } catch (error) {
+            mostrarMensajeSecciones(error.message, 'error');
+          }
+        }
+
+        async function eliminarSeccionDesdeBoton(seccionId, seccionDestinoId) {
+          if (!seccionId) {
             return;
           }
-          inputNombre.value = '';
-          cerrarModal('modal-seccion');
-          renderSecciones();
-        }
-
-        function eliminarSeccionDesdeBoton(botonBaja) {
-          const resultado = eliminarSeccionInventario(botonBaja.getAttribute('data-delete-seccion'));
-          mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
-          if (resultado.ok) {
-            renderSecciones();
+          try {
+            const resultado = await eliminarSeccionInventario(seccionId, seccionDestinoId);
+            mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (resultado.ok) {
+              cerrarModal('modal-baja-seccion');
+              limpiarModalBajaSeccionInventario('modal-baja-seccion');
+              await renderSecciones();
+            }
+          } catch (error) {
+            mostrarMensajeSecciones(error.message, 'error');
           }
         }
 
-        document.addEventListener('click', function (evento) {
+        document.addEventListener('click', async function (evento) {
           const botonGuardar = evento.target.closest('[data-save-seccion]');
           if (botonGuardar) {
             guardarSeccionDesdeModal();
             return;
           }
-          const botonBaja = evento.target.closest('[data-delete-seccion]');
+          const botonConfirmarBaja = evento.target.closest('[data-confirm-delete-seccion]');
+          if (botonConfirmarBaja) {
+            const seccionBaja = obtenerSeccionBajaSeleccionada('modal-baja-seccion');
+            eliminarSeccionDesdeBoton(seccionBaja.id, seccionBaja.destinoId);
+            return;
+          }
+          const botonBaja = evento.target.closest('[data-open-delete-seccion]');
           if (!botonBaja) {
             return;
           }
           evento.preventDefault();
-          evento.stopPropagation();
-          eliminarSeccionDesdeBoton(botonBaja);
+          evento.stopImmediatePropagation();
+          try {
+            await abrirModalBajaSeccionInventario(
+              'modal-baja-seccion',
+              botonBaja.getAttribute('data-open-delete-seccion'),
+              botonBaja.getAttribute('data-seccion-nombre'),
+            );
+          } catch (error) {
+            mostrarMensajeSecciones(error.message, 'error');
+          }
+        });
+
+        document.addEventListener('change', function (evento) {
+          const selectDestino = evento.target.closest('[data-baja-seccion-destino]');
+          if (!selectDestino) {
+            return;
+          }
+          const modal = selectDestino.closest('[data-modal]');
+          const botonConfirmar = modal ? modal.querySelector('[data-confirm-delete-seccion]') : null;
+          if (botonConfirmar) {
+            botonConfirmar.disabled =
+              Number(modal.dataset.equiposSeccion || 0) > 0 && !selectDestino.value;
+          }
         });
         
         renderSecciones();
@@ -132,12 +180,6 @@
     </script>
   </body>
 </html>
-
-
-
-
-
-
 
 
 

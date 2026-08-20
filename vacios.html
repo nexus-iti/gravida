@@ -1,0 +1,93 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estados vacios | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/vacios.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div class="section-label regla-diseno-052">
+        Estados vacios | Mensajes para pantallas sin datos
+      </div>
+      <div id="rejilla-de-vacios" class="empty-grid regla-diseno-013"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Estados vacios' },
+          ]),
+        );
+        
+        const estadosVacios = [
+          {
+            icono: 'building-2',
+            titulo: 'Todavia no hay secciones registradas',
+            descripcion:
+              'Agrega la primera seccion para empezar a ordenar el inventario de la institucion.',
+            boton:
+              '<button class="boton boton--primary regla-diseno-005" type="button">' +
+              crearIcono('plus', 'icon-sm') +
+              '<span>Agregar seccion</span></button>',
+          },
+          {
+            icono: 'search',
+            titulo: 'No se encontraron equipos',
+            descripcion:
+              'No encontramos equipos con ese criterio. Proba con otro filtro o termino de busqueda.',
+            boton:
+              '<button class="boton boton--outline regla-diseno-005" type="button">Limpiar filtros</button>',
+          },
+          {
+            icono: 'image',
+            titulo: 'No hay imagenes para esa consulta',
+            descripcion:
+              'No encontramos respaldos visuales para esa fecha y hora. Proba con otra combinacion.',
+          },
+          {
+            icono: 'file-text',
+            titulo: 'No hay cambios registrados',
+            descripcion:
+              'Cuando haya movimientos, altas o cambios en el inventario, van a aparecer aca.',
+          },
+        ];
+        
+        let tarjetasHtml = '';
+        for (let i = 0; i < estadosVacios.length; i++) {
+          tarjetasHtml += crearEstadoVacio(estadosVacios[i]);
+        }
+        mostrarEn('rejilla-de-vacios', tarjetasHtml);
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,89 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inventario | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/inventario.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div id="cabecera-de-pagina"></div>
+      <div id="rejilla-de-modulos" class="module-grid regla-diseno-013"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Inventario',
+            subtitulo:
+              'Consulta donde esta cada equipo, que cambios tuvo y que respaldo visual existe por seccion.',
+            esGrande: true,
+          }),
+        );
+        
+        const modulos = [
+          {
+            icono: 'building-2',
+            titulo: 'Secciones del inventario',
+            descripcion: 'Entra a cada espacio para revisar los equipos que tiene asignados.',
+            enlace: 'secciones.html',
+          },
+          {
+            icono: 'history',
+            titulo: 'Historial de cambios',
+            descripcion: 'Revisa movimientos, altas, bajas y cambios recientes del inventario.',
+            enlace: 'historial.html',
+          },
+        ];
+        
+        let htmlTarjetas = '';
+        for (let i = 0; i < modulos.length; i++) {
+          htmlTarjetas += crearTarjetaDeModulo(modulos[i]);
+        }
+        mostrarEn('rejilla-de-modulos', htmlTarjetas);
+        
+        const cabecera = document.querySelector('.page-header');
+        if (cabecera) {
+          cabecera.style.flexDirection = 'column';
+          cabecera.style.alignItems = 'center';
+          cabecera.style.textAlign = 'center';
+        }
+        
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

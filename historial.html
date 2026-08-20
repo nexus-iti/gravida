@@ -1,0 +1,109 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Historial de cambios | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/historial.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div id="cabecera-de-pagina"></div>
+      <div class="filter-panel filter-panel--page regla-diseno-057">
+        <div id="barra-de-filtros" class="filter-bar filter-panel__body regla-diseno-057"></div>
+      </div>
+      <div
+        id="lista-de-historial"
+        class="timeline"
+        style="padding:0 var(--espaciado-pagina) 24px;"
+      ></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Historial de cambios' },
+          ]),
+        );
+        mostrarEn('cabecera-de-pagina', crearCabeceraDePagina({ titulo: 'Historial de cambios' }));
+        
+        const historial = obtenerHistorialInventario();
+        const filtrosHtml =
+          crearCajaDeBusqueda('Buscar en historial...', 'input-buscar-historial') +
+          crearCampoFiltroSelect(
+            'filtro-historial-autor',
+            'Autor',
+            crearOpcionesFiltro(obtenerValoresUnicosFiltro(historial, 'autor'), 'Todos'),
+          ) +
+          crearCampoFiltroFecha('filtro-historial-fecha', 'Fecha', 'data-clave="fecha"') +
+          crearCampoFiltroSelect(
+            'filtro-historial-tipo',
+            'Tipo de cambio',
+            crearOpcionesFiltro(obtenerValoresUnicosFiltro(historial, 'etiqueta'), 'Todos'),
+          );
+        mostrarEn('barra-de-filtros', filtrosHtml);
+        
+        function obtenerFiltrosHistorial() {
+          return [
+            {
+              campos: ['titulo', 'etiqueta', 'descripcion', 'autor'],
+              valor: obtenerValorCampoFormulario('input-buscar-historial'),
+            },
+            { campo: 'autor', valor: obtenerValorCampoFormulario('filtro-historial-autor'), comparacion: 'igual' },
+            { campo: 'fecha', valor: obtenerValorCampoFormulario('filtro-historial-fecha'), tipo: 'fecha' },
+            { campo: 'etiqueta', valor: obtenerValorCampoFormulario('filtro-historial-tipo'), comparacion: 'igual' },
+          ];
+        }
+
+        function renderHistorial() {
+          const historialFiltrado = filtrarRegistrosPorCampos(historial, obtenerFiltrosHistorial());
+          let listaHtml = '';
+          if (historialFiltrado.length === 0) {
+            listaHtml = crearEstadoVacio({
+              icono: 'history',
+              titulo: 'Todavia no hay cambios registrados',
+              descripcion: 'Las altas y bajas de secciones o equipos van a aparecer aca.',
+            });
+          } else {
+            for (let i = 0; i < historialFiltrado.length; i++) {
+              listaHtml += crearTarjetaDeHistorial(historialFiltrado[i]);
+            }
+          }
+          mostrarEn('lista-de-historial', listaHtml);
+          dibujarIconos();
+        }
+
+        document.getElementById('barra-de-filtros').addEventListener('input', renderHistorial);
+        document.getElementById('barra-de-filtros').addEventListener('change', renderHistorial);
+        renderHistorial();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

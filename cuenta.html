@@ -1,0 +1,189 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuenta | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/cuenta.css" />
+</head>
+  <body class="account-redesign" data-section="cuenta" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <div id="cabecera-de-pagina"></div>
+      <section class="profile-layout account-profile-layout regla-diseno-007">
+        <aside id="perfil-resumen"></aside>
+        <section class="panel account-form-panel regla-diseno-032">
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010" data-clave="datos_de_tu_perfil">Datos de tu perfil</h2>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <div id="mensaje-cuenta"></div>
+            <form id="form-cuenta" class="auth-form regla-diseno-033">
+              <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-descripcion" data-clave="descripcion_bio">DESCRIPCION</label>
+                <textarea
+                  class="textarea-input regla-diseno-026"
+                  id="cuenta-descripcion"
+                  placeholder="Describe tu perfil institucional..."
+                 data-clave-placeholder="describe_perfil"></textarea>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-nombre" data-clave="nombre_completo">Nombre completo</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-nombre"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-correo" data-clave="correo">Correo</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-correo"
+                    type="email"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-area" data-clave="area">Area</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-area"
+                    type="text"
+                    placeholder="Ej. Gestion tecnologica"
+                  data-clave-placeholder="ej_gestion_tecnologica" />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-rol" data-clave="rol">Rol</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-rol"
+                    type="text"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="form-actions regla-diseno-035">
+                <button
+                  class="boton boton--primary regla-diseno-005"
+                  type="submit"
+                 data-clave="guardar_cambios">
+                  Guardar cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Cuenta' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Cuenta',
+            subtitulo:
+              'Revisa tu informacion personal, actualiza tu foto y deja claro desde que area trabajas.',
+          }),
+        );
+        
+        const formCuenta = document.getElementById('form-cuenta');
+        const mensajeCuenta = document.getElementById('mensaje-cuenta');
+        const camposCuenta = {
+          nombre: document.getElementById('cuenta-nombre'),
+          correo: document.getElementById('cuenta-correo'),
+          rol: document.getElementById('cuenta-rol'),
+          area: document.getElementById('cuenta-area'),
+          descripcion: document.getElementById('cuenta-descripcion'),
+        };
+        
+        function mostrarMensaje(texto, tipo) {
+          mostrarMensajeFormulario(mensajeCuenta, texto, tipo);
+        }
+        
+        function renderPerfil() {
+          const usuarioActual = obtenerUsuarioActual();
+          const avatarGrande =
+            '<span class="profile-card__avatar-fallback">' +
+            crearIcono('user', 'icon-lg') +
+            '</span>';
+          mostrarEn(
+            'perfil-resumen',
+              ` <article class="profile-card regla-diseno-037"> <div class="profile-card__cover regla-diseno-038"> ${avatarGrande} <h2 class="profile-card__name regla-diseno-039">${escaparHtml(usuarioActual.nombreCompleto)}</h2> <p class="profile-card__role regla-diseno-011">${escaparHtml(obtenerEtiquetaRol(usuarioActual.rol))} | ${escaparHtml(usuarioActual.correo)}</p> </div> <div class="profile-card__body regla-diseno-012"> <button class="boton boton--outline profile-card__logout regla-diseno-005" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span data-clave="cerrar_sesion">Cerrar sesion</span> </button> </div> </article> `,
+          );
+          camposCuenta.nombre.value = usuarioActual.nombreCompleto || '';
+          camposCuenta.correo.value = usuarioActual.correo || '';
+          camposCuenta.rol.value = obtenerEtiquetaRol(usuarioActual.rol) || '';
+          camposCuenta.area.value = usuarioActual.area || '';
+          camposCuenta.descripcion.value = usuarioActual.descripcion || '';
+        }
+        
+        formCuenta.addEventListener('submit', async function (evento) {
+          evento.preventDefault();
+          if (!validarFormularioCliente(formCuenta, mostrarMensaje)) {
+            return;
+          }
+          try {
+            actualizarPerfil({
+              nombreCompleto: camposCuenta.nombre.value.trim(),
+              correo: camposCuenta.correo.value.trim(),
+              area: camposCuenta.area.value.trim(),
+              descripcion: camposCuenta.descripcion.value.trim(),
+            });
+            mostrarMensaje(
+              'Perfil actualizado. Tus nuevos datos ya estan visibles en la cuenta.',
+              'success',
+            );
+            renderPerfil();
+            mostrarEn(
+              'cabecera-superior',
+              crearCabeceraCompleta([
+                { etiqueta: 'Home', enlace: 'home.html' },
+                { etiqueta: 'Cuenta' },
+              ]),
+            );
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error, mostrarMensaje);
+          }
+        });
+        
+        renderPerfil();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,573 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/inicio.css" />
+    <link rel="stylesheet" href="css/calendario.css" />
+</head>
+  <body data-section="home" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <section id="hero-home"></section>
+      <div id="mensaje-kanban"></div>
+      <section class="calendar-toolbar regla-diseno-002" id="kanban-toolbar">
+        <button
+          class="boton boton--primary regla-diseno-005"
+          type="button"
+          data-task-new
+        >
+          <i data-lucide="plus" class="icon icon-sm regla-diseno-006"></i>
+          <span data-clave="agregar_tarea">Agregar tarea</span>
+        </button>
+      </section>
+      <section class="panel-grid panel-grid--single regla-diseno-007" id="kanban-section">
+        <article class="panel calendar-panel calendar-panel--kanban regla-diseno-008">
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010" data-clave="tablero_de_tareas">Tablero de tareas</h2>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <div id="kanban-tareas" class="kanban-board regla-diseno-013"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <div
+      class="dialogo-overlay regla-diseno-018"
+      id="modal-tarea"
+      style="display:none"
+      data-modal
+    >
+      <div
+        class="dialogo dialogo--wide regla-diseno-019"
+      >
+        <header class="dialogo__header regla-diseno-020">
+          <h3 class="dialogo__title regla-diseno-021">
+            <i data-lucide="clipboard-list" class="icon icon-md regla-diseno-017"></i>
+            <span id="titulo-modal-tarea" data-clave="detalle_tarea">Detalle de la tarea</span>
+          </h3>
+          <button
+            class="dialogo__close regla-diseno-022"
+            type="button"
+            data-modal-close
+          >
+            <i data-lucide="x" class="icon icon-md regla-diseno-017"></i>
+          </button>
+        </header>
+        <form id="form-tarea-calendario">
+          <div class="dialogo__body regla-diseno-023">
+            <input type="hidden" id="tarea-id" />
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-titulo" data-clave="nombre_tarea">Nombre de la tarea</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-titulo"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-estado" data-clave="estado">Estado</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-estado"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="input-stack regla-diseno-025">
+              <label for="tarea-descripcion" data-clave="que_hay_que_hacer">Que hay que hacer</label>
+              <textarea
+                class="textarea-input regla-diseno-026"
+                id="tarea-descripcion"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-categoria" data-clave="categoria">Categoria</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-categoria"
+                  required
+                ></select>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-dificultad" data-clave="dificultad">Dificultad</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-dificultad"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-fecha-agregada" data-clave="fecha_de_carga">Fecha de carga</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-fecha-agregada"
+                  type="date"
+                  readonly
+                />
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-tecnico" data-clave="responsable">Responsable</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-tecnico"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-plazo-inicio" data-clave="empieza">Empieza</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-plazo-inicio"
+                  type="date"
+                  required
+                />
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-plazo-fin" data-clave="termina">Termina</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-plazo-fin"
+                  type="date"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-color" data-clave="color_en_el_calendario">Color en el calendario</label>
+                <input
+                  class="text-input color-input regla-diseno-026"
+                  id="tarea-color"
+                  type="color"
+                  value="#16A34A"
+                />
+              </div>
+              <div class="task-detail-note" id="tarea-detalle-resumen"></div>
+            </div>
+          </div>
+          <footer class="dialogo__footer regla-diseno-027">
+            <button
+              class="boton boton--outline regla-diseno-005"
+              type="button"
+              data-modal-close
+             data-clave="cancelar">
+              Cancelar
+            </button>
+            <button
+              class="boton boton--outline-danger regla-diseno-005"
+              type="button"
+              data-task-delete
+              hidden
+            >
+              <i data-lucide="trash-2" class="icon icon-sm regla-diseno-006"></i>
+              <span data-clave="eliminar_tarea">Eliminar tarea</span>
+            </button>
+            <button
+              class="boton boton--primary regla-diseno-005"
+              type="submit"
+             data-clave="guardar_cambios">
+              Guardar cambios
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      if (protegerRuta()) {
+        const usuarioActual = obtenerUsuarioActual();
+        const puedeVerKanban = usuarioPuedeAccederACalendarioTA(usuarioActual);
+        const seccionKanban = document.getElementById('kanban-section');
+        const toolbarKanban = document.getElementById('kanban-toolbar');
+        const mensajeKanban = document.getElementById('mensaje-kanban');
+
+        mostrarEn('cabecera-superior', crearBarraDeNavegacion());
+        mostrarEn(
+          'hero-home',
+          ` <section class="hero-banner regla-diseno-076"> <div class="hero-banner__copy"> <h1 class="hero-banner__title regla-diseno-078">Bienvenida, ${escaparHtml(obtenerNombreCorto(usuarioActual.nombreCompleto))}</h1> <p class="hero-banner__text regla-diseno-079" data-clave="home_hero_desc">${escaparHtml(t('SGRSI es la herramienta que busca gestionar tu trabajo diario de forma eficiente y segura'))}</p> </div> <figure class="hero-banner__media hero-banner__media--welcome regla-diseno-080" aria-hidden="true"> <img class="hero-banner__welcome-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWxvZ3MtaWNvbiBsdWNpZGUtbG9ncyI+PHBhdGggZD0iTTMgNWgxIi8+PHBhdGggZD0iTTMgMTJoMSIvPjxwYXRoIGQ9Ik0zIDE5aDEiLz48cGF0aCBkPSJNOCA1aDEiLz48cGF0aCBkPSJNOCAxMmgxIi8+PHBhdGggZD0iTTggMTloMSIvPjxwYXRoIGQ9Ik0xMyA1aDgiLz48cGF0aCBkPSJNMTMgMTJoOCIvPjxwYXRoIGQ9Ik0xMyAxOWg4Ii8+PC9zdmc+" alt="" /> </figure> </section> `,
+        );
+
+        if (!puedeVerKanban) {
+          if (seccionKanban) {
+            seccionKanban.remove();
+          }
+          if (toolbarKanban) {
+            toolbarKanban.remove();
+          }
+          if (mensajeKanban) {
+            mensajeKanban.remove();
+          }
+          dibujarIconos();
+        } else {
+          let kanbanPointerDrag = null;
+          let suprimirClickKanban = false;
+
+          function opcionesHtml(lista, seleccionado) {
+            let html = '';
+            for (let i = 0; i < lista.length; i++) {
+              const selected = lista[i] === seleccionado ? ' selected' : '';
+              html +=
+                '<option value="' +
+                escaparHtml(lista[i]) +
+                '"' +
+                selected +
+                '>' +
+                escaparHtml(lista[i]) +
+                '</option>';
+            }
+            return html;
+          }
+
+          function opcionesTecnicosHtml(seleccionado) {
+            const tecnicos = obtenerTecnicosDelPlantel();
+            let html = '';
+            for (let i = 0; i < tecnicos.length; i++) {
+              const selected = tecnicos[i].id === seleccionado ? ' selected' : '';
+              html +=
+                '<option value="' +
+                escaparHtml(tecnicos[i].id) +
+                '"' +
+                selected +
+                '>' +
+                escaparHtml(tecnicos[i].nombreCompleto) +
+                '</option>';
+            }
+            return html;
+          }
+
+          function mostrarMensajeKanban(texto, tipo) {
+            mostrarMensajeFormulario('mensaje-kanban', texto, tipo);
+          }
+
+          function renderKanban() {
+            const tareas = obtenerTareasCalendarioTA();
+            let html = '';
+            for (let i = 0; i < estadosKanbanTA.length; i++) {
+              const estado = estadosKanbanTA[i];
+              let tareasHtml = '';
+              let cantidad = 0;
+              for (let j = 0; j < tareas.length; j++) {
+                if (tareas[j].estado === estado) {
+                  tareasHtml += crearTarjetaTareaKanban(tareas[j]);
+                  cantidad++;
+                }
+              }
+              if (!tareasHtml) {
+                tareasHtml =
+                  '<div class="kanban-empty regla-diseno-028">Sin tareas por ahora</div>';
+              }
+              html += ` <section class="kanban-column regla-diseno-029" data-kanban-drop="${escaparHtml(estado)}"> <header class="kanban-column__header regla-diseno-030"> <span>${escaparHtml(estado)}</span> <strong>${cantidad}</strong> </header> <div class="kanban-column__body regla-diseno-031">${tareasHtml}</div> </section> `;
+            }
+            mostrarEn('kanban-tareas', html);
+          }
+
+          function renderTodo() {
+            renderKanban();
+            dibujarIconos();
+          }
+
+          function limpiarColumnasDropKanban() {
+            const columnas = document.querySelectorAll('[data-kanban-drop]');
+            for (let i = 0; i < columnas.length; i++) {
+              columnas[i].classList.remove('kanban-column--drop-target');
+            }
+          }
+
+          function moverTareaKanban(tareaId, estadoDestino) {
+            const tarea = obtenerTareaCalendarioPorId(tareaId);
+            if (!tarea || !estadoDestino || tarea.estado === estadoDestino) {
+              return;
+            }
+            const resultado = actualizarTareaCalendarioTA(tareaId, {
+              titulo: tarea.titulo,
+              descripcion: tarea.descripcion,
+              dificultad: tarea.dificultad,
+              categoria: tarea.categoria,
+              estado: estadoDestino,
+              fechaAgregada: tarea.fechaAgregada,
+              plazoInicio: tarea.plazoInicio,
+              plazoFin: tarea.plazoFin,
+              tecnicoId: tarea.tecnicoId,
+              color: tarea.color,
+            });
+            mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (resultado.ok) {
+              renderTodo();
+            }
+          }
+
+          function crearTareaFormularioVacia() {
+            const hoy = fechaIsoLocal(new Date());
+            return {
+              id: '',
+              titulo: '',
+              descripcion: '',
+              dificultad: 'Media',
+              categoria: 'Hardware',
+              estado: 'Pendiente',
+              fechaAgregada: hoy,
+              plazoInicio: hoy,
+              plazoFin: hoy,
+              tecnicoId: obtenerTecnicoIdValido(''),
+              color: '#16A34A',
+            };
+          }
+
+          function llenarFormularioTarea(tarea) {
+            const tareaFormulario = tarea || crearTareaFormularioVacia();
+            document.getElementById('titulo-modal-tarea').textContent = tarea
+              ? 'Detalle de la tarea'
+              : 'Agregar tarea';
+            document.getElementById('tarea-id').value = tareaFormulario.id;
+            document.getElementById('tarea-titulo').value = tareaFormulario.titulo;
+            document.getElementById('tarea-descripcion').value = tareaFormulario.descripcion;
+            document.getElementById('tarea-fecha-agregada').value = tareaFormulario.fechaAgregada;
+            document.getElementById('tarea-plazo-inicio').value = tareaFormulario.plazoInicio;
+            document.getElementById('tarea-plazo-fin').value = tareaFormulario.plazoFin;
+            document.getElementById('tarea-color').value = obtenerColorSeguroTarea(tareaFormulario);
+            document.getElementById('tarea-estado').innerHTML = opcionesHtml(
+              estadosKanbanTA,
+              tareaFormulario.estado,
+            );
+            document.getElementById('tarea-categoria').innerHTML = opcionesHtml(
+              categoriasTareaTA,
+              tareaFormulario.categoria,
+            );
+            document.getElementById('tarea-dificultad').innerHTML = opcionesHtml(
+              dificultadesTareaTA,
+              tareaFormulario.dificultad,
+            );
+            document.getElementById('tarea-tecnico').innerHTML = opcionesTecnicosHtml(
+              tareaFormulario.tecnicoId,
+            );
+            document.querySelector('[data-task-delete]').hidden = !tarea;
+            document.getElementById('tarea-detalle-resumen').innerHTML =
+              '<strong>Plazo:</strong><span>' +
+              escaparHtml(formatearFechaHumana(tareaFormulario.plazoInicio)) +
+              ' - ' +
+              escaparHtml(formatearFechaHumana(tareaFormulario.plazoFin)) +
+              '</span><strong>Estado:</strong><span>' +
+              escaparHtml(tareaFormulario.estado) +
+              '</span>';
+          }
+
+          function obtenerDatosFormularioTarea() {
+            return {
+              titulo: document.getElementById('tarea-titulo').value,
+              descripcion: document.getElementById('tarea-descripcion').value,
+              dificultad: document.getElementById('tarea-dificultad').value,
+              categoria: document.getElementById('tarea-categoria').value,
+              estado: document.getElementById('tarea-estado').value,
+              fechaAgregada: document.getElementById('tarea-fecha-agregada').value,
+              plazoInicio: document.getElementById('tarea-plazo-inicio').value,
+              plazoFin: document.getElementById('tarea-plazo-fin').value,
+              tecnicoId: document.getElementById('tarea-tecnico').value,
+              color: document.getElementById('tarea-color').value,
+            };
+          }
+
+          function abrirDetalleTarea(tareaId) {
+            const tarea = obtenerTareaCalendarioPorId(tareaId);
+            if (!tarea) {
+              mostrarMensajeKanban('No encontramos esa tarea.', 'error');
+              return;
+            }
+            llenarFormularioTarea(tarea);
+            abrirModal('modal-tarea');
+            dibujarIconos();
+          }
+
+          document.addEventListener('click', function (evento) {
+            const botonNueva = evento.target.closest('[data-task-new]');
+            if (botonNueva) {
+              llenarFormularioTarea(null);
+              abrirModal('modal-tarea');
+              dibujarIconos();
+              return;
+            }
+            const botonAbrir = evento.target.closest('[data-task-open]');
+            if (botonAbrir) {
+              if (suprimirClickKanban) {
+                suprimirClickKanban = false;
+                return;
+              }
+              abrirDetalleTarea(botonAbrir.getAttribute('data-task-open'));
+              return;
+            }
+            const botonEliminar = evento.target.closest('[data-task-delete]');
+            if (botonEliminar) {
+              const tareaId = document.getElementById('tarea-id').value;
+              if (!tareaId) {
+                return;
+              }
+              const confirmar = window.confirm('Seguro que queres eliminar esta tarea?');
+              if (!confirmar) {
+                return;
+              }
+              const resultado = eliminarTareaCalendarioTA(tareaId);
+              mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
+              if (resultado.ok) {
+                cerrarModal('modal-tarea');
+                renderTodo();
+              }
+            }
+          });
+
+          document.addEventListener('dragstart', function (evento) {
+            const tarjeta = evento.target.closest('[data-task-drag]');
+            if (!tarjeta) {
+              return;
+            }
+            evento.dataTransfer.setData('text/plain', tarjeta.getAttribute('data-task-drag'));
+            evento.dataTransfer.effectAllowed = 'move';
+            tarjeta.classList.add('kanban-task-card--dragging');
+          });
+
+          document.addEventListener('dragend', function (evento) {
+            const tarjeta = evento.target.closest('[data-task-drag]');
+            if (tarjeta) {
+              tarjeta.classList.remove('kanban-task-card--dragging');
+            }
+            limpiarColumnasDropKanban();
+          });
+
+          document.addEventListener('dragover', function (evento) {
+            const columna = evento.target.closest('[data-kanban-drop]');
+            if (!columna) {
+              return;
+            }
+            evento.preventDefault();
+            evento.dataTransfer.dropEffect = 'move';
+            columna.classList.add('kanban-column--drop-target');
+          });
+
+          document.addEventListener('dragleave', function (evento) {
+            const columna = evento.target.closest('[data-kanban-drop]');
+            if (!columna || columna.contains(evento.relatedTarget)) {
+              return;
+            }
+            columna.classList.remove('kanban-column--drop-target');
+          });
+
+          document.addEventListener('drop', function (evento) {
+            const columna = evento.target.closest('[data-kanban-drop]');
+            if (!columna) {
+              return;
+            }
+            evento.preventDefault();
+            columna.classList.remove('kanban-column--drop-target');
+            moverTareaKanban(
+              evento.dataTransfer.getData('text/plain'),
+              columna.getAttribute('data-kanban-drop'),
+            );
+          });
+
+          document.addEventListener('mousedown', function (evento) {
+            const tarjeta = evento.target.closest('[data-task-drag]');
+            if (!tarjeta) {
+              return;
+            }
+            kanbanPointerDrag = {
+              tareaId: tarjeta.getAttribute('data-task-drag'),
+              tarjeta: tarjeta,
+              inicioX: evento.clientX,
+              inicioY: evento.clientY,
+              movido: false,
+            };
+          });
+
+          document.addEventListener('mousemove', function (evento) {
+            if (!kanbanPointerDrag) {
+              return;
+            }
+            const distanciaX = Math.abs(evento.clientX - kanbanPointerDrag.inicioX);
+            const distanciaY = Math.abs(evento.clientY - kanbanPointerDrag.inicioY);
+            if (distanciaX < 8 && distanciaY < 8) {
+              return;
+            }
+            kanbanPointerDrag.movido = true;
+            kanbanPointerDrag.tarjeta.classList.add('kanban-task-card--dragging');
+            limpiarColumnasDropKanban();
+            const columnaActual = document
+              .elementFromPoint(evento.clientX, evento.clientY)
+              ?.closest('[data-kanban-drop]');
+            if (columnaActual) {
+              columnaActual.classList.add('kanban-column--drop-target');
+            }
+          });
+
+          document.addEventListener('mouseup', function (evento) {
+            if (!kanbanPointerDrag) {
+              return;
+            }
+            const dragActual = kanbanPointerDrag;
+            kanbanPointerDrag = null;
+            dragActual.tarjeta.classList.remove('kanban-task-card--dragging');
+            limpiarColumnasDropKanban();
+            if (!dragActual.movido) {
+              return;
+            }
+            suprimirClickKanban = true;
+            window.setTimeout(function () {
+              suprimirClickKanban = false;
+            }, 0);
+            const columnaDestino = document
+              .elementFromPoint(evento.clientX, evento.clientY)
+              ?.closest('[data-kanban-drop]');
+            if (columnaDestino) {
+              moverTareaKanban(dragActual.tareaId, columnaDestino.getAttribute('data-kanban-drop'));
+            }
+          });
+
+          const formTareaCalendario = document.getElementById('form-tarea-calendario');
+          formTareaCalendario.addEventListener('submit', function (evento) {
+            evento.preventDefault();
+            if (!validarFormularioCliente(formTareaCalendario, mostrarMensajeKanban)) {
+              return;
+            }
+            try {
+              const datos = obtenerDatosFormularioTarea();
+              const tareaId = document.getElementById('tarea-id').value;
+              const resultado = tareaId
+                ? actualizarTareaCalendarioTA(tareaId, datos)
+                : guardarNuevaTareaCalendarioTA(datos);
+              mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
+              if (resultado.ok) {
+                cerrarModal('modal-tarea');
+                renderTodo();
+              }
+            } catch (error) {
+              manejarErrorCliente(error, mostrarMensajeKanban);
+            }
+          });
+
+          renderTodo();
+        }
+      }
+    </script>
+  </body>
+</html>

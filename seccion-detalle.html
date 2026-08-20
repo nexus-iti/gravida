@@ -1,0 +1,219 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detalle de seccion | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/seccion-detalle.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div id="cabecera-de-pagina"></div>
+      <div id="mensaje-seccion"></div>
+      <div id="lista-de-equipos" class="list regla-diseno-037"></div>
+      <div id="contenedor-modal"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        let idSeccion = obtenerParametroDeUrl('id');
+        let seccionActual = obtenerSeccionInventarioPorId(idSeccion);
+        const seccionesInventario = obtenerSeccionesInventario();
+        if (!seccionActual && seccionesInventario.length > 0) {
+          seccionActual = seccionesInventario[0];
+          idSeccion = seccionActual.id;
+        }
+        function mostrarMensajeSeccion(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-seccion', texto, tipo);
+        }
+        function opcionesTiposEquipo() {
+          return crearOpcionesSelect(
+            tiposDeEquipoInventario,
+            '<option value="" data-clave="elegir_tipo">Elegir tipo</option>',
+            function (tipo) {
+              return tipo.valor;
+            },
+            function (tipo) {
+              return tipo.etiqueta;
+            },
+          );
+        }
+        function renderCabecera() {
+          if (!seccionActual) {
+            mostrarEn(
+              'cabecera-superior',
+              crearCabeceraCompleta([
+                { etiqueta: 'Home', enlace: 'home.html' },
+                { etiqueta: 'Inventario', enlace: 'inventario.html' },
+                { etiqueta: 'Secciones', enlace: 'secciones.html' },
+                { etiqueta: 'Sin secciones' },
+              ]),
+            );
+            mostrarEn(
+              'cabecera-de-pagina',
+              crearCabeceraDePagina({
+                titulo: 'Sin secciones',
+                volverA: 'secciones.html',
+              }),
+            );
+            return;
+          }
+          const equiposDeLaSeccion = obtenerEquiposPorSeccionInventario(seccionActual.id);
+          mostrarEn(
+            'cabecera-superior',
+            crearCabeceraCompleta([
+              { etiqueta: 'Home', enlace: 'home.html' },
+              { etiqueta: 'Inventario', enlace: 'inventario.html' },
+              { etiqueta: 'Secciones', enlace: 'secciones.html' },
+              { etiqueta: seccionActual.nombre },
+            ]),
+          );
+          const accionesDelHeader =
+            crearCajaDeBusqueda('Buscar equipo...', 'input-buscar-equipo') +
+            '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-equipo">' +
+            crearIcono('plus', 'icon-sm') +
+            '<span>Agregar equipo</span></button>';
+          mostrarEn(
+            'cabecera-de-pagina',
+            crearCabeceraDePagina({
+              titulo: seccionActual.nombre,
+              volverA: 'secciones.html',
+              insignia: equiposDeLaSeccion.length + ' equipos',
+              acciones: accionesDelHeader,
+            }),
+          );
+        }
+        function renderEquipos() {
+          if (!seccionActual) {
+            mostrarEn(
+              'lista-de-equipos',
+              crearEstadoVacio({
+                icono: 'building-2',
+                titulo: 'No hay secciones disponibles',
+                descripcion: 'Crea una seccion para poder cargar equipos.',
+              }),
+            );
+            dibujarIconos();
+            return;
+          }
+          const equiposDeLaSeccion = obtenerEquiposPorSeccionInventario(seccionActual.id);
+          let htmlDeFilas = '';
+          if (equiposDeLaSeccion.length === 0) {
+            htmlDeFilas = crearEstadoVacio({
+              icono: 'monitor',
+              titulo: 'No hay equipos en esta seccion',
+              descripcion: 'Usa Agregar equipo para dar de alta televisores, all in one, torres, perifericos o monitores.',
+            });
+          } else {
+            for (let i = 0; i < equiposDeLaSeccion.length; i++) {
+              htmlDeFilas += crearFilaDeEquipo(equiposDeLaSeccion[i], { permitirBaja: true });
+            }
+          }
+          mostrarEn('lista-de-equipos', htmlDeFilas);
+          activarBuscador('input-buscar-equipo', '#lista-de-equipos .list-row');
+          dibujarIconos();
+        }
+        const cuerpoModalEquipo =
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="nuevo-equipo-nombre">Nombre del equipo</label>' +
+          '<input class="text-input regla-diseno-026" id="nuevo-equipo-nombre" type="text" placeholder="Ej. Monitor biblioteca 1" data-clave-placeholder="ej_monitor" />' +
+          '</div>' +
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="nuevo-equipo-tipo">Tipo de equipo</label>' +
+          '<select class="select-input regla-diseno-026" id="nuevo-equipo-tipo">' +
+          opcionesTiposEquipo() +
+          '</select>' +
+          '</div>' +
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="nuevo-equipo-observaciones">Observaciones</label>' +
+          '<textarea class="textarea-input regla-diseno-026" id="nuevo-equipo-observaciones" rows="3" placeholder="Detalle opcional del estado o ubicacion dentro del salon." data-clave-placeholder="detalle_opcional_equipo"></textarea>' +
+          '</div>';
+        const pieModalEquipo =
+          '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-save-equipo>Dar de alta</button>';
+        mostrarEn(
+          'contenedor-modal',
+          crearModal({
+            id: 'modal-equipo',
+            titulo: 'Agregar equipo',
+            icono: 'monitor',
+            cuerpo: cuerpoModalEquipo,
+            pieDeModal: pieModalEquipo,
+          }),
+        );
+
+        function limpiarFormularioEquipo() {
+          document.getElementById('nuevo-equipo-nombre').value = '';
+          document.getElementById('nuevo-equipo-tipo').value = '';
+          document.getElementById('nuevo-equipo-observaciones').value = '';
+        }
+
+        function guardarEquipoDesdeModal() {
+          const resultado = guardarNuevoEquipoInventario({
+            nombre: document.getElementById('nuevo-equipo-nombre').value,
+            tipo: document.getElementById('nuevo-equipo-tipo').value,
+            seccionId: seccionActual ? seccionActual.id : '',
+            observaciones: document.getElementById('nuevo-equipo-observaciones').value,
+          });
+          mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
+          if (!resultado.ok) {
+            return;
+          }
+          limpiarFormularioEquipo();
+          cerrarModal('modal-equipo');
+          renderCabecera();
+          renderEquipos();
+        }
+
+        function eliminarEquipoDesdeSeccion(botonBaja) {
+          const resultado = eliminarEquipoInventario(botonBaja.getAttribute('data-delete-equipo'));
+          mostrarMensajeSeccion(resultado.mensaje, resultado.ok ? 'success' : 'error');
+          if (resultado.ok) {
+            renderCabecera();
+            renderEquipos();
+          }
+        }
+
+        document.addEventListener('click', function (evento) {
+          const botonGuardar = evento.target.closest('[data-save-equipo]');
+          if (botonGuardar) {
+            guardarEquipoDesdeModal();
+            return;
+          }
+          const botonBaja = evento.target.closest('[data-delete-equipo]');
+          if (!botonBaja) {
+            return;
+          }
+          evento.preventDefault();
+          evento.stopPropagation();
+          eliminarEquipoDesdeSeccion(botonBaja);
+        });
+        renderCabecera();
+        renderEquipos();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

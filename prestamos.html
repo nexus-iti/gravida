@@ -1,0 +1,415 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prestamos | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/prestamos.css" />
+</head>
+  <body data-section="prestamos" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <div id="cabecera-de-pagina"></div>
+      <section class="panel-grid panel-grid--single regla-diseno-105">
+        <article class="panel regla-diseno-032">
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010" id="titulo-panel-prestamo" data-clave="solicitar_un_prestamo">
+                Solicitar un prestamo
+              </h2>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <form id="form-prestamo" class="auth-form regla-diseno-033">
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="prestamo-categoria" data-clave="categoria">Categoria</label>
+                  <select
+                    class="select-input regla-diseno-026"
+                    id="prestamo-categoria"
+                    required
+                  ></select>
+                </div>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label data-clave="recursos_y_cantidades">Recursos y cantidades</label>
+                <div id="prestamo-recursos" class="loan-resource-picker regla-diseno-075">
+                  <div class="empty-inline regla-diseno-043">
+                    Primero elegi una categoria para ver los recursos disponibles.
+                  </div>
+                </div>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="prestamo-fecha" data-clave="fecha">Fecha</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="prestamo-fecha"
+                    type="date"
+                    required
+                  />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="prestamo-jornada" data-clave="jornada">Jornada</label>
+                  <select
+                    class="select-input regla-diseno-026"
+                    id="prestamo-jornada"
+                    required
+                  >
+                    <option value="" data-clave="elegir_jornada">Elegir jornada</option>
+                    <option value="Mañana" data-clave="manana">Mañana</option>
+                    <option value="Tarde" data-clave="tarde">Tarde</option>
+                    <option value="Noche" data-clave="noche">Noche</option>
+                  </select>
+                </div>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="prestamo-ubicacion" data-clave="lugar_de_entrega">Lugar de entrega</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="prestamo-ubicacion"
+                  required
+                ></select>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="prestamo-detalle" data-clave="para_que_se_necesita">Para que se necesita</label>
+                <textarea
+                  class="textarea-input regla-diseno-026"
+                  id="prestamo-detalle"
+                  placeholder="Ej. Prueba de programacion en el Teorico 3 con el grupo de la mañana."
+                  required
+                 data-clave-placeholder="ej_prestamo"></textarea>
+              </div>
+              <div class="form-actions regla-diseno-035">
+                <button
+                  class="boton boton--primary regla-diseno-005"
+                  type="submit"
+                 data-clave="enviar_solicitud">
+                  Enviar solicitud
+                </button>
+              </div>
+            </form>
+          </div>
+        </article>
+        <article class="panel regla-diseno-032">
+          <div class="panel__body regla-diseno-012">
+            <div class="filter-panel regla-diseno-033">
+              <div id="filtros-prestamos" class="field-grid filter-panel__body regla-diseno-024"></div>
+            </div>
+            <div id="lista-prestamos" class="activity-stack regla-diseno-033"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Prestamos' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Prestamos de equipos',
+          }),
+        );
+        
+        const selectCategoria = document.getElementById('prestamo-categoria');
+        const selectUbicacion = document.getElementById('prestamo-ubicacion');
+        const contenedorRecursos = document.getElementById('prestamo-recursos');
+        const filtrosPrestamos = document.getElementById('filtros-prestamos');
+        const formPrestamo = document.getElementById('form-prestamo');
+        const usuarioActual = obtenerUsuarioActual();
+        const esSolicitante = usuarioEsSolicitante(usuarioActual);
+        const esTecnico = usuarioEsTecnico(usuarioActual);
+        const esAdministrativo = usuarioEsAdministrativo(usuarioActual);
+        const puedeSolicitar = usuarioPuedeSolicitar(usuarioActual);
+        const puedeGestionar = usuarioPuedeGestionarOperaciones(usuarioActual);
+        const categoriasPrestamoDisponibles = ['PCs', 'Perifericos', 'Monitores'];
+        const recursosPrestamoDisponibles = {
+          PCs: ['Torres', 'All in ones'],
+          Perifericos: ['Mouse', 'Teclados', 'Parlantes'],
+          Monitores: ['Monitores'],
+        };
+        const opcionesEstadoPrestamo = [
+          {
+            estado: 'Aprobado',
+            etiqueta: 'Aprobar',
+            clase: 'boton--primary',
+            atributoId: 'data-update-prestamo',
+            atributoEstado: 'data-prestamo-status',
+          },
+          {
+            estado: 'Pendiente',
+            etiqueta: 'Marcar pendiente',
+            clase: 'boton--outline',
+            atributoId: 'data-update-prestamo',
+            atributoEstado: 'data-prestamo-status',
+          },
+          {
+            estado: 'Denegado',
+            etiqueta: 'Denegar',
+            clase: 'boton--outline-danger',
+            atributoId: 'data-update-prestamo',
+            atributoEstado: 'data-prestamo-status',
+          },
+        ];
+        const idsFiltrosPrestamos = [
+          'filtro-prestamo-creador',
+          'filtro-prestamo-estado',
+          'filtro-prestamo-categoria',
+        ];
+        
+        if (esSolicitante) {
+          actualizarTextoSiExiste(
+            'subtitulo-panel-prestamo',
+            'Envia pedidos y segui aca mismo si fueron aprobados, siguen pendientes o fueron denegados.',
+          );
+        } else if (esTecnico) {
+          document.getElementById('titulo-panel-prestamo').textContent =
+            'Bandeja tecnica de prestamos';
+          actualizarTextoSiExiste(
+            'subtitulo-panel-prestamo',
+            'Aca llegan los pedidos para que el equipo tecnico los revise y les de respuesta.',
+          );
+        } else if (esAdministrativo) {
+          document.getElementById('titulo-panel-prestamo').textContent =
+            'Gestion de prestamos';
+          actualizarTextoSiExiste(
+            'subtitulo-panel-prestamo',
+            'Desde aca podes crear pedidos y revisar los prestamos que llegan al sistema.',
+          );
+        }
+        
+        if (!puedeSolicitar) {
+          formPrestamo.style.display = 'none';
+          
+        }
+        
+        function renderCategorias() {
+          let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoria</option>';
+          for (let i = 0; i < categoriasPrestamoDisponibles.length; i++) {
+            const categoria = categoriasPrestamoDisponibles[i];
+            opciones += '<option value="' + categoria + '">' + categoria + '</option>';
+          }
+          selectCategoria.innerHTML = opciones;
+          inicializarSelectsPersonalizados(selectCategoria);
+        }
+        
+        function renderRecursosPorCategoria() {
+          const categoria = selectCategoria.value;
+          const recursos = recursosPrestamoDisponibles[categoria] || [];
+          if (recursos.length === 0) {
+            contenedorRecursos.innerHTML =
+              '<div class="empty-inline regla-diseno-043">Primero elegi una categoria para ver los recursos disponibles.</div>';
+            return;
+          }
+          let html = '';
+          for (let i = 0; i < recursos.length; i++) {
+            const recurso = recursos[i];
+            const id = 'prestamo-recurso-' + i;
+            html += ` <div class="loan-resource-option regla-diseno-107"> <label class="loan-resource-option__check regla-diseno-015" for="${id}"> <input id="${id}" type="checkbox" value="${escaparHtml(recurso)}" data-loan-resource /> <span>${escaparHtml(recurso)}</span> </label> <label class="loan-resource-option__qty regla-diseno-015"> <span>Cantidad</span> <input class="text-input regla-diseno-026" type="number" min="1" placeholder="0" disabled data-loan-quantity aria-label="Cantidad de ${escaparHtml(recurso)}" /> </label> </div> `;
+          }
+          contenedorRecursos.innerHTML = html;
+        }
+        
+        function obtenerRecursosSeleccionados() {
+          const seleccionados = contenedorRecursos.querySelectorAll('[data-loan-resource]:checked');
+          const recursos = [];
+          let total = 0;
+          if (seleccionados.length === 0) {
+            return {
+              ok: false,
+              mensaje: 'Elegi al menos un recurso e indica la cantidad.',
+              recursos: [],
+              total: 0,
+            };
+          }
+          for (let i = 0; i < seleccionados.length; i++) {
+            const opcion = seleccionados[i].closest('.loan-resource-option');
+            const inputCantidad = opcion.querySelector('[data-loan-quantity]');
+            const cantidad = Number(inputCantidad.value);
+            if (!Number.isInteger(cantidad) || cantidad < 1) {
+              return {
+                ok: false,
+                mensaje:
+                  'Revisa las cantidades: cada recurso seleccionado necesita un numero valido.',
+                recursos: [],
+                total: 0,
+              };
+            }
+            recursos.push({ nombre: seleccionados[i].value, cantidad: cantidad });
+            total += cantidad;
+          }
+          return { ok: true, mensaje: '', recursos: recursos, total: total };
+        }
+        
+        function renderLugares() {
+          let opciones = '<option value="" data-clave="elegir_lugar">Elegir lugar</option>';
+          for (let i = 0; i < lugaresDePrestamo.length; i++) {
+            opciones +=
+              '<option value="' +
+              lugaresDePrestamo[i] +
+              '">' +
+              lugaresDePrestamo[i] +
+              '</option>';
+          }
+          selectUbicacion.innerHTML = opciones;
+          inicializarSelectsPersonalizados(selectUbicacion);
+        }
+        
+        function renderFiltrosPrestamos() {
+          const filtrosActuales = guardarValoresCampos(idsFiltrosPrestamos);
+          const prestamos = obtenerPrestamosVisibles();
+          filtrosPrestamos.innerHTML =
+            crearCampoFiltroSelect(
+              'filtro-prestamo-creador',
+              'Creado por',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(prestamos, 'solicitante'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-prestamo-estado',
+              'Estado',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(prestamos, 'estado'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-prestamo-categoria',
+              'Categoria',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(prestamos, 'categoria'), 'Todas'),
+            );
+          restaurarValoresCampos(filtrosActuales);
+          inicializarSelectsPersonalizados(filtrosPrestamos);
+        }
+
+        function obtenerFiltrosPrestamos() {
+          return [
+            { campo: 'solicitante', valor: obtenerValorCampoFormulario('filtro-prestamo-creador'), comparacion: 'igual' },
+            { campo: 'estado', valor: obtenerValorCampoFormulario('filtro-prestamo-estado'), comparacion: 'igual' },
+            { campo: 'categoria', valor: obtenerValorCampoFormulario('filtro-prestamo-categoria'), comparacion: 'igual' },
+          ];
+        }
+        
+        function renderListaPrestamos() {
+          const prestamos = filtrarRegistrosPorCampos(obtenerPrestamosVisibles(), obtenerFiltrosPrestamos());
+          let html = '';
+          if (prestamos.length === 0) {
+            html =
+              '<div class="empty-inline regla-diseno-043">Todavia no hay prestamos para mostrar con este perfil.</div>';
+          } else {
+            for (let i = 0; i < prestamos.length; i++) {
+              let acciones = '';
+              if (puedeGestionar) {
+                acciones = crearBotonesCambioEstado(prestamos[i], opcionesEstadoPrestamo);
+              }
+              html += crearTarjetaDePrestamo(prestamos[i], acciones);
+            }
+          }
+          mostrarEn('lista-prestamos', html);
+        }
+        
+        document.addEventListener('click', function (evento) {
+          const botonGestion = evento.target.closest('[data-update-prestamo]');
+          if (!botonGestion || !puedeGestionar) {
+            return;
+          }
+          actualizarEstadoPrestamo(
+            botonGestion.getAttribute('data-update-prestamo'),
+            botonGestion.getAttribute('data-prestamo-status'),
+          );
+          renderFiltrosPrestamos();
+          renderListaPrestamos();
+          dibujarIconos();
+        });
+        
+        selectCategoria.addEventListener('change', function () {
+          renderRecursosPorCategoria();
+          dibujarIconos();
+        });
+
+        filtrosPrestamos.addEventListener('input', renderListaPrestamos);
+        filtrosPrestamos.addEventListener('change', renderListaPrestamos);
+        
+        contenedorRecursos.addEventListener('change', function (evento) {
+          const checkbox = evento.target.closest('[data-loan-resource]');
+          if (!checkbox) {
+            return;
+          }
+          const opcion = checkbox.closest('.loan-resource-option');
+          const inputCantidad = opcion.querySelector('[data-loan-quantity]');
+          inputCantidad.disabled = !checkbox.checked;
+          if (checkbox.checked && !inputCantidad.value) {
+            inputCantidad.value = '1';
+          }
+          if (!checkbox.checked) {
+            inputCantidad.value = '';
+          }
+        });
+        
+        formPrestamo.addEventListener('submit', function (evento) {
+          evento.preventDefault();
+          if (!puedeSolicitar) {
+            return;
+          }
+          if (!validarFormularioCliente(formPrestamo)) {
+            return;
+          }
+          try {
+            const recursosSeleccionados = obtenerRecursosSeleccionados();
+            if (!recursosSeleccionados.ok) {
+              return;
+            }
+            guardarNuevoPrestamo({
+              categoria: document.getElementById('prestamo-categoria').value,
+              recursosDetalle: recursosSeleccionados.recursos,
+              cantidad: recursosSeleccionados.total,
+              fecha: document.getElementById('prestamo-fecha').value,
+              jornada: document.getElementById('prestamo-jornada').value,
+              ubicacion: document.getElementById('prestamo-ubicacion').value,
+              detalle: document.getElementById('prestamo-detalle').value,
+            });
+            formPrestamo.reset();
+            renderRecursosPorCategoria();
+            renderFiltrosPrestamos();
+            renderListaPrestamos();
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error);
+          }
+        });
+        
+        renderCategorias();
+        renderRecursosPorCategoria();
+        renderLugares();
+        renderFiltrosPrestamos();
+        renderListaPrestamos();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

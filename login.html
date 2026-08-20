@@ -1,0 +1,190 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | SGRSI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+</head>
+  <body>
+    <main class="auth-shell regla-diseno-058">
+      <header
+        class="public-topbar auth-page__header regla-diseno-059"
+      >
+        <a
+          class="public-brand regla-diseno-060"
+          href="index.html"
+          aria-label="Inicio SGRSI"
+         data-clave-aria-label="inicio_sgrsi">
+          <span
+            class="public-brand__mark regla-diseno-061"
+          >
+            <img src="images/header.jpeg" alt="ITI CEPT" data-clave-alt="iti_cept" />
+          </span>
+          <span>
+            <strong data-clave="sgrsi">SGRSI</strong>
+            <small data-clave="gestion_ti_institucional">Gestion TI Institucional</small>
+          </span>
+        </a>
+      </header>
+      <section class="auth-main regla-diseno-062">
+        <section class="auth-view auth-view--login auth-view--active regla-diseno-063" data-auth-view="login">
+          <div class="auth-login-shell regla-diseno-097">
+            <div class="auth-center-copy regla-diseno-098">
+              <span
+                class="auth-badge regla-diseno-099"
+              >
+                <i
+                  data-lucide="shield-check"
+                  class="icon icon-sm regla-diseno-006"
+                ></i>
+                Acceso Seguro ITI CEPT
+              </span>
+              <h1 data-clave="bienvenido_de_nuevo">Bienvenido de nuevo</h1>
+              <p>Ingresa con tu correo o cedula para continuar trabajando en el portal.</p>
+            </div>
+            <article class="auth-card auth-card--login regla-diseno-065">
+              <form id="form-login" class="auth-form regla-diseno-033">
+                <div id="auth-message-login"></div>
+                <div class="auth-field regla-diseno-025">
+                  <label for="login-identificador" data-clave="correo_o_cedula">Correo o cedula</label>
+                  <div class="auth-input-shell auth-input-shell--credential">
+                    <i data-lucide="user" class="icon icon-sm regla-diseno-006"></i>
+                    <input
+                      id="login-identificador"
+                      type="text"
+                      placeholder="usuario@campus.local"
+                      autocomplete="username"
+                      required
+                    data-clave-placeholder="usuario_campus_placeholder" />
+                  </div>
+                </div>
+                <div class="auth-field regla-diseno-025">
+                  <label for="login-contrasena" data-clave="contrasena">Contraseña</label>
+                  <div class="auth-input-shell auth-input-shell--credential">
+                    <i data-lucide="lock" class="icon icon-sm regla-diseno-006"></i>
+                    <input
+                      id="login-contrasena"
+                      type="password"
+                      placeholder="********"
+                      autocomplete="current-password"
+                      required
+                    />
+                    <button
+                      class="auth-password-toggle regla-diseno-022"
+                      type="button"
+                      data-toggle-password="login-contrasena"
+                      aria-label="Mostrar contraseña"
+                     data-clave-aria-label="mostrar_contrasena">
+                      <i data-lucide="eye" class="icon icon-sm regla-diseno-006"></i>
+                    </button>
+                  </div>
+                </div>
+                <label class="auth-check regla-diseno-100">
+                  <input id="login-recordarme" type="checkbox" />
+                  <span data-clave="mantener_sesion">Mantener sesion iniciada</span>
+                </label>
+                <button
+                  class="auth-submit regla-diseno-070"
+                  type="submit"
+                >
+                  <span data-clave="entrar_al_portal">Entrar al portal</span>
+                  <i data-lucide="log-in" class="icon icon-sm regla-diseno-006"></i>
+                </button>
+              </form>
+              <p class="auth-alt-action regla-diseno-101">
+                No tenes cuenta?
+                <a href="register.html" data-clave="registrate">Registrate</a>
+              </p>
+              <div class="auth-help-note regla-diseno-102">
+                <span>
+                  <i data-lucide="info" class="icon icon-sm regla-diseno-006"></i>
+                </span>
+                <p>
+                  El acceso es solo para personal autorizado. Las acciones quedan registradas para
+                  cuidar la informacion institucional.
+                </p>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+      <footer class="auth-footer regla-diseno-072">
+        <div class="auth-footer__inner regla-diseno-073">
+          <div>
+            <strong data-clave="sgrsi">SGRSI</strong>
+            <p>2026 SGRSI - ITI CEPT. Todos los derechos reservados.</p>
+          </div>
+          <nav aria-label="Enlaces institucionales" data-clave-aria-label="enlaces_institucionales">
+            <a href="index.html" data-clave="portal_iti">Portal ITI</a>
+            <a href="index.html#soporte" data-clave="soporte">Soporte</a>
+            <a href="login.html" data-clave="login">Login</a>
+            <a href="register.html" data-clave="register">Register</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      (function iniciarPaginaLogin() {
+        
+        if (redirigirSiYaHaySesion()) {
+          return;
+        }
+
+        
+        const formLogin = document.getElementById('form-login');
+        const checkRecordarme = document.getElementById('login-recordarme');
+        const mensajeLogin = document.getElementById('auth-message-login');
+
+        function mostrarMensaje(mensaje, tipo) {
+          mostrarMensajeFormulario(mensajeLogin, mensaje, tipo);
+        }
+
+        formLogin.addEventListener('submit', function (evento) {
+          evento.preventDefault();
+          if (!validarFormularioCliente(formLogin, mostrarMensaje)) {
+            return;
+          }
+
+          try {
+
+            const respuesta = iniciarSesion(
+              document.getElementById('login-identificador').value,
+              document.getElementById('login-contrasena').value,
+              { recordarme: checkRecordarme.checked },
+            );
+            if (!respuesta.ok) {
+              mostrarMensaje(respuesta.mensaje, 'error');
+              return;
+            }
+            window.location.href = 'home.html';
+          } catch (error) {
+            manejarErrorCliente(error, mostrarMensaje);
+          }
+        });
+        
+        if (leerStorage(CLAVES_STORAGE.recordarSesion, false)) {
+          checkRecordarme.checked = true;
+        }
+        
+        dibujarIconos();
+      })();
+    </script>
+  </body>
+</html>
+
+
+
+

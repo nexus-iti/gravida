@@ -1,0 +1,341 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solicitudes de servicio | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/solicitudes.css" />
+</head>
+  <body data-section="solicitudes" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <div id="cabecera-de-pagina"></div>
+      <section class="panel regla-diseno-032">
+        <div class="panel__header regla-diseno-009">
+          <div>
+            <h2 class="panel__title regla-diseno-010" id="titulo-panel-solicitud" data-clave="pedir_servicio">
+              Pedir un servicio
+            </h2>
+          </div>
+        </div>
+        <div class="panel__body regla-diseno-012">
+          <form id="form-solicitud" class="auth-form regla-diseno-033">
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="solicitud-tipo" data-clave="tipo_de_servicio">Tipo de servicio</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="solicitud-tipo"
+                  required
+                ></select>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="solicitud-fecha" data-clave="fecha">Fecha</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="solicitud-fecha"
+                  type="date"
+                  required
+                />
+              </div>
+            </div>
+            <div class="input-stack regla-diseno-025">
+              <label for="solicitud-lugar" data-clave="salon">Salón</label>
+              <select
+                class="select-input regla-diseno-026"
+                id="solicitud-lugar"
+                required
+              ></select>
+            </div>
+            <div class="input-stack regla-diseno-025">
+              <label for="solicitud-detalle" data-clave="que_hay_que_preparar">Que hay que preparar</label>
+              <textarea
+                class="textarea-input regla-diseno-026"
+                id="solicitud-detalle"
+                placeholder="Ej. Instalar software, dejar el salon pronto o preparar material didactico."
+                required
+               data-clave-placeholder="ej_servicio"></textarea>
+            </div>
+            <div class="form-actions regla-diseno-035">
+              <button
+                class="boton boton--primary regla-diseno-005"
+                type="submit"
+               data-clave="enviar_solicitud">
+                Enviar solicitud
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+      <section class="panel regla-diseno-032">
+        <div class="panel__body regla-diseno-012">
+          <div class="filter-panel regla-diseno-033">
+            <div id="filtros-solicitudes" class="field-grid filter-panel__body regla-diseno-024"></div>
+          </div>
+          <div id="lista-solicitudes" class="activity-stack regla-diseno-033"></div>
+        </div>
+      </section>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Solicitudes de servicio' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Solicitudes de servicio',
+          }),
+        );
+        
+        const selectTipo = document.getElementById('solicitud-tipo');
+        const selectLugar = document.getElementById('solicitud-lugar');
+        const tituloPanel = document.getElementById('titulo-panel-solicitud');
+        const filtrosSolicitudes = document.getElementById('filtros-solicitudes');
+        const formSolicitud = document.getElementById('form-solicitud');
+        const usuarioActual = obtenerUsuarioActual();
+        const esSolicitante = usuarioEsSolicitante(usuarioActual);
+        const esTecnico = usuarioEsTecnico(usuarioActual);
+        const esAdministrativo = usuarioEsAdministrativo(usuarioActual);
+        const puedeSolicitar = usuarioPuedeSolicitar(usuarioActual);
+        const puedeGestionar = usuarioPuedeGestionarOperaciones(usuarioActual);
+        const opcionesEstadoSolicitud = [
+          {
+            estado: 'Pendiente',
+            etiqueta: 'Pendiente',
+            clase: 'boton--outline',
+            atributoId: 'data-update-solicitud',
+            atributoEstado: 'data-solicitud-status',
+            clave: 'pendiente',
+          },
+          {
+            estado: 'En proceso',
+            etiqueta: 'En proceso',
+            clase: 'boton--outline-primary',
+            atributoId: 'data-update-solicitud',
+            atributoEstado: 'data-solicitud-status',
+            clave: 'en_proceso',
+          },
+          {
+            estado: 'Completado',
+            etiqueta: 'Completar',
+            clase: 'boton--primary',
+            atributoId: 'data-update-solicitud',
+            atributoEstado: 'data-solicitud-status',
+          },
+          {
+            estado: 'Denegado',
+            etiqueta: 'Denegar',
+            clase: 'boton--outline-danger',
+            atributoId: 'data-update-solicitud',
+            atributoEstado: 'data-solicitud-status',
+          },
+        ];
+        const idsFiltrosSolicitudes = [
+          'filtro-solicitud-creador',
+          'filtro-solicitud-estado',
+          'filtro-solicitud-tipo',
+          'filtro-solicitud-lugar',
+        ];
+        
+        if (esSolicitante) {
+          actualizarTextoSiExiste(
+            'subtitulo-panel-solicitud',
+            'Envia solicitudes y mira aca mismo como avanza cada preparacion.',
+          );
+        } else if (esTecnico) {
+          document.getElementById('titulo-panel-solicitud').textContent =
+            'Bandeja tecnica de solicitudes';
+          actualizarTextoSiExiste(
+            'subtitulo-panel-solicitud',
+            'Aca llegan los pedidos de preparacion para revisarlos y actualizar su estado.',
+          );
+        } else if (esAdministrativo) {
+          document.getElementById('titulo-panel-solicitud').textContent =
+            'Gestion de solicitudes';
+          actualizarTextoSiExiste(
+            'subtitulo-panel-solicitud',
+            'Desde aca podes crear solicitudes y revisar el estado de las que llegan al portal.',
+          );
+        }
+        
+        if (!puedeSolicitar) {
+          formSolicitud.style.display = 'none';
+      
+        }
+        
+        function actualizarTituloPanel() {
+          const tipoSeleccionado = selectTipo.value;
+          if (tipoSeleccionado) {
+            tituloPanel.textContent = tipoSeleccionado;
+          } else if (esTecnico) {
+            tituloPanel.textContent = 'Bandeja tecnica de solicitudes';
+          } else if (esAdministrativo) {
+            tituloPanel.textContent = 'Gestion de solicitudes';
+          } else {
+            tituloPanel.textContent = 'Pedir un servicio';
+          }
+        }
+        
+        function renderTipos() {
+          let opciones = '<option value="" data-clave="elegir_tipo_servicio">Elegir tipo de servicio</option>';
+          for (let i = 0; i < tiposDeSolicitud.length; i++) {
+            opciones +=
+              '<option value="' + tiposDeSolicitud[i] + '">' + tiposDeSolicitud[i] + '</option>';
+          }
+          selectTipo.innerHTML = opciones;
+          inicializarSelectsPersonalizados(selectTipo);
+        }
+        
+        function renderLugares() {
+          const lugares = obtenerLugaresDisponibles();
+          let opciones = '<option value="" data-clave="elegir_salon">Elegir salón</option>';
+          for (let i = 0; i < lugares.length; i++) {
+            opciones +=
+              '<option value="' + lugares[i] + '">' + lugares[i] + '</option>';
+          }
+          selectLugar.innerHTML = opciones;
+          inicializarSelectsPersonalizados(selectLugar);
+        }
+        
+        function renderFiltrosSolicitudes() {
+          const filtrosActuales = guardarValoresCampos(idsFiltrosSolicitudes);
+          const solicitudes = obtenerSolicitudesVisibles();
+          filtrosSolicitudes.innerHTML =
+            crearCampoFiltroSelect(
+              'filtro-solicitud-creador',
+              'Creado por',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(solicitudes, 'solicitante'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-solicitud-estado',
+              'Estado',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(solicitudes, 'estado'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-solicitud-tipo',
+              'Tipo',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(solicitudes, 'tipo'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-solicitud-lugar',
+              'Salon',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(solicitudes, 'lugar'), 'Todos'),
+            );
+          restaurarValoresCampos(filtrosActuales);
+          inicializarSelectsPersonalizados(filtrosSolicitudes);
+        }
+
+        function obtenerFiltrosSolicitudes() {
+          return [
+            { campo: 'solicitante', valor: obtenerValorCampoFormulario('filtro-solicitud-creador'), comparacion: 'igual' },
+            { campo: 'estado', valor: obtenerValorCampoFormulario('filtro-solicitud-estado'), comparacion: 'igual' },
+            { campo: 'tipo', valor: obtenerValorCampoFormulario('filtro-solicitud-tipo'), comparacion: 'igual' },
+            { campo: 'lugar', valor: obtenerValorCampoFormulario('filtro-solicitud-lugar'), comparacion: 'igual' },
+          ];
+        }
+        
+        function renderLista() {
+          const solicitudes = filtrarRegistrosPorCampos(
+            obtenerSolicitudesVisibles(),
+            obtenerFiltrosSolicitudes(),
+          );
+          let html = '';
+          if (solicitudes.length === 0) {
+            html =
+              '<div class="empty-inline regla-diseno-043">Todavia no hay solicitudes de servicio para mostrar con este perfil.</div>';
+          } else {
+            for (let i = 0; i < solicitudes.length; i++) {
+              let acciones = '';
+              if (puedeGestionar) {
+                acciones = crearBotonesCambioEstado(solicitudes[i], opcionesEstadoSolicitud);
+              }
+              html += crearTarjetaDeSolicitud(solicitudes[i], acciones);
+            }
+          }
+          mostrarEn('lista-solicitudes', html);
+        }
+        
+        selectTipo.addEventListener('change', actualizarTituloPanel);
+        
+        document.addEventListener('click', function (evento) {
+          const botonGestion = evento.target.closest('[data-update-solicitud]');
+          if (!botonGestion || !puedeGestionar) {
+            return;
+          }
+          actualizarEstadoSolicitud(
+            botonGestion.getAttribute('data-update-solicitud'),
+            botonGestion.getAttribute('data-solicitud-status'),
+          );
+          renderFiltrosSolicitudes();
+          renderLista();
+          dibujarIconos();
+        });
+
+        filtrosSolicitudes.addEventListener('input', renderLista);
+        filtrosSolicitudes.addEventListener('change', renderLista);
+        
+        formSolicitud.addEventListener('submit', function (evento) {
+          evento.preventDefault();
+          if (!puedeSolicitar) {
+            return;
+          }
+          if (!validarFormularioCliente(formSolicitud)) {
+            return;
+          }
+          try {
+            const tipo = selectTipo.value;
+            guardarNuevaSolicitud({
+              titulo: tipo,
+              tipo: tipo,
+              fecha: document.getElementById('solicitud-fecha').value,
+              lugar: selectLugar.value,
+              detalle: document.getElementById('solicitud-detalle').value,
+            });
+            formSolicitud.reset();
+            actualizarTituloPanel();
+            renderFiltrosSolicitudes();
+            renderLista();
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error);
+          }
+        });
+        
+        renderTipos();
+        renderLugares();
+        actualizarTituloPanel();
+        renderFiltrosSolicitudes();
+        renderLista();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

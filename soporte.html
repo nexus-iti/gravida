@@ -1,0 +1,307 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Incidencias tecnicas | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/soporte.css" />
+</head>
+  <body data-section="soporte" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <div id="cabecera-de-pagina"></div>
+      <section class="panel-grid panel-grid--single regla-diseno-105">
+        <article class="panel regla-diseno-032">
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010" id="titulo-panel-soporte" data-clave="pedir_ayuda_tecnica">
+                Pedir ayuda tecnica
+              </h2>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <form id="form-soporte" class="auth-form regla-diseno-033">
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="soporte-asunto" data-clave="asunto">Asunto</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="soporte-asunto"
+                    type="text"
+                    placeholder="Ej. El proyector no muestra imagen"
+                    required
+                  data-clave-placeholder="ej_proyector" />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="soporte-ubicacion" data-clave="donde">Dónde</label>
+                  <select
+                    class="select-input regla-diseno-026"
+                    id="soporte-ubicacion"
+                    required
+                  ></select>
+                </div>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="soporte-categoria" data-clave="categoria">Categoria</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="soporte-categoria"
+                  required
+                ></select>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="soporte-mensaje" data-clave="que_esta_pasando">Que esta pasando</label>
+                <textarea
+                  class="textarea-input regla-diseno-026"
+                  id="soporte-mensaje"
+                  placeholder="Describe el problema, desde cuando ocurre y que probaste hasta ahora."
+                  required
+                 data-clave-placeholder="describe_problema_soporte"></textarea>
+              </div>
+              <div class="form-actions regla-diseno-035">
+                <button
+                  class="boton boton--primary regla-diseno-005"
+                  type="submit"
+                 data-clave="enviar_consulta">
+                  Enviar consulta
+                </button>
+              </div>
+            </form>
+          </div>
+        </article>
+        <article class="panel regla-diseno-032">
+          <div class="panel__body regla-diseno-012">
+            <div class="filter-panel regla-diseno-033">
+              <div id="filtros-soporte" class="field-grid filter-panel__body regla-diseno-024"></div>
+            </div>
+            <div id="lista-soporte" class="activity-stack regla-diseno-033"></div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Incidencias tecnicas' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Incidencias tecnicas',
+          }),
+        );
+        
+        const selectCategoria = document.getElementById('soporte-categoria');
+        const selectUbicacion = document.getElementById('soporte-ubicacion');
+        const filtrosSoporte = document.getElementById('filtros-soporte');
+        const formSoporte = document.getElementById('form-soporte');
+        const usuarioActual = obtenerUsuarioActual();
+        const esSolicitante = usuarioEsSolicitante(usuarioActual);
+        const esTecnico = usuarioEsTecnico(usuarioActual);
+        const esAdministrativo = usuarioEsAdministrativo(usuarioActual);
+        const puedeSolicitar = usuarioPuedeSolicitar(usuarioActual);
+        const puedeGestionar = usuarioPuedeGestionarOperaciones(usuarioActual);
+        const opcionesEstadoTicket = [
+          {
+            estado: 'En revision',
+            etiqueta: 'En revision',
+            clase: 'boton--outline',
+            atributoId: 'data-update-ticket',
+            atributoEstado: 'data-ticket-status',
+            clave: 'en_revision',
+          },
+          {
+            estado: 'Resuelto',
+            etiqueta: 'Resolver',
+            clase: 'boton--primary',
+            atributoId: 'data-update-ticket',
+            atributoEstado: 'data-ticket-status',
+          },
+          {
+            estado: 'Denegado',
+            etiqueta: 'Denegar',
+            clase: 'boton--outline-danger',
+            atributoId: 'data-update-ticket',
+            atributoEstado: 'data-ticket-status',
+          },
+        ];
+        const idsFiltrosSoporte = [
+          'filtro-soporte-creador',
+          'filtro-soporte-estado',
+          'filtro-soporte-categoria',
+          'filtro-soporte-ubicacion',
+        ];
+        
+        if (esSolicitante) {
+          actualizarTextoSiExiste(
+            'subtitulo-panel-soporte',
+            'Envia consultas y segui aca mismo si estan en revision, resueltas o denegadas.',
+          );
+        } else if (esTecnico) {
+          document.getElementById('titulo-panel-soporte').textContent =
+            'Bandeja tecnica de soporte';
+          actualizarTextoSiExiste(
+            'subtitulo-panel-soporte',
+            'Aca llegan los tickets para priorizarlos, responderlos y cerrarlos cuando queden resueltos.',
+          );
+        } else if (esAdministrativo) {
+          document.getElementById('titulo-panel-soporte').textContent = 'Gestion de soporte';
+          actualizarTextoSiExiste(
+            'subtitulo-panel-soporte',
+            'Desde aca podes crear consultas y revisar el avance de los tickets del portal.',
+          );
+        }
+        
+        if (!puedeSolicitar) {
+          formSoporte.style.display = 'none';
+          
+        }
+        
+        function renderCategorias() {
+          let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoria</option>';
+          for (let i = 0; i < categoriasDeSoporte.length; i++) {
+            opciones +=
+              '<option value="' +
+              categoriasDeSoporte[i] +
+              '">' +
+              categoriasDeSoporte[i] +
+              '</option>';
+          }
+          selectCategoria.innerHTML = opciones;
+          inicializarSelectsPersonalizados(selectCategoria);
+        }
+        
+        function renderLugares() {
+          const lugares = obtenerLugaresDisponibles();
+          let opciones = '<option value="" data-clave="elige_lugar">Elige un lugar</option>';
+          for (let i = 0; i < lugares.length; i++) {
+            opciones +=
+              '<option value="' + lugares[i] + '">' + lugares[i] + '</option>';
+          }
+          selectUbicacion.innerHTML = opciones;
+          inicializarSelectsPersonalizados(selectUbicacion);
+        }
+        
+        function renderFiltrosSoporte() {
+          const filtrosActuales = guardarValoresCampos(idsFiltrosSoporte);
+          const tickets = obtenerTicketsVisibles();
+          filtrosSoporte.innerHTML =
+            crearCampoFiltroSelect(
+              'filtro-soporte-creador',
+              'Creado por',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(tickets, 'solicitante'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-soporte-estado',
+              'Estado',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(tickets, 'estado'), 'Todos'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-soporte-categoria',
+              'Categoria',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(tickets, 'categoria'), 'Todas'),
+            ) +
+            crearCampoFiltroSelect(
+              'filtro-soporte-ubicacion',
+              'Ubicacion',
+              crearOpcionesFiltro(obtenerValoresUnicosFiltro(tickets, 'ubicacion'), 'Todas'),
+            );
+          restaurarValoresCampos(filtrosActuales);
+          inicializarSelectsPersonalizados(filtrosSoporte);
+        }
+
+        function obtenerFiltrosSoporte() {
+          return [
+            { campo: 'solicitante', valor: obtenerValorCampoFormulario('filtro-soporte-creador'), comparacion: 'igual' },
+            { campo: 'estado', valor: obtenerValorCampoFormulario('filtro-soporte-estado'), comparacion: 'igual' },
+            { campo: 'categoria', valor: obtenerValorCampoFormulario('filtro-soporte-categoria'), comparacion: 'igual' },
+            { campo: 'ubicacion', valor: obtenerValorCampoFormulario('filtro-soporte-ubicacion'), comparacion: 'igual' },
+          ];
+        }
+        
+        function renderLista() {
+          const tickets = filtrarRegistrosPorCampos(obtenerTicketsVisibles(), obtenerFiltrosSoporte());
+          let html = '';
+          if (tickets.length === 0) {
+            html =
+              '<div class="empty-inline regla-diseno-043">Todavia no hay tickets de soporte para mostrar con este perfil.</div>';
+          } else {
+            for (let i = 0; i < tickets.length; i++) {
+              let acciones = '';
+              if (puedeGestionar) {
+                acciones = crearBotonesCambioEstado(tickets[i], opcionesEstadoTicket);
+              }
+              html += crearTarjetaDeTicket(tickets[i], acciones);
+            }
+          }
+          mostrarEn('lista-soporte', html);
+        }
+        
+        document.addEventListener('click', function (evento) {
+          const botonGestion = evento.target.closest('[data-update-ticket]');
+          if (!botonGestion || !puedeGestionar) {
+            return;
+          }
+          actualizarEstadoTicket(
+            botonGestion.getAttribute('data-update-ticket'),
+            botonGestion.getAttribute('data-ticket-status'),
+          );
+          renderFiltrosSoporte();
+          renderLista();
+          dibujarIconos();
+        });
+
+        filtrosSoporte.addEventListener('input', renderLista);
+        filtrosSoporte.addEventListener('change', renderLista);
+        
+        formSoporte.addEventListener('submit', function (evento) {
+          evento.preventDefault();
+          if (!puedeSolicitar) {
+            return;
+          }
+          if (!validarFormularioCliente(formSoporte)) {
+            return;
+          }
+          try {
+            guardarNuevoTicket({
+              asunto: document.getElementById('soporte-asunto').value,
+              categoria: document.getElementById('soporte-categoria').value,
+              ubicacion: document.getElementById('soporte-ubicacion').value,
+              mensaje: document.getElementById('soporte-mensaje').value,
+            });
+            formSoporte.reset();
+            renderFiltrosSoporte();
+            renderLista();
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error);
+          }
+        });
+        
+        renderCategorias();
+        renderLugares();
+        renderFiltrosSoporte();
+        renderLista();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>

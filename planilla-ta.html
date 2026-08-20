@@ -1,0 +1,183 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Planilla de T.A. | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/planilla.css" />
+</head>
+  <body data-section="planilla-ta" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <div id="cabecera-de-pagina"></div>
+      <div id="mensaje-planilla"></div>
+      <section class="section-block regla-diseno-072">
+        <div class="section-block__header regla-diseno-104">
+          <div>
+            <h2 class="section-block__title regla-diseno-048" data-clave="plantel_tecnico_administrativo">Plantel tecnico-administrativo</h2>
+            <p class="section-block__subtitle regla-diseno-011">
+              Cada persona tiene su horario del dia y las tareas que necesita dejar visibles para el
+              equipo.
+            </p>
+          </div>
+        </div>
+        <div id="grid-planilla-ta" class="planilla-grid regla-diseno-013"></div>
+      </section>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        const usuarioActual = obtenerUsuarioActual();
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Planilla de T.A.' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Planilla de T.A.',
+          }),
+        );
+        
+        let timeoutMensajePlanilla = null;
+
+        
+        function mostrarMensajePlanilla(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-planilla', texto, tipo);
+          window.clearTimeout(timeoutMensajePlanilla);
+          timeoutMensajePlanilla = window.setTimeout(limpiarMensajePlanilla, 4000);
+        }
+        
+        function limpiarMensajePlanilla() {
+          mostrarEn('mensaje-planilla', '');
+        }
+        
+        function renderPlanilla() {
+          const parcelas = obtenerParcelasPlanillaTA();
+          let html = '';
+          if (parcelas.length === 0) {
+            html =
+              '<div class="empty-inline regla-diseno-043">Todavia no hay integrantes tecnico-administrativos para mostrar.</div>';
+          } else {
+            for (let i = 0; i < parcelas.length; i++) {
+              const puedeEditar = usuarioPuedeEditarParcelaPlanilla(
+                parcelas[i].usuario.id,
+                usuarioActual,
+              );
+              html += crearParcelaPlanillaTA(parcelas[i], puedeEditar);
+            }
+          }
+          mostrarEn('grid-planilla-ta', html);
+        }
+
+        function crearLineaTareaKanban(tarea) {
+          return (
+            '- ' +
+            tarea.titulo +
+            ' (' +
+            tarea.estado +
+            ', plazo ' +
+            formatearFechaHumana(tarea.plazoFin) +
+            ')'
+          );
+        }
+        
+        function agregarTareaKanbanATextarea(selector) {
+          const tarea = obtenerTareaCalendarioPorId(selector.value);
+          if (!tarea) {
+            return;
+          }
+          const form = selector.closest('[data-planilla-form]');
+          if (!form || !form.elements.tareasDelDia) {
+            return;
+          }
+          const linea = crearLineaTareaKanban(tarea);
+          const valorActual = form.elements.tareasDelDia.value.trim();
+          if (valorActual.includes(linea)) {
+            selector.value = '';
+            return;
+          }
+          form.elements.tareasDelDia.value = valorActual ? valorActual + '\n' + linea : linea;
+          selector.value = '';
+        }
+        
+        document.addEventListener('submit', function (evento) {
+          const form = evento.target.closest('[data-planilla-form]');
+          if (!form) {
+            return;
+          }
+          evento.preventDefault();
+          if (!validarFormularioCliente(form, mostrarMensajePlanilla)) {
+            return;
+          }
+          try {
+            const resultado = actualizarParcelaPlanillaTA(form.getAttribute('data-planilla-form'), {
+              horaEntrada: form.elements.horaEntrada.value,
+              horaSalida: form.elements.horaSalida.value,
+              tareasDelDia: form.elements.tareasDelDia.value,
+            });
+            mostrarMensajePlanilla(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            renderPlanilla();
+            dibujarIconos();
+          } catch (error) {
+            manejarErrorCliente(error, mostrarMensajePlanilla);
+          }
+        });
+        
+        document.addEventListener('change', function (evento) {
+          const selectorTarea = evento.target.closest('[data-planilla-task-picker]');
+          if (!selectorTarea) {
+            return;
+          }
+          agregarTareaKanbanATextarea(selectorTarea);
+        });
+        
+        document.addEventListener('click', function (evento) {
+          const botonEliminar = evento.target.closest('[data-delete-parcela]');
+          if (!botonEliminar) {
+            return;
+          }
+          const usuarioId = botonEliminar.getAttribute('data-delete-parcela');
+          const confirmar = window.confirm(
+            'Seguro que queres quitar esta persona de la planilla T.A.?',
+          );
+          if (!confirmar) {
+            return;
+          }
+          const resultado = eliminarParcelaPlanillaTA(usuarioId);
+          mostrarMensajePlanilla(resultado.mensaje, resultado.ok ? 'success' : 'error');
+          renderPlanilla();
+          dibujarIconos();
+        });
+        
+        renderPlanilla();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

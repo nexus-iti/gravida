@@ -1,0 +1,292 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | SGRSI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/registro.css" />
+</head>
+  <body>
+    <main class="auth-shell regla-diseno-058">
+      <header
+        class="public-topbar auth-page__header regla-diseno-059"
+      >
+        <a
+          class="public-brand regla-diseno-060"
+          href="index.html"
+          aria-label="Inicio SGRSI"
+         data-clave-aria-label="inicio_sgrsi">
+          <span
+            class="public-brand__mark regla-diseno-061"
+          >
+            <img src="images/header.jpeg" alt="ITI CEPT" data-clave-alt="iti_cept" />
+          </span>
+          <span>
+            <strong data-clave="sgrsi">SGRSI</strong>
+            <small data-clave="gestion_ti_institucional">Gestion TI Institucional</small>
+          </span>
+        </a>
+      </header>
+      <section class="auth-main regla-diseno-062">
+        <section
+          class="auth-view auth-view--register auth-view--active regla-diseno-063"
+          data-auth-view="register"
+        >
+          <div class="auth-register-layout regla-diseno-064">
+            <article class="auth-register-visual regla-diseno-108">
+              <h1 data-clave="sumate_portal">Sumate al portal del ITI.</h1>
+              <p>
+                SGRSI ayuda a ordenar pedidos, soporte, inventario y tareas del equipo
+                tecnico-administrativo.
+              </p>
+              <figure class="auth-visual-card auth-visual-card--icon regla-diseno-108">
+                <img
+                  class="auth-visual-card__icon"
+                  src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNpcmNsZS11c2VyLWljb24gbHVjaWRlLWNpcmNsZS11c2VyIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIvPjxjaXJjbGUgY3g9IjEyIiBjeT0iMTAiIHI9IjMiLz48cGF0aCBkPSJNNyAyMC42NjJWMTlhMiAyIDAgMCAxIDItMmg2YTIgMiAwIDAgMSAyIDJ2MS42NjIiLz48L3N2Zz4="
+                  alt="Icono de usuario"
+                />
+              </figure>
+            </article>
+            <div class="auth-form-column regla-diseno-033">
+              <article class="auth-card auth-card--register regla-diseno-065">
+                <div class="auth-card__intro regla-diseno-109">
+                  <h2 data-clave="crear_cuenta">Crear cuenta</h2>
+                  <p>Completa tus datos para solicitar acceso al portal SGRSI.</p>
+                </div>
+                <div id="auth-message-register"></div>
+                <form id="form-register" class="auth-form regla-diseno-033">
+                  <div class="auth-field regla-diseno-025">
+                    <label for="register-nombre" data-clave="nombre_completo">Nombre completo</label>
+                    <div class="auth-input-shell regla-diseno-069">
+                      <i data-lucide="user" class="icon icon-sm regla-diseno-006"></i>
+                      <input
+                        id="register-nombre"
+                        type="text"
+                        placeholder="Nombre y apellido"
+                        autocomplete="name"
+                        required
+                      data-clave-placeholder="nombre_y_apellido" />
+                    </div>
+                  </div>
+                  <div class="auth-field regla-diseno-025">
+                    <label for="register-correo" data-clave="correo">Correo</label>
+                    <div class="auth-input-shell regla-diseno-069">
+                      <i data-lucide="mail" class="icon icon-sm regla-diseno-006"></i>
+                      <input
+                        id="register-correo"
+                        type="email"
+                        placeholder="usuario@campus.local"
+                        autocomplete="email"
+                        required
+                      data-clave-placeholder="usuario_campus_placeholder" />
+                    </div>
+                  </div>
+                  <div class="auth-field regla-diseno-025">
+                    <label for="register-cedula" data-clave="cedula">Cedula</label>
+                    <div class="auth-input-shell regla-diseno-069">
+                      <i
+                        data-lucide="badge-check"
+                        class="icon icon-sm regla-diseno-006"
+                      ></i>
+                      <input
+                        id="register-cedula"
+                        type="text"
+                        placeholder="Ej. 12345678"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        maxlength="8"
+                        minlength="8"
+                        pattern="[0-9]{8}"
+                        title="La cedula debe tener exactamente 8 numeros"
+                        required
+                      data-clave-placeholder="ej_cedula" />
+                    </div>
+                  </div>
+                  <div class="auth-field regla-diseno-025">
+                    <label for="register-rol" data-clave="rol">Rol</label>
+                    <div class="auth-input-shell regla-diseno-069">
+                      <i
+                        data-lucide="user-cog"
+                        class="icon icon-sm regla-diseno-006"
+                      ></i>
+                      <select id="register-rol" required></select>
+                      <i
+                        data-lucide="chevron-down"
+                        class="icon icon-sm auth-select-icon regla-diseno-006"
+                      ></i>
+                    </div>
+                  </div>
+                  <div class="auth-field regla-diseno-025">
+                    <label for="register-contrasena" data-clave="contrasena">Contraseña</label>
+                    <div class="auth-input-shell regla-diseno-069">
+                      <i data-lucide="lock" class="icon icon-sm regla-diseno-006"></i>
+                      <input
+                        id="register-contrasena"
+                        type="password"
+                        placeholder="********"
+                        autocomplete="new-password"
+                        minlength="7"
+                        required
+                      />
+                      <button
+                        class="auth-password-toggle regla-diseno-022"
+                        type="button"
+                        data-toggle-password="register-contrasena"
+                        aria-label="Mostrar contraseña"
+                       data-clave-aria-label="mostrar_contrasena">
+                        <i data-lucide="eye" class="icon icon-sm regla-diseno-006"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <button
+                    class="auth-submit regla-diseno-070"
+                    type="submit"
+                  >
+                    <span data-clave="registrarse">Registrarse</span>
+                    <i
+                      data-lucide="arrow-right"
+                      class="icon icon-sm regla-diseno-006"
+                    ></i>
+                  </button>
+                </form>
+                <p class="auth-alt-action regla-diseno-101">
+                  Ya tenes cuenta?
+                  <a href="login.html" data-clave="inicia_sesion">Inicia sesion</a>
+                </p>
+              </article>
+              <div
+                class="auth-trust-row regla-diseno-056"
+                aria-label="Indicadores de seguridad"
+               data-clave-aria-label="indicadores_de_seguridad">
+                <span>
+                  <i
+                    data-lucide="shield-check"
+                    class="icon icon-sm regla-diseno-006"
+                  ></i>
+                  Datos protegidos
+                </span>
+                <span>
+                  <i
+                    data-lucide="building-2"
+                    class="icon icon-sm regla-diseno-006"
+                  ></i>
+                  Portal ITI CEPT
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <footer class="auth-footer regla-diseno-072">
+        <div class="auth-footer__inner regla-diseno-073">
+          <div>
+            <strong data-clave="sgrsi">SGRSI</strong>
+            <p>2026 SGRSI - ITI CEPT. Todos los derechos reservados.</p>
+          </div>
+          <nav aria-label="Enlaces institucionales" data-clave-aria-label="enlaces_institucionales">
+            <a href="index.html" data-clave="portal_iti">Portal ITI</a>
+            <a href="index.html#soporte" data-clave="soporte">Soporte</a>
+            <a href="login.html" data-clave="login">Login</a>
+            <a href="register.html" data-clave="register">Register</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      (function iniciarPaginaRegistro() {
+        
+        if (redirigirSiYaHaySesion()) {
+          return;
+        }
+
+        
+        const formRegister = document.getElementById('form-register');
+        const mensajeRegister = document.getElementById('auth-message-register');
+        const selectRol = document.getElementById('register-rol');
+        const inputCedula = document.getElementById('register-cedula');
+
+        
+        function renderRoles() {
+          let opciones = '<option value="" data-clave="elegir_rol">Elegir rol</option>';
+          for (let i = 0; i < rolesDisponibles.length; i++) {
+            const rol = rolesDisponibles[i];
+            if (obtenerRolCanonico(rol.valor) === 'administrativo') {
+              continue;
+            }
+            opciones += '<option value="' + rol.valor + '">' + rol.etiqueta + '</option>';
+          }
+          selectRol.innerHTML = opciones;
+        }
+        
+        function mostrarMensaje(mensaje, tipo) {
+          mostrarMensajeFormulario(mensajeRegister, mensaje, tipo);
+        }
+        
+        inputCedula.addEventListener('input', function () {
+          inputCedula.value = inputCedula.value.replace(/\D/g, '').slice(0, 8);
+        });
+        
+        formRegister.addEventListener('submit', function (evento) {
+          evento.preventDefault();
+          if (!validarFormularioCliente(formRegister, mostrarMensaje)) {
+            return;
+          }
+
+          try {
+            
+            const respuesta = registrarUsuario({
+              cedula: document.getElementById('register-cedula').value,
+              nombreCompleto: document.getElementById('register-nombre').value,
+              correo: document.getElementById('register-correo').value,
+              contrasena: document.getElementById('register-contrasena').value,
+              rol: document.getElementById('register-rol').value,
+            });
+            if (!respuesta.ok) {
+              mostrarMensaje(respuesta.mensaje, 'error');
+              return;
+            }
+            formRegister.reset();
+            renderRoles();
+            if (respuesta.pendiente) {
+              mostrarMensaje(respuesta.mensaje, 'info');
+              return;
+            }
+            mostrarMensaje('Cuenta creada. Te estamos llevando al home...', 'success');
+            
+            setTimeout(function () {
+              window.location.href = 'home.html';
+            }, 700);
+          } catch (error) {
+            manejarErrorCliente(error, mostrarMensaje);
+          }
+        });
+        
+        renderRoles();
+        dibujarIconos();
+      })();
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+

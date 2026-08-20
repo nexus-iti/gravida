@@ -1,0 +1,143 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secciones | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/secciones.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div id="cabecera-de-pagina"></div>
+      <div id="mensaje-secciones"></div>
+      <div id="lista-de-secciones" class="list regla-diseno-037"></div>
+      <div id="contenedor-modal"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Secciones' },
+          ]),
+        );
+        
+        const accionesDelHeader =
+          crearCajaDeBusqueda('Buscar seccion...', 'input-buscar-seccion') +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-seccion">' +
+          crearIcono('plus', 'icon-sm') +
+          '<span>Agregar seccion</span></button>';
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Secciones del inventario',
+            acciones: accionesDelHeader,
+          }),
+        );
+        const cuerpoModalSeccion =
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="nueva-seccion-nombre">Nombre de la seccion</label>' +
+          '<input class="text-input regla-diseno-026" id="nueva-seccion-nombre" type="text" placeholder="Ej. Laboratorio 6" data-clave-placeholder="ej_laboratorio" />' +
+          '</div>';
+        const pieModalSeccion =
+          '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-save-seccion>Guardar seccion</button>';
+        mostrarEn(
+          'contenedor-modal',
+          crearModal({
+            id: 'modal-seccion',
+            titulo: 'Agregar seccion',
+            icono: 'building-2',
+            cuerpo: cuerpoModalSeccion,
+            pieDeModal: pieModalSeccion,
+          }),
+        );
+        function mostrarMensajeSecciones(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-secciones', texto, tipo);
+        }
+        
+        function renderSecciones() {
+          const seccionesInventario = obtenerSeccionesInventario();
+          let htmlDeFilas = '';
+          if (seccionesInventario.length === 0) {
+            htmlDeFilas = crearEstadoVacio({
+              icono: 'building-2',
+              titulo: 'No hay secciones cargadas',
+              descripcion: 'Agrega una seccion para poder asignar equipos al inventario.',
+            });
+          } else {
+            for (let i = 0; i < seccionesInventario.length; i++) {
+              htmlDeFilas += crearFilaDeSeccion(seccionesInventario[i], { permitirBaja: true });
+            }
+          }
+          mostrarEn('lista-de-secciones', htmlDeFilas);
+          activarBuscador('input-buscar-seccion', '#lista-de-secciones .list-row');
+          dibujarIconos();
+        }
+
+        function guardarSeccionDesdeModal() {
+          const inputNombre = document.getElementById('nueva-seccion-nombre');
+          const resultado = guardarNuevaSeccionInventario({ nombre: inputNombre.value });
+          mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
+          if (!resultado.ok) {
+            return;
+          }
+          inputNombre.value = '';
+          cerrarModal('modal-seccion');
+          renderSecciones();
+        }
+
+        function eliminarSeccionDesdeBoton(botonBaja) {
+          const resultado = eliminarSeccionInventario(botonBaja.getAttribute('data-delete-seccion'));
+          mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
+          if (resultado.ok) {
+            renderSecciones();
+          }
+        }
+
+        document.addEventListener('click', function (evento) {
+          const botonGuardar = evento.target.closest('[data-save-seccion]');
+          if (botonGuardar) {
+            guardarSeccionDesdeModal();
+            return;
+          }
+          const botonBaja = evento.target.closest('[data-delete-seccion]');
+          if (!botonBaja) {
+            return;
+          }
+          evento.preventDefault();
+          evento.stopPropagation();
+          eliminarSeccionDesdeBoton(botonBaja);
+        });
+        
+        renderSecciones();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,84 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todos los equipos | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/equipos.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div id="cabecera-de-pagina"></div>
+      <div id="mensaje-equipos"></div>
+      <div class="filter-panel filter-panel--page regla-diseno-057">
+        <div id="barra-de-filtros" class="filter-bar filter-panel__body regla-diseno-057"></div>
+      </div>
+      <div id="tabla-de-equipos"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Equipos' },
+          ]),
+        );
+        mostrarEn('cabecera-de-pagina', crearCabeceraDePagina({ titulo: 'Todos los equipos' }));
+        
+        const filtrosHtml =
+          crearCajaDeBusqueda('Buscar equipo...', 'input-buscar-todos') +
+          crearBotonDesplegable('Seccion') +
+          crearBotonDesplegable('Tipo') +
+          crearBotonDesplegable('Estado');
+        mostrarEn('barra-de-filtros', filtrosHtml);
+        function mostrarMensajeEquipos(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-equipos', texto, tipo);
+        }
+        function renderTablaEquipos() {
+          mostrarEn('tabla-de-equipos', crearTablaDeEquipos(obtenerEquiposInventario()));
+          activarBuscador('input-buscar-todos', '.tabla tbody tr');
+          dibujarIconos();
+        }
+        function eliminarEquipoDesdeTabla(botonBaja) {
+          const resultado = eliminarEquipoInventario(botonBaja.getAttribute('data-delete-equipo'));
+          mostrarMensajeEquipos(resultado.mensaje, resultado.ok ? 'success' : 'error');
+          if (resultado.ok) {
+            renderTablaEquipos();
+          }
+        }
+        document.addEventListener('click', function (evento) {
+          const botonBaja = evento.target.closest('[data-delete-equipo]');
+          if (!botonBaja) {
+            return;
+          }
+          eliminarEquipoDesdeTabla(botonBaja);
+        });
+        renderTablaEquipos();
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+

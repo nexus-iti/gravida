@@ -1,0 +1,81 @@
+﻿<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Imagenes de secciones | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/imagenes.css" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main style="padding:24px var(--espaciado-pagina); display:flex; flex-direction:column; gap:20px;">
+      <div id="cabecera-de-pagina" style="padding:0;"></div>
+      <div id="cartel-informativo"></div>
+      <div id="selectores" style="display:flex; gap:16px; align-items:end; flex-wrap:wrap;"></div>
+      <p style="color:var(--color-texto-secundario); font-weight:500;">
+        Respaldo consultado:
+        <strong style="color:var(--color-texto-principal)" data-clave="sin_respaldos_cargados">Sin respaldos cargados</strong>
+      </p>
+      <div id="rejilla-de-imagenes" class="image-grid regla-diseno-013"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="js/datos.js"></script>
+    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/traducciones.js"></script>
+    <script src="js/app.js?v=responsive"></script>
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Imagenes de secciones' },
+          ]),
+        );
+        mostrarEn(
+          'cabecera-de-pagina',
+          '<h1 class="page-title regla-diseno-042">Imagenes de secciones</h1>',
+        );
+        
+        
+        const selectoresHtml = ` <div class="input-group regla-diseno-086"> <label data-clave="fecha">Fecha</label> <div class="input-field regla-diseno-069" style="width:200px;"> ${crearIcono('calendar', 'icon-sm')} <input type="text" placeholder="dd/mm/aaaa" data-clave-placeholder="fecha_placeholder" /> </div> </div> <div class="input-group regla-diseno-086"> <label>Hora</label> <div class="input-field regla-diseno-069" style="width:140px;"> ${crearIcono('timer', 'icon-sm')} <input type="text" placeholder="hh:mm" data-clave-placeholder="hora_placeholder" /> </div> </div> <div class="input-group regla-diseno-086"> <label data-clave="seccion">Seccion</label> <div class="input-field regla-diseno-069" style="width:220px; justify-content:space-between;"> <span style="color:var(--color-texto-secundario)" data-clave="todas_las_secciones">Todas las secciones</span> ${crearIcono('chevron-down', 'icon-sm')} </div> </div> <button class="boton boton--primary regla-diseno-005" type="button" style="height:42px;"> ${crearIcono('search', 'icon-sm')} <span data-clave="ver_respaldo">Ver respaldo</span> </button> `;
+        mostrarEn('selectores', selectoresHtml);
+        
+        const imagenes = obtenerImagenesInventario();
+        let tarjetasHtml = '';
+        if (imagenes.length === 0) {
+          tarjetasHtml = crearEstadoVacio({
+            icono: 'camera',
+            titulo: 'No hay respaldos visuales cargados',
+            descripcion: 'Cuando se agreguen imagenes de secciones, van a aparecer en esta galeria.',
+          });
+        } else {
+          for (let i = 0; i < imagenes.length; i++) {
+            tarjetasHtml += crearTarjetaDeImagen(imagenes[i]);
+          }
+        }
+        mostrarEn('rejilla-de-imagenes', tarjetasHtml);
+        dibujarIconos();
+      }
+    </script>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

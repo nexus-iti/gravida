@@ -209,7 +209,7 @@
           }
         });
         
-        formSoportePublico.addEventListener('submit', function (evento) {
+        formSoportePublico.addEventListener('submit', async function (evento) {
           evento.preventDefault();
           if (!validarFormularioCliente(formSoportePublico, function (mensaje) {
             mensajeSoportePublico.innerHTML =
@@ -220,16 +220,15 @@
             return;
           }
           try {
-            const reportes = leerStorage('campus_ti_reportes_publicos', []);
-            reportes.unshift({
-              id: generarId('RPT'),
-              tipo: document.getElementById('soporte-tipo').value,
-              contacto: document.getElementById('soporte-contacto').value,
-              asunto: document.getElementById('soporte-asunto').value,
-              detalle: document.getElementById('soporte-detalle').value,
-              creadoEn: new Date().toISOString(),
+            await solicitarApi('api/reportes_error.php', {
+              method: 'POST',
+              body: JSON.stringify({
+                tipo: document.getElementById('soporte-tipo').value,
+                contacto: document.getElementById('soporte-contacto').value,
+                asunto: document.getElementById('soporte-asunto').value,
+                detalle: document.getElementById('soporte-detalle').value,
+              }),
             });
-            guardarStorage('campus_ti_reportes_publicos', reportes);
             mensajeSoportePublico.innerHTML =
               '<div class="form-message form-message--success regla-diseno-096">Reporte enviado. El equipo tecnico lo revisara y dara seguimiento.</div>';
             formSoportePublico.reset();

@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH']);
+exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
 
 ejecutar(function () use ($pdo): void {
     $metodo = $_SERVER['REQUEST_METHOD'];
@@ -10,9 +10,9 @@ ejecutar(function () use ($pdo): void {
         $cedula = texto($_GET['cedula'] ?? '', 15);
         $soloResponsablesTarea = texto($_GET['responsablesTarea'] ?? '', 5) === '1';
         $sql = 'SELECT cedula, nombre, apellido, correo_electronico, estado, rol,
-                       descripcion, fecha_registro, foto_perfil FROM USUARIO';
+                       descripcion, fecha_registro, foto_perfil, debe_cambiar_contrasena FROM USUARIO';
         $parametros = [];
-        $condiciones = [];
+        $condiciones = ['esta_activo = 1'];
         if ($cedula !== '') {
             $condiciones[] = 'cedula = ?';
             $parametros[] = $cedula;
@@ -33,6 +33,8 @@ ejecutar(function () use ($pdo): void {
 
     $datos = cuerpoJson();
     if ($metodo === 'POST') {
+        $habilitado = $pdo->query("SELECT valor FROM CONFIGURACION_SISTEMA WHERE clave='registro_habilitado'")->fetchColumn();
+        if ($habilitado !== false && $habilitado !== '1') errorApi('El registro de nuevas cuentas esta temporalmente deshabilitado.', 403);
         $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
         $correo = filter_var(texto($datos['correo'] ?? '', 150), FILTER_VALIDATE_EMAIL);
         $contrasena = texto($datos['contrasena'] ?? '', 255);
@@ -58,6 +60,19 @@ ejecutar(function () use ($pdo): void {
     $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
     if ($cedula === '') {
         errorApi('La cedula es obligatoria.');
+    }
+    if ($metodo === 'DELETE') {
+        $consulta = $pdo->prepare("UPDATE USUARIO SET esta_activo = 0, estado = 'Inactivo' WHERE cedula = ? AND esta_activo = 1");
+        $consulta->execute([$cedula]);
+        if (!$consulta->rowCount()) errorApi('No existe la cuenta activa indicada.', 404);
+        responder(['ok' => true]);
+    }
+    if ($accion === 'cambiar_contrasena') {
+        $contrasena = texto($datos['contrasena'] ?? '', 255);
+        if (strlen($contrasena) < 7) errorApi('La contraseña debe tener al menos 7 caracteres.');
+        $consulta = $pdo->prepare('UPDATE USUARIO SET contrasena = ?, debe_cambiar_contrasena = 0 WHERE cedula = ?');
+        $consulta->execute([$contrasena, $cedula]);
+        responder(['ok' => true]);
     }
     if ($accion === 'actualizar_perfil') {
         [$nombre, $apellido] = dividirNombre(texto($datos['nombreCompleto'] ?? '', 161));

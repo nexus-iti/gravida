@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH']);
+exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
 
 ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -13,7 +13,7 @@ ejecutar(function () use ($pdo): void {
              FROM PRESTAMO p
              INNER JOIN USUARIO u ON u.cedula = p.cedula
              INNER JOIN EQUIPO e ON e.id_equipo = p.id_equipo
-             ORDER BY p.id_prestamo DESC'
+             WHERE p.esta_activo = 1 ORDER BY p.id_prestamo DESC'
         );
         $consulta->execute();
         $prestamos = [];
@@ -47,6 +47,12 @@ ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
         $fechaDevolucion = fecha($datos['fecha'] ?? '', 'fecha');
+        $maximo = (int) ($pdo->query("SELECT valor FROM CONFIGURACION_SISTEMA WHERE clave='dias_maximos_prestamo'")->fetchColumn() ?: 30);
+        $hoy = new DateTime('today');
+        $devolucion = new DateTime($fechaDevolucion);
+        if ($devolucion < $hoy || (int) $hoy->diff($devolucion)->format('%a') > $maximo) {
+            errorApi('La fecha del prestamo debe estar dentro de los proximos ' . $maximo . ' dias.');
+        }
         if ($cedula === '') {
             errorApi('El solicitante es obligatorio.');
         }
@@ -106,6 +112,12 @@ ejecutar(function () use ($pdo): void {
     }
 
     $id = entero($datos['id'] ?? null, 'id');
+    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+        $consulta = $pdo->prepare("UPDATE PRESTAMO SET esta_activo = 0, estado = 'Cancelado' WHERE id_prestamo = ? AND esta_activo = 1");
+        $consulta->execute([$id]);
+        if (!$consulta->rowCount()) errorApi('No existe el prestamo activo indicado.', 404);
+        responder(['ok' => true]);
+    }
     $estado = estadoPrestamoBase((string) ($datos['estado'] ?? ''));
     $consulta = $pdo->prepare('UPDATE PRESTAMO SET estado = ? WHERE id_prestamo = ?');
     $consulta->execute([$estado, $id]);

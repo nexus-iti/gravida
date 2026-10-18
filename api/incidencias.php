@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH']);
+exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
 
 function exigirUsuario(PDO $pdo, string $cedula, string $mensaje): void {
     $consulta = $pdo->prepare('SELECT 1 FROM USUARIO WHERE cedula = ?');
@@ -32,7 +32,7 @@ ejecutar(function () use ($pdo): void {
              FROM INCIDENCIA i
              INNER JOIN USUARIO creador ON creador.cedula = i.cedula_crea
              LEFT JOIN USUARIO responsable ON responsable.cedula = i.cedula_responde
-             ORDER BY i.id_ticket DESC'
+             WHERE i.esta_activa = 1 ORDER BY i.id_ticket DESC'
         );
         $consulta->execute();
         $tickets = [];
@@ -98,7 +98,26 @@ ejecutar(function () use ($pdo): void {
 
     $accion = texto($datos['accion'] ?? '', 30);
     $id = entero($datos['id'] ?? null, 'id');
+    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+        exigirIncidencia($pdo, $id);
+        $consulta = $pdo->prepare("UPDATE INCIDENCIA SET esta_activa = 0, estado = 'Cerrado', fecha_cierre = CURDATE() WHERE id_ticket = ?");
+        $consulta->execute([$id]);
+        responder(['ok' => true]);
+    }
     $tecnico = preg_replace('/\\D/', '', texto($datos['tecnicoCedula'] ?? '', 15));
+
+    if ($accion === 'modificar_diagnostico') {
+        exigirIncidencia($pdo, $id);
+        $consulta = $pdo->prepare('UPDATE INCIDENCIA SET diagnostico = ?, solucion = ? WHERE id_ticket = ?');
+        $consulta->execute([texto($datos['diagnostico'] ?? '', 65535), texto($datos['solucion'] ?? '', 65535), $id]);
+        responder(['ok' => true]);
+    }
+    if ($accion === 'baja_diagnostico') {
+        exigirIncidencia($pdo, $id);
+        $consulta = $pdo->prepare('UPDATE INCIDENCIA SET diagnostico = NULL, solucion = NULL WHERE id_ticket = ?');
+        $consulta->execute([$id]);
+        responder(['ok' => true]);
+    }
 
     if ($accion === 'tomar') {
         if ($tecnico === '') {

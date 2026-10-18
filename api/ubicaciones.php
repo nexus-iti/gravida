@@ -73,7 +73,7 @@ function registrarHistorialEquipoDesdeUbicacion(
     $historial->execute([$categoria, $idEquipo]);
 }
 
-exigirMetodo(['GET', 'POST', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
 
 ejecutar(function () use ($pdo): void {
     asegurarEstadoActivoUbicacion($pdo);
@@ -106,6 +106,16 @@ ejecutar(function () use ($pdo): void {
         $consulta = $pdo->prepare('INSERT INTO UBICACION (seccion_inventario) VALUES (?)');
         $consulta->execute([$nombre]);
         responder(['ok' => true, 'id' => (string) $pdo->lastInsertId()], 201);
+    }
+    if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+        $id = entero($datos['id'] ?? null, 'id');
+        $nombre = texto($datos['nombre'] ?? '', 100);
+        if ($nombre === '') errorApi('El nombre de la ubicacion es obligatorio.');
+        $consulta = $pdo->prepare('UPDATE UBICACION SET seccion_inventario = ? WHERE id_ubicacion = ? AND esta_activa = 1');
+        $consulta->execute([$nombre, $id]);
+        if (!$consulta->rowCount()) errorApi('No existe la seccion activa o no hubo cambios.', 404);
+        registrarHistorialUbicacion($pdo, $id, 'Seccion renombrada a "' . $nombre . '".');
+        responder(['ok' => true]);
     }
     $id = entero($datos['id'] ?? null, 'id');
     $consultaUbicacion = $pdo->prepare(

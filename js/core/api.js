@@ -23,7 +23,7 @@ async function solicitarLogin(identificador, contrasena) {
   const datosFormulario = new URLSearchParams();
   datosFormulario.set('identificador', identificador);
   datosFormulario.set('contrasena', contrasena);
-  const respuesta = await fetch('../login.php', {
+  const respuesta = await fetch('login.php', {
     method: 'POST',
     headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },
     body: datosFormulario.toString(),

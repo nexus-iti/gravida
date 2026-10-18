@@ -279,6 +279,7 @@
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(solicitudes[i], opcionesEstadoSolicitud);
+                acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-solicitud="' + escaparHtml(solicitudes[i].id) + '">Dar de baja</button>';
               }
               html += crearTarjetaDeSolicitud(solicitudes[i], acciones);
             }
@@ -289,6 +290,11 @@
         selectTipo.addEventListener('change', actualizarTituloPanel);
         
         document.addEventListener('click', async function (evento) {
+          const botonBaja = evento.target.closest('[data-baja-solicitud]');
+          if (botonBaja && puedeGestionar) {
+            await darDeBajaOperacion('api/servicios.php', botonBaja.getAttribute('data-baja-solicitud'));
+            await renderLista(); return;
+          }
           const botonGestion = evento.target.closest('[data-update-solicitud]');
           if (!botonGestion || !puedeGestionar) {
             return;

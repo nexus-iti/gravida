@@ -2,7 +2,7 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH']);
+exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
 
 ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -12,7 +12,7 @@ ejecutar(function () use ($pdo): void {
                     solicitante.nombre AS nombre_solicitante, solicitante.apellido AS apellido_solicitante
              FROM SERVICIO s
              INNER JOIN USUARIO solicitante ON solicitante.cedula = s.cedula
-             ORDER BY s.id_servicio DESC'
+             WHERE s.esta_activo = 1 ORDER BY s.id_servicio DESC'
         );
         $consulta->execute();
         $servicios = [];
@@ -58,6 +58,12 @@ ejecutar(function () use ($pdo): void {
     }
 
     $id = entero($datos['id'] ?? null, 'id');
+    if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
+        $consulta = $pdo->prepare("UPDATE SERVICIO SET esta_activo = 0, estado = 'Cancelado' WHERE id_servicio = ? AND esta_activo = 1");
+        $consulta->execute([$id]);
+        if (!$consulta->rowCount()) errorApi('No existe la solicitud activa indicada.', 404);
+        responder(['ok' => true]);
+    }
     $estado = estadoServicioBase((string) ($datos['estado'] ?? ''));
     $existe = $pdo->prepare('SELECT 1 FROM SERVICIO WHERE id_servicio = ?');
     $existe->execute([$id]);

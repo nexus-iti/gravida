@@ -263,6 +263,7 @@
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(tickets[i], opcionesEstadoTicket);
+                acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-ticket="' + escaparHtml(tickets[i].id) + '">Dar de baja</button>';
               }
               html += crearTarjetaDeTicket(tickets[i], acciones);
             }
@@ -271,6 +272,11 @@
         }
         
         document.addEventListener('click', async function (evento) {
+          const botonBaja = evento.target.closest('[data-baja-ticket]');
+          if (botonBaja && puedeGestionar) {
+            await darDeBajaOperacion('api/incidencias.php', botonBaja.getAttribute('data-baja-ticket'));
+            await renderLista(); return;
+          }
           const botonGestion = evento.target.closest('[data-update-ticket]');
           if (!botonGestion || !puedeGestionar) {
             return;

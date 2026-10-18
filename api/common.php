@@ -126,6 +126,7 @@ function usuarioCliente(array $fila, bool $incluirContrasena = false): array {
             ? (string) $fila['fecha_registro']
             : '',
         'area' => '',
+        'debeCambiarContrasena' => !empty($fila['debe_cambiar_contrasena']),
     ];
     if ($incluirContrasena && array_key_exists('contrasena', $fila)) {
         $usuario['contrasena'] = (string) $fila['contrasena'];

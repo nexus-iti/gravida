@@ -204,6 +204,10 @@ async function actualizarEstadoSolicitud(idSolicitud, nuevoEstado) {
   );
 }
 
+async function darDeBajaOperacion(ruta, id) {
+  return solicitarApi(ruta, { method: 'DELETE', body: JSON.stringify({ id: id }) });
+}
+
 async function actualizarPerfil(datosParciales) {
   const usuarioEnSesion = obtenerUsuarioActual();
   if (!usuarioEnSesion) {

@@ -10,6 +10,7 @@ async function iniciarSesion(identificador, contrasena, opciones) {
       return { ok: false, mensaje: 'No encontramos los datos de la cuenta.' };
     }
     const recordarme = !!(opciones && opciones.recordarme);
+    usuarioEncontrado.debeCambiarContrasena = !!sesion.debeCambiarContrasena;
     guardarUsuarioActual(usuarioEncontrado, { persistir: recordarme });
     return { ok: true, mensaje: 'Sesion iniciada.', usuario: usuarioEncontrado };
   } catch (error) {

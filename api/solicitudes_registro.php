@@ -34,6 +34,8 @@ ejecutar(function () use ($pdo): void {
 
     $datos = cuerpoJson();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $habilitado = $pdo->query("SELECT valor FROM CONFIGURACION_SISTEMA WHERE clave='registro_habilitado'")->fetchColumn();
+        if ($habilitado !== false && $habilitado !== '1') errorApi('El registro de nuevas cuentas esta temporalmente deshabilitado.', 403);
         $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
         $correo = filter_var(texto($datos['correo'] ?? '', 150), FILTER_VALIDATE_EMAIL);
         $contrasena = texto($datos['contrasena'] ?? '', 255);

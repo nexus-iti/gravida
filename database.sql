@@ -562,4 +562,9 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+-- Extensiones NEXUS 2.0. En instalaciones existentes ejecutar migration_2_0.sql.
+-- Para habilitar las funciones de la version 2.0, ejecutar tambien migration_2_0.sql.
+-- Se mantiene como archivo separado para que la importacion funcione tanto desde
+-- phpMyAdmin como desde la consola de MySQL.
+
 -- Dump completed

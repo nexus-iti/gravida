@@ -102,6 +102,7 @@
                 No tenes cuenta?
                 <a href="register.html" data-clave="registrate">Registrate</a>
               </p>
+              <p class="auth-alt-action regla-diseno-101"><a href="recuperar.html">¿Olvidaste tu contraseña?</a></p>
               <div class="auth-help-note regla-diseno-102">
                 <span>
                   <i data-lucide="info" class="icon icon-sm regla-diseno-006"></i>
@@ -177,7 +178,7 @@
               mostrarMensaje(respuesta.mensaje, 'error');
               return;
             }
-            window.location.href = 'home.html';
+            window.location.href = respuesta.usuario.debeCambiarContrasena ? 'cambiar-contrasena.html' : 'home.html';
           } catch (error) {
             manejarErrorCliente(error, mostrarMensaje);
           }

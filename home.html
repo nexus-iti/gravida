@@ -39,6 +39,9 @@
           </div>
         </article>
       </section>
+      <section class="panel-grid panel-grid--single regla-diseno-007" id="gestion-reportes-2" hidden>
+        <article class="panel"><div class="panel__header"><div><h2 class="panel__title">Reportes y recuperación de acceso</h2></div><a class="boton boton--outline" id="enlace-administracion" href="administracion.html">Administración</a></div><div class="panel__body"><div id="lista-reportes-2"></div></div></article>
+      </section>
     </main>
     <div
       class="dialogo-overlay regla-diseno-018"
@@ -587,6 +590,15 @@
         }
       }
       })();
+    </script>
+    <script>
+    (async function iniciarGestionReportes2(){
+      const usuario=obtenerUsuarioActual();if(!usuario||!usuarioPuedeGestionarOperaciones(usuario))return;
+      const panel=document.getElementById('gestion-reportes-2');panel.hidden=false;
+      if(!usuarioEsAdministrativo(usuario))document.getElementById('enlace-administracion').hidden=true;
+      async function cargar(){const datos=await Promise.all([solicitarApi('api/reportes_error.php'),solicitarApi('api/recuperacion.php')]);let html='<h3>Reportes públicos</h3>'+(datos[0].map(x=>'<p><strong>#'+x.id+' '+x.asunto+'</strong> - '+x.estado+' <button data-reporte="'+x.id+'" data-estado="En proceso">Tomar</button> <button data-reporte="'+x.id+'" data-estado="Resuelto">Resolver</button> <button data-reporte="'+x.id+'" data-estado="Rechazado">Rechazar</button></p>').join('')||'<p>Sin reportes.</p>');html+='<h3>Recuperaciones de contraseña</h3>'+(datos[1].map(x=>'<p><strong>Ticket #'+x.ticketId+' - '+x.usuario+'</strong> - '+x.estado+' <button data-recuperacion="'+x.id+'" data-accion="tomar">Tomar</button> <button data-recuperacion="'+x.id+'" data-accion="resolver">Resolver</button> <button data-recuperacion="'+x.id+'" data-accion="rechazar">Rechazar</button></p>').join('')||'<p>Sin solicitudes.</p>');document.getElementById('lista-reportes-2').innerHTML=html;}
+      document.getElementById('lista-reportes-2').addEventListener('click',async e=>{try{if(e.target.dataset.reporte){await solicitarApi('api/reportes_error.php',{method:'PATCH',body:JSON.stringify({id:e.target.dataset.reporte,estado:e.target.dataset.estado,responsableCedula:usuario.cedula,respuesta:e.target.dataset.estado==='Resuelto'?'Reporte resuelto.':''})});}if(e.target.dataset.recuperacion){await solicitarApi('api/recuperacion.php',{method:'PATCH',body:JSON.stringify({id:e.target.dataset.recuperacion,accion:e.target.dataset.accion,responsableCedula:usuario.cedula})});}await cargar();}catch(x){alert(x.message);}});await cargar();
+    })();
     </script>
   </body>
 </html>

@@ -115,6 +115,31 @@ ejecutar(function () use ($pdo): void {
 
     if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
         $id = entero($datos['id'] ?? null, 'id');
+        if (texto($datos['accion'] ?? '', 30) === 'editar') {
+            $nombre = texto($datos['nombre'] ?? '', 100);
+            $categoria = texto($datos['tipo'] ?? '', 60);
+            $marca = texto($datos['marca'] ?? '', 60);
+            $descripcion = texto($datos['observaciones'] ?? '', 65535);
+            $cantidad = filter_var($datos['cantidad'] ?? null, FILTER_VALIDATE_INT);
+            $estado = texto($datos['estado'] ?? '', 30);
+            $idUbicacion = entero($datos['seccionId'] ?? null, 'seccionId');
+            if ($nombre === '' || $categoria === '' || $cantidad === false || $cantidad < 1) {
+                errorApi('Nombre, categoria y cantidad valida son obligatorios.');
+            }
+            if (!in_array($estado, ['Disponible', 'Mantenimiento'], true)) {
+                errorApi('El estado del equipo no es valido.');
+            }
+            $existe = $pdo->prepare('SELECT 1 FROM EQUIPO WHERE id_equipo = ? AND esta_activo = 1');
+            $existe->execute([$id]);
+            if (!$existe->fetch()) errorApi('No existe el equipo activo indicado.', 404);
+            $ubicacion = $pdo->prepare('SELECT 1 FROM UBICACION WHERE id_ubicacion = ? AND esta_activa = 1');
+            $ubicacion->execute([$idUbicacion]);
+            if (!$ubicacion->fetch()) errorApi('No existe la seccion activa indicada.', 404);
+            $consulta = $pdo->prepare('UPDATE EQUIPO SET nombre_equipo=?, categoria_equipo=?, descripcion=?, marca_equipo=?, cantidad_del_equipo=?, estado_equipo=?, id_ubicacion=? WHERE id_equipo=?');
+            $consulta->execute([$nombre, $categoria, $descripcion, $marca, $cantidad, $estado, $idUbicacion, $id]);
+            registrarHistorialEquipo($pdo, $id, 'Modificacion', 'Datos generales del equipo actualizados.');
+            responder(['ok' => true]);
+        }
         $idUbicacion = entero($datos['seccionId'] ?? null, 'seccionId');
         $consultaEquipo = $pdo->prepare(
             'SELECT e.id_equipo, e.nombre_equipo, e.id_ubicacion, u.seccion_inventario

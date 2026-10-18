@@ -92,6 +92,7 @@
           );
           const accionesDelHeader =
             crearCajaDeBusqueda('Buscar equipo...', 'input-buscar-equipo') +
+            '<button class="boton boton--outline regla-diseno-005" type="button" data-edit-seccion>Renombrar seccion</button>' +
             '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-equipo">' +
             crearIcono('plus', 'icon-sm') +
             '<span>Agregar equipo</span></button>';
@@ -290,7 +291,16 @@
           }
         }
 
-        document.addEventListener('click', function (evento) {
+        document.addEventListener('click', async function (evento) {
+          const botonEditarSeccion = evento.target.closest('[data-edit-seccion]');
+          if (botonEditarSeccion && seccionActual) {
+            const nombre = prompt('Nuevo nombre de la seccion', seccionActual.nombre);
+            if (nombre && nombre !== seccionActual.nombre) {
+              await solicitarApi('api/ubicaciones.php', { method:'PATCH', body:JSON.stringify({ id:seccionActual.id, nombre:nombre }) });
+              window.location.reload();
+            }
+            return;
+          }
           const botonCancelarBaja = evento.target.closest('[data-cancel-delete-equipo]');
           if (botonCancelarBaja) {
             cancelarBajaEquipoInventario('modal-baja-equipo');

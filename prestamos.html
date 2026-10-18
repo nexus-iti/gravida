@@ -345,6 +345,7 @@
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(prestamos[i], opcionesEstadoPrestamo);
+                acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-prestamo="' + escaparHtml(prestamos[i].id) + '">Dar de baja</button>';
               }
               html += crearTarjetaDePrestamo(prestamos[i], acciones);
             }
@@ -353,6 +354,11 @@
         }
         
         document.addEventListener('click', async function (evento) {
+          const botonBaja = evento.target.closest('[data-baja-prestamo]');
+          if (botonBaja && puedeGestionar) {
+            await darDeBajaOperacion('api/prestamos.php', botonBaja.getAttribute('data-baja-prestamo'));
+            await renderListaPrestamos(); return;
+          }
           const botonGestion = evento.target.closest('[data-update-prestamo]');
           if (!botonGestion || !puedeGestionar) {
             return;

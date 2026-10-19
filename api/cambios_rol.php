@@ -1,9 +1,10 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
-exigirMetodo(['GET','POST','PATCH']);
+exigirMetodo(['GET','POST','PUT','PATCH']);
+$sesionActual=autorizarEndpoint('cambios_rol');
 
-ejecutar(function () use ($pdo): void {
+ejecutar(function () use ($pdo,$sesionActual): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta=$pdo->query("SELECT s.id_solicitud_cambio_rol AS id,s.cedula_solicitante AS cedula,
             CONCAT(u.nombre,' ',u.apellido) AS usuario,s.rol_actual AS rolActual,s.rol_solicitado AS rolSolicitado,
@@ -13,7 +14,7 @@ ejecutar(function () use ($pdo): void {
     }
     $datos=cuerpoJson();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $cedula=preg_replace('/\D/','',texto($datos['cedula']??'',15));
+        $cedula=(string)$sesionActual['cedula'];
         $rolSolicitado=rolBase((string)($datos['rolSolicitado']??''));
         $u=$pdo->prepare('SELECT rol FROM USUARIO WHERE cedula=? AND estado=\'Activo\''); $u->execute([$cedula]);
         $rolActual=$u->fetchColumn(); if(!$rolActual) errorApi('No existe el usuario activo.',404);
@@ -25,7 +26,7 @@ ejecutar(function () use ($pdo): void {
     }
     $id=entero($datos['id']??null,'id'); $estado=texto($datos['estado']??'',20);
     if(!in_array($estado,['Aprobado','Rechazado'],true)) errorApi('Estado de revision no valido.');
-    $revisor=preg_replace('/\D/','',texto($datos['revisorCedula']??'',15));
+    $revisor=(string)$sesionActual['cedula'];
     $q=$pdo->prepare("SELECT cedula_solicitante,rol_solicitado FROM SOLICITUD_CAMBIO_ROL WHERE id_solicitud_cambio_rol=? AND estado='Pendiente'");$q->execute([$id]);
     $s=$q->fetch(PDO::FETCH_ASSOC);if(!$s) errorApi('No existe una solicitud pendiente.',404);
     $pdo->beginTransaction();

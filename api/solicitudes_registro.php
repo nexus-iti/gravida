@@ -2,9 +2,10 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH']);
+$sesionActual=autorizarEndpoint('solicitudes_registro');
 
-ejecutar(function () use ($pdo): void {
+ejecutar(function () use ($pdo,$sesionActual): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta = $pdo->prepare(
             'SELECT sr.id_solicitud_registro, sr.estado_solicitud, sr.id_usuario_manda,
@@ -50,7 +51,7 @@ ejecutar(function () use ($pdo): void {
                 "INSERT INTO USUARIO (cedula, nombre, apellido, correo_electronico, contrasena, estado, rol)
                  VALUES (?, ?, ?, ?, ?, 'Inactivo', ?)"
             );
-            $usuario->execute([$cedula, $nombre, $apellido, $correo, $contrasena, $rol]);
+            $usuario->execute([$cedula, $nombre, $apellido, $correo, password_hash($contrasena, PASSWORD_DEFAULT), $rol]);
             $solicitud = $pdo->prepare(
                 "INSERT INTO SOLICITUD_REGISTRO (estado_solicitud, id_usuario_manda) VALUES ('Pendiente', ?)"
             );
@@ -65,7 +66,7 @@ ejecutar(function () use ($pdo): void {
     }
 
     $id = entero($datos['id'] ?? null, 'id');
-    $administrador = preg_replace('/\\D/', '', texto($datos['administradorCedula'] ?? '', 15));
+    $administrador = (string) $sesionActual['cedula'];
     $estado = texto($datos['estado'] ?? '', 12);
     if (!in_array($estado, ['Aprobado', 'Rechazado'], true) || $administrador === '') {
         errorApi('Se requiere un estado de resolucion y un administrador valido.');

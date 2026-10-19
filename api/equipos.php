@@ -34,16 +34,7 @@ function historialEquipoTieneDescripcion(PDO $pdo): bool {
 }
 
 function asegurarDescripcionHistorialEquipo(PDO $pdo): bool {
-    if (historialEquipoTieneDescripcion($pdo)) {
-        return true;
-    }
-    try {
-        $pdo->exec('ALTER TABLE HISTORIAL_EQUIPO ADD COLUMN descripcion TEXT NULL AFTER categoria');
-        return true;
-    } catch (Throwable $error) {
-        error_log($error->getMessage());
-        return false;
-    }
+    return historialEquipoTieneDescripcion($pdo);
 }
 
 function registrarHistorialEquipo(PDO $pdo, int $idEquipo, string $categoria, string $descripcion = '', ?bool $usarDescripcion = null): void {
@@ -63,7 +54,8 @@ function registrarHistorialEquipo(PDO $pdo, int $idEquipo, string $categoria, st
     $historial->execute([$categoria, $idEquipo]);
 }
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+autorizarEndpoint('equipos');
 
 ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
@@ -113,7 +105,7 @@ ejecutar(function () use ($pdo): void {
         responder(['ok' => true, 'id' => (string) $id], 201);
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+    if (in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'PATCH'], true)) {
         $id = entero($datos['id'] ?? null, 'id');
         if (texto($datos['accion'] ?? '', 30) === 'editar') {
             $nombre = texto($datos['nombre'] ?? '', 100);

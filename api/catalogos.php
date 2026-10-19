@@ -2,7 +2,8 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+autorizarEndpoint('catalogos');
 
 $definiciones = [
     'categoria_tecnologica' => ['tabla' => 'CATEGORIA_TECNOLOGICA', 'id' => 'id_categoria_tecnologica', 'activo' => 'esta_activa'],

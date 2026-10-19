@@ -3,6 +3,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
 exigirMetodo(['GET']);
+autorizarEndpoint('historial');
 
 ejecutar(function () use ($pdo): void {
     $consultaColumnas = $pdo->prepare(

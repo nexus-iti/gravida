@@ -15,5 +15,5 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     http_response_code(500);
-    die(json_encode(["error" => "No se pudo conectar a la base de datos"]));
+    die(json_encode(["status" => "error", "message" => "No se pudo conectar a la base de datos", "data" => null]));
 }

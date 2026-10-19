@@ -2,13 +2,25 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+$sesionActual = autorizarEndpoint('usuarios');
 
-ejecutar(function () use ($pdo): void {
+ejecutar(function () use ($pdo, $sesionActual): void {
     $metodo = $_SERVER['REQUEST_METHOD'];
     if ($metodo === 'GET') {
         $cedula = texto($_GET['cedula'] ?? '', 15);
         $soloResponsablesTarea = texto($_GET['responsablesTarea'] ?? '', 5) === '1';
+        $esAdministrador = ($sesionActual['rol'] ?? '') === 'Administrador';
+        $esGestion = in_array($sesionActual['rol'] ?? '', ['Tecnico_Asistente', 'Administrador'], true);
+        if ($soloResponsablesTarea && !$esGestion) {
+            errorApi('No tenes permisos para consultar responsables.', 403);
+        }
+        if (!$esAdministrador && !$soloResponsablesTarea) {
+            if ($cedula !== '' && $cedula !== ($sesionActual['cedula'] ?? '')) {
+                errorApi('No podes consultar el perfil de otro usuario.', 403);
+            }
+            $cedula = (string) ($sesionActual['cedula'] ?? '');
+        }
         $sql = 'SELECT cedula, nombre, apellido, correo_electronico, estado, rol,
                        descripcion, fecha_registro, foto_perfil, debe_cambiar_contrasena FROM USUARIO';
         $parametros = [];
@@ -48,7 +60,7 @@ ejecutar(function () use ($pdo): void {
             'INSERT INTO USUARIO (cedula, nombre, apellido, correo_electronico, contrasena, estado, rol, fecha_registro)
              VALUES (?, ?, ?, ?, ?, ?, ?, CURDATE())'
         );
-        $consulta->execute([$cedula, $nombre, $apellido, $correo, $contrasena, $estado, $rol]);
+        $consulta->execute([$cedula, $nombre, $apellido, $correo, password_hash($contrasena, PASSWORD_DEFAULT), $estado, $rol]);
         responder(['ok' => true, 'usuario' => usuarioCliente([
             'cedula' => $cedula, 'nombre' => $nombre, 'apellido' => $apellido,
             'correo_electronico' => $correo, 'estado' => $estado, 'rol' => $rol,
@@ -62,19 +74,26 @@ ejecutar(function () use ($pdo): void {
         errorApi('La cedula es obligatoria.');
     }
     if ($metodo === 'DELETE') {
+        exigirRol(['Administrador']);
         $consulta = $pdo->prepare("UPDATE USUARIO SET esta_activo = 0, estado = 'Inactivo' WHERE cedula = ? AND esta_activo = 1");
         $consulta->execute([$cedula]);
         if (!$consulta->rowCount()) errorApi('No existe la cuenta activa indicada.', 404);
         responder(['ok' => true]);
     }
     if ($accion === 'cambiar_contrasena') {
+        if (($sesionActual['cedula'] ?? '') !== $cedula && ($sesionActual['rol'] ?? '') !== 'Administrador') {
+            errorApi('No podes cambiar la contraseña de otro usuario.', 403);
+        }
         $contrasena = texto($datos['contrasena'] ?? '', 255);
         if (strlen($contrasena) < 7) errorApi('La contraseña debe tener al menos 7 caracteres.');
         $consulta = $pdo->prepare('UPDATE USUARIO SET contrasena = ?, debe_cambiar_contrasena = 0 WHERE cedula = ?');
-        $consulta->execute([$contrasena, $cedula]);
+        $consulta->execute([password_hash($contrasena, PASSWORD_DEFAULT), $cedula]);
         responder(['ok' => true]);
     }
     if ($accion === 'actualizar_perfil') {
+        if (($sesionActual['cedula'] ?? '') !== $cedula && ($sesionActual['rol'] ?? '') !== 'Administrador') {
+            errorApi('No podes modificar el perfil de otro usuario.', 403);
+        }
         [$nombre, $apellido] = dividirNombre(texto($datos['nombreCompleto'] ?? '', 161));
         $correo = filter_var(texto($datos['correo'] ?? '', 150), FILTER_VALIDATE_EMAIL);
         if (!$correo) {
@@ -93,6 +112,7 @@ ejecutar(function () use ($pdo): void {
         responder(['ok' => true]);
     }
     if ($accion === 'estado') {
+        exigirRol(['Administrador']);
         $estado = texto($datos['estado'] ?? '', 10) === 'Inactivo' ? 'Inactivo' : 'Activo';
         $existe = $pdo->prepare('SELECT 1 FROM USUARIO WHERE cedula = ?');
         $existe->execute([$cedula]);

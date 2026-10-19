@@ -33,7 +33,8 @@ function exigirResponsableTarea(PDO $pdo, string $cedula): void {
     }
 }
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+autorizarEndpoint('tareas');
 
 ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {

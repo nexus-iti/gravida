@@ -11,6 +11,7 @@ async function iniciarSesion(identificador, contrasena, opciones) {
     }
     const recordarme = !!(opciones && opciones.recordarme);
     usuarioEncontrado.debeCambiarContrasena = !!sesion.debeCambiarContrasena;
+    usuarioEncontrado.csrfToken = sesion.csrfToken || '';
     guardarUsuarioActual(usuarioEncontrado, { persistir: recordarme });
     return { ok: true, mensaje: 'Sesion iniciada.', usuario: usuarioEncontrado };
   } catch (error) {
@@ -107,7 +108,11 @@ function redirigirSiYaHaySesion() {
   return false;
 }
 
-function cerrarSesion() {
+async function cerrarSesion() {
+  const usuario = obtenerUsuarioActual();
+  if (usuario && usuario.csrfToken) {
+    try { await solicitarApi('api/logout.php', { method: 'POST' }); } catch (error) { /* limpiar igualmente */ }
+  }
   window.localStorage.removeItem(CLAVES_STORAGE.usuarioActual);
   window.localStorage.removeItem(CLAVES_STORAGE.recordarSesion);
   try {

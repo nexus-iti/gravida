@@ -12,16 +12,10 @@ function ubicacionTieneEstadoActivo(PDO $pdo): bool {
 }
 
 function asegurarEstadoActivoUbicacion(PDO $pdo): bool {
-    if (ubicacionTieneEstadoActivo($pdo)) {
-        return true;
+    if (!ubicacionTieneEstadoActivo($pdo)) {
+        errorApi('La base de datos no esta actualizada. Ejecuta migration_2_0.sql.', 500);
     }
-    try {
-        $pdo->exec('ALTER TABLE UBICACION ADD COLUMN esta_activa TINYINT(1) NOT NULL DEFAULT 1');
-        return true;
-    } catch (Throwable $error) {
-        error_log($error->getMessage());
-        return false;
-    }
+    return true;
 }
 
 function registrarHistorialUbicacion(PDO $pdo, int $idUbicacion, string $descripcion): void {
@@ -41,16 +35,7 @@ function historialEquipoTieneDescripcionDesdeUbicacion(PDO $pdo): bool {
 }
 
 function asegurarDescripcionHistorialEquipoDesdeUbicacion(PDO $pdo): bool {
-    if (historialEquipoTieneDescripcionDesdeUbicacion($pdo)) {
-        return true;
-    }
-    try {
-        $pdo->exec('ALTER TABLE HISTORIAL_EQUIPO ADD COLUMN descripcion TEXT NULL AFTER categoria');
-        return true;
-    } catch (Throwable $error) {
-        error_log($error->getMessage());
-        return false;
-    }
+    return historialEquipoTieneDescripcionDesdeUbicacion($pdo);
 }
 
 function registrarHistorialEquipoDesdeUbicacion(
@@ -73,7 +58,8 @@ function registrarHistorialEquipoDesdeUbicacion(
     $historial->execute([$categoria, $idEquipo]);
 }
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+autorizarEndpoint('ubicaciones');
 
 ejecutar(function () use ($pdo): void {
     asegurarEstadoActivoUbicacion($pdo);
@@ -107,7 +93,7 @@ ejecutar(function () use ($pdo): void {
         $consulta->execute([$nombre]);
         responder(['ok' => true, 'id' => (string) $pdo->lastInsertId()], 201);
     }
-    if ($_SERVER['REQUEST_METHOD'] === 'PATCH') {
+    if (in_array($_SERVER['REQUEST_METHOD'], ['PUT', 'PATCH'], true)) {
         $id = entero($datos['id'] ?? null, 'id');
         $nombre = texto($datos['nombre'] ?? '', 100);
         if ($nombre === '') errorApi('El nombre de la ubicacion es obligatorio.');

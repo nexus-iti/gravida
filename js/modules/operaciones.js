@@ -241,8 +241,9 @@ async function subirFotoPerfil(archivo) {
   formData.append('foto', archivo);
   const respuesta = await fetch('api/foto_perfil.php', {
     method: 'POST',
+    credentials: 'same-origin',
     body: formData,
-    headers: { Accept: 'application/json' },
+    headers: { Accept: 'application/json', 'X-CSRF-Token': usuarioEnSesion.csrfToken || '' },
   });
   let datos = null;
   try {
@@ -251,8 +252,9 @@ async function subirFotoPerfil(archivo) {
     throw new Error('El servidor devolvio una respuesta invalida.');
   }
   if (!respuesta.ok) {
-    throw new Error((datos && datos.error) || 'No se pudo completar la solicitud.');
+    throw new Error((datos && (datos.message || datos.error)) || 'No se pudo completar la solicitud.');
   }
+  datos = datos && datos.status === 'success' ? datos.data : datos;
   const usuarioActualizado = Object.assign({}, usuarioEnSesion, {
     fotoPerfil: datos.fotoPerfil,
   });

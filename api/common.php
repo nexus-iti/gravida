@@ -4,22 +4,119 @@ declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_set_cookie_params([
+        'httponly' => true,
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'samesite' => 'Lax',
+        'path' => '/',
+    ]);
+    session_start();
+}
+
 $config = dirname(__DIR__) . '/config.php';
 if (!is_file($config)) {
     http_response_code(500);
-    echo json_encode(['error' => 'Falta config.php. Copiá config.example.php a config.php y ajustá la conexión.']);
+    echo json_encode([
+        'status' => 'error',
+        'message' => 'Falta config.php. Copiá config.example.php a config.php y ajustá la conexión.',
+        'data' => null,
+    ]);
     exit;
 }
 require_once $config;
 
-function responder($datos, int $estado = 200): void {
+function responder($datos = null, int $estado = 200, string $mensaje = ''): void {
     http_response_code($estado);
-    echo json_encode($datos, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($mensaje === '') {
+        $mensaje = $estado === 201 ? 'Recurso creado correctamente.' : 'Solicitud completada correctamente.';
+    }
+    echo json_encode([
+        'status' => 'success',
+        'message' => $mensaje,
+        'data' => $datos,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     exit;
 }
 
 function errorApi(string $mensaje, int $estado = 400): void {
-    responder(['error' => $mensaje], $estado);
+    http_response_code($estado);
+    echo json_encode([
+        'status' => 'error',
+        'message' => $mensaje,
+        'data' => null,
+    ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    exit;
+}
+
+function usuarioSesion(): ?array {
+    if (empty($_SESSION['usuario']) || !is_array($_SESSION['usuario'])) {
+        return null;
+    }
+    return $_SESSION['usuario'];
+}
+
+function exigirSesion(): array {
+    $usuario = usuarioSesion();
+    if ($usuario === null) {
+        errorApi('Debes iniciar sesion para continuar.', 401);
+    }
+    return $usuario;
+}
+
+function exigirRol(array $roles): array {
+    $usuario = exigirSesion();
+    if (!in_array($usuario['rol'] ?? '', $roles, true)) {
+        errorApi('No tenes permisos para realizar esta operacion.', 403);
+    }
+    return $usuario;
+}
+
+function tokenCsrf(): string {
+    if (empty($_SESSION['csrf'])) {
+        $_SESSION['csrf'] = bin2hex(random_bytes(32));
+    }
+    return (string) $_SESSION['csrf'];
+}
+
+function exigirCsrf(): void {
+    $recibido = (string) ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
+    $esperado = (string) ($_SESSION['csrf'] ?? '');
+    if ($esperado === '' || $recibido === '' || !hash_equals($esperado, $recibido)) {
+        errorApi('Token de seguridad invalido o vencido.', 403);
+    }
+}
+
+function autorizarEndpoint(string $recurso): ?array {
+    $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+    $publica =
+        ($recurso === 'solicitudes_registro' && $metodo === 'POST') ||
+        ($recurso === 'recuperacion' && $metodo === 'POST') ||
+        ($recurso === 'reportes_error' && $metodo === 'POST');
+    if ($publica) {
+        return null;
+    }
+    $usuario = exigirSesion();
+    $administrador = ['Administrador'];
+    $gestion = ['Tecnico_Asistente', 'Administrador'];
+    if (in_array($recurso, ['catalogos', 'configuracion', 'solicitudes_registro'], true)
+        || ($recurso === 'usuarios' && in_array($metodo, ['POST', 'DELETE'], true))
+        || ($recurso === 'cambios_rol' && $metodo !== 'POST')) {
+        $usuario = exigirRol($administrador);
+    } elseif (in_array($recurso, ['planilla_ta', 'reportes_error'], true)) {
+        $usuario = exigirRol($gestion);
+    } elseif ($recurso === 'recuperacion') {
+        $usuario = exigirRol($gestion);
+    } elseif (in_array($recurso, ['equipos', 'ubicaciones', 'tareas'], true) && $metodo !== 'GET') {
+        $usuario = exigirRol($gestion);
+    } elseif (in_array($recurso, ['incidencias', 'prestamos', 'servicios'], true)
+        && in_array($metodo, ['PUT', 'PATCH', 'DELETE'], true)) {
+        $usuario = exigirRol($gestion);
+    }
+    if (!in_array($metodo, ['GET', 'HEAD', 'OPTIONS'], true)) {
+        exigirCsrf();
+    }
+    return $usuario;
 }
 
 function cuerpoJson(): array {

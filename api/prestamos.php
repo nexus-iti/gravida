@@ -2,9 +2,10 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+$sesionActual = autorizarEndpoint('prestamos');
 
-ejecutar(function () use ($pdo): void {
+ejecutar(function () use ($pdo, $sesionActual): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta = $pdo->prepare(
             'SELECT p.id_prestamo, p.categoria, p.estado, p.fecha_solicitado, p.fecha_devolucion,
@@ -18,6 +19,10 @@ ejecutar(function () use ($pdo): void {
         $consulta->execute();
         $prestamos = [];
         foreach ($consulta->fetchAll(PDO::FETCH_ASSOC) as $fila) {
+            if (!in_array($sesionActual['rol'], ['Tecnico_Asistente', 'Administrador'], true)
+                && (string) $fila['cedula'] !== (string) $sesionActual['cedula']) {
+                continue;
+            }
             $recurso = trim((string) ($fila['recursos_solicitados'] ?: $fila['nombre_equipo']));
             $cantidad = 1;
             if (preg_match('/^(\\d+)\\s+(.+)$/u', $recurso, $coincidencias)) {
@@ -45,7 +50,7 @@ ejecutar(function () use ($pdo): void {
 
     $datos = cuerpoJson();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
+        $cedula = (string) $sesionActual['cedula'];
         $fechaDevolucion = fecha($datos['fecha'] ?? '', 'fecha');
         $maximo = (int) ($pdo->query("SELECT valor FROM CONFIGURACION_SISTEMA WHERE clave='dias_maximos_prestamo'")->fetchColumn() ?: 30);
         $hoy = new DateTime('today');

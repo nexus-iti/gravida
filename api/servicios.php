@@ -2,9 +2,10 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'POST', 'PATCH', 'DELETE']);
+exigirMetodo(['GET', 'POST', 'PUT', 'PATCH', 'DELETE']);
+$sesionActual = autorizarEndpoint('servicios');
 
-ejecutar(function () use ($pdo): void {
+ejecutar(function () use ($pdo, $sesionActual): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta = $pdo->prepare(
             'SELECT s.id_servicio, s.tipo_de_servicio, s.estado, s.descripcion, s.titulo, s.lugar,
@@ -17,6 +18,10 @@ ejecutar(function () use ($pdo): void {
         $consulta->execute();
         $servicios = [];
         foreach ($consulta->fetchAll(PDO::FETCH_ASSOC) as $fila) {
+            if (!in_array($sesionActual['rol'], ['Tecnico_Asistente', 'Administrador'], true)
+                && (string) $fila['cedula'] !== (string) $sesionActual['cedula']) {
+                continue;
+            }
             $servicios[] = [
                 'id' => (string) $fila['id_servicio'], 'titulo' => $fila['titulo'],
                 'tipo' => $fila['tipo_de_servicio'], 'fecha' => $fila['fecha_de_solicitud'],
@@ -32,7 +37,7 @@ ejecutar(function () use ($pdo): void {
 
     $datos = cuerpoJson();
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
+        $cedula = (string) $sesionActual['cedula'];
         if ($cedula === '') {
             errorApi('El solicitante es obligatorio.');
         }

@@ -3,9 +3,10 @@ declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
 exigirMetodo(['POST']);
+$sesionActual=autorizarEndpoint('foto_perfil');
 
-ejecutar(function () use ($pdo): void {
-    $cedula = preg_replace('/\\D/', '', texto($_POST['cedula'] ?? '', 15));
+ejecutar(function () use ($pdo, $sesionActual): void {
+    $cedula = (string) $sesionActual['cedula'];
     if ($cedula === '') {
         errorApi('La cedula es obligatoria.');
     }

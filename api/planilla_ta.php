@@ -2,7 +2,8 @@
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
-exigirMetodo(['GET', 'PATCH']);
+exigirMetodo(['GET', 'PUT', 'PATCH']);
+autorizarEndpoint('planilla_ta');
 
 ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {

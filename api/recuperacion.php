@@ -1,15 +1,23 @@
 <?php
 declare(strict_types=1);
 require_once __DIR__ . '/common.php';
-exigirMetodo(['GET','POST','PATCH']);
+exigirMetodo(['GET','POST','PUT','PATCH']);
+$sesionActual=autorizarEndpoint('recuperacion');
 
 function codigoSeguimiento():string{return strtoupper(substr(bin2hex(random_bytes(8)),0,12));}
 function contrasenaTemporal():string{return 'Nx'.random_int(100000,999999).'!';}
 
-ejecutar(function() use($pdo):void{
+ejecutar(function() use($pdo,$sesionActual):void{
     if($_SERVER['REQUEST_METHOD']==='GET'){
-        $cedula=preg_replace('/\D/','',texto($_GET['cedula']??'',15));$codigo=strtoupper(texto($_GET['codigo']??'',12));
-        if($cedula!==''&&$codigo!==''){
+        $q=$pdo->query("SELECT r.id_recuperacion AS id,r.id_ticket AS ticketId,r.cedula,r.codigo_seguimiento AS codigo,r.estado,
+          CONCAT(u.nombre,' ',u.apellido) AS usuario,r.fecha_creacion AS creadoEn,r.fecha_resolucion AS resueltoEn
+          FROM RECUPERACION_CONTRASENA r INNER JOIN USUARIO u ON u.cedula=r.cedula ORDER BY r.id_recuperacion DESC");
+        responder($q->fetchAll(PDO::FETCH_ASSOC));
+    }
+    $d=cuerpoJson();
+    if($_SERVER['REQUEST_METHOD']==='POST'){
+        if(texto($d['accion']??'',20)==='consultar'){
+            $cedula=preg_replace('/\D/','',texto($d['cedula']??'',15));$codigo=strtoupper(texto($d['codigo']??'',12));
             $q=$pdo->prepare('SELECT id_recuperacion,id_ticket,estado,contrasena_temporal,credencial_vista,fecha_creacion,fecha_resolucion FROM RECUPERACION_CONTRASENA WHERE cedula=? AND codigo_seguimiento=?');$q->execute([$cedula,$codigo]);
             $r=$q->fetch(PDO::FETCH_ASSOC);if(!$r)errorApi('No existe una solicitud con esos datos.',404);
             $respuesta=['id'=>(string)$r['id_recuperacion'],'ticketId'=>(string)$r['id_ticket'],'estado'=>$r['estado'],'creadoEn'=>$r['fecha_creacion'],'resueltoEn'=>$r['fecha_resolucion']];
@@ -19,13 +27,6 @@ ejecutar(function() use($pdo):void{
             }
             responder($respuesta);
         }
-        $q=$pdo->query("SELECT r.id_recuperacion AS id,r.id_ticket AS ticketId,r.cedula,r.codigo_seguimiento AS codigo,r.estado,
-          CONCAT(u.nombre,' ',u.apellido) AS usuario,r.fecha_creacion AS creadoEn,r.fecha_resolucion AS resueltoEn
-          FROM RECUPERACION_CONTRASENA r INNER JOIN USUARIO u ON u.cedula=r.cedula ORDER BY r.id_recuperacion DESC");
-        responder($q->fetchAll(PDO::FETCH_ASSOC));
-    }
-    $d=cuerpoJson();
-    if($_SERVER['REQUEST_METHOD']==='POST'){
         $cedula=preg_replace('/\D/','',texto($d['cedula']??'',15));$correo=filter_var(texto($d['correo']??'',150),FILTER_VALIDATE_EMAIL);
         $q=$pdo->prepare("SELECT nombre,apellido FROM USUARIO WHERE cedula=? AND correo_electronico=? AND estado='Activo'");$q->execute([$cedula,$correo]);$u=$q->fetch(PDO::FETCH_ASSOC);
         if(!$u)errorApi('Los datos no corresponden a una cuenta activa.',404);
@@ -39,7 +40,7 @@ ejecutar(function() use($pdo):void{
             $pdo->commit();responder(['ok'=>true,'codigo'=>$codigo,'ticketId'=>(string)$ticket],201);
         }catch(Throwable $e){if($pdo->inTransaction())$pdo->rollBack();throw $e;}
     }
-    $id=entero($d['id']??null,'id');$accion=texto($d['accion']??'',20);$responsable=preg_replace('/\D/','',texto($d['responsableCedula']??'',15));
+    $id=entero($d['id']??null,'id');$accion=texto($d['accion']??'',20);$responsable=(string)$sesionActual['cedula'];
     $q=$pdo->prepare('SELECT id_ticket,cedula,estado FROM RECUPERACION_CONTRASENA WHERE id_recuperacion=?');$q->execute([$id]);$r=$q->fetch(PDO::FETCH_ASSOC);
     if(!$r||!in_array($r['estado'],['Pendiente','En proceso'],true))errorApi('La solicitud ya no esta pendiente.',409);
     if($accion==='tomar'){
@@ -49,7 +50,7 @@ ejecutar(function() use($pdo):void{
     if(!in_array($accion,['resolver','rechazar'],true))errorApi('Accion no valida.');
     $estado=$accion==='resolver'?'Resuelto':'Rechazado';$temporal=$accion==='resolver'?contrasenaTemporal():null;$pdo->beginTransaction();
     try{
-        if($temporal){$u=$pdo->prepare('UPDATE USUARIO SET contrasena=?,debe_cambiar_contrasena=1 WHERE cedula=?');$u->execute([$temporal,$r['cedula']]);}
+        if($temporal){$u=$pdo->prepare('UPDATE USUARIO SET contrasena=?,debe_cambiar_contrasena=1 WHERE cedula=?');$u->execute([password_hash($temporal,PASSWORD_DEFAULT),$r['cedula']]);}
         $q=$pdo->prepare('UPDATE RECUPERACION_CONTRASENA SET estado=?,contrasena_temporal=?,cedula_responsable=?,fecha_resolucion=NOW() WHERE id_recuperacion=?');$q->execute([$estado,$temporal,$responsable?:null,$id]);
         $q=$pdo->prepare("UPDATE INCIDENCIA SET estado=?,fecha_cierre=CURDATE(),cedula_responde=?,diagnostico=?,solucion=? WHERE id_ticket=?");
         $q->execute([$accion==='resolver'?'Resuelto':'Cerrado',$responsable?:null,'Solicitud de recuperacion revisada.',$accion==='resolver'?'Se genero una contraseña temporal.':'Solicitud rechazada.',$r['id_ticket']]);

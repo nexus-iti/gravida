@@ -58,8 +58,7 @@ function usuarioEstaActivoEnPortal(usuario) {
 }
 
 function requiereAprobacionDeRegistro(rol) {
-  const rolCanonico = obtenerRolCanonico(rol);
-  return rolCanonico === 'tecnico';
+  return !!obtenerRolCanonico(rol);
 }
 
 async function aprobarSolicitudRegistro(solicitudId) {

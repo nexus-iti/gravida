@@ -1,4 +1,4 @@
-# SGRSI — 2da entrega 2.0
+# SGRSI — 2da entrega 3.0
 
 Sistema de Gestión de Recursos y Servicios de Informática del ITI CEPT. Permite pedir recursos, coordinar servicios, atender soporte, mantener inventario y organizar el trabajo técnico-administrativo.
 
@@ -27,9 +27,24 @@ Sistema de Gestión de Recursos y Servicios de Informática del ITI CEPT. Permit
 
 4. Iniciar Apache y MySQL.
 
-5. Abrir `http://localhost/NEXUS/proyecto%202da%20entrega%202.0/`.
+5. Abrir `http://localhost/NEXUS/proyecto%202da%20entrega%203.0/`.
 
-## Alcance de la versión 2.0
+## Seguridad y API en la versión 3.0
+
+- Sesiones PHP con cookie `HttpOnly` y `SameSite=Lax`.
+- Autorización por rol aplicada en el servidor.
+- Protección CSRF en las operaciones autenticadas que modifican datos.
+- Contrato JSON uniforme: `status`, `message` y `data`.
+- Compatibilidad temporal con PUT y PATCH para actualizaciones.
+- Restricción explícita de métodos mediante `405 Method Not Allowed` y `Allow`.
+- Contraseñas nuevas almacenadas con `password_hash`.
+- Migración automática de credenciales antiguas a hash después de un login válido.
+- Filtrado de incidencias, préstamos y servicios en el servidor según el usuario autenticado.
+- Cierre de sesión real mediante `api/logout.php`.
+
+Las pantallas y su diseño se mantienen respecto de la versión 2.0. Los cambios se concentran en la comunicación entre el navegador y PHP.
+
+## Alcance funcional heredado de la versión 2.0
 
 - Bajas lógicas de cuentas, tickets, servicios y préstamos.
 - Edición completa de equipos, secciones y diagnósticos.

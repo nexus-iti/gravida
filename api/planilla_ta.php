@@ -3,9 +3,9 @@ declare(strict_types=1);
 require_once __DIR__ . '/common.php';
 
 exigirMetodo(['GET', 'PUT', 'PATCH']);
-autorizarEndpoint('planilla_ta');
+$sesionActual=autorizarEndpoint('planilla_ta');
 
-ejecutar(function () use ($pdo): void {
+ejecutar(function () use ($pdo,$sesionActual): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta = $pdo->prepare(
             'SELECT id_plantilla, cedula, comentario_ta, horario_entrada_ta, horario_salida_ta
@@ -29,6 +29,9 @@ ejecutar(function () use ($pdo): void {
     $cedula = preg_replace('/\\D/', '', texto($datos['cedula'] ?? '', 15));
     if ($cedula === '') {
         errorApi('La cedula es obligatoria.');
+    }
+    if (($sesionActual['rol'] ?? '') !== 'Administrador' && $cedula !== (string)($sesionActual['cedula'] ?? '')) {
+        errorApi('Solo podes modificar tu propia planilla.',403);
     }
     $consulta = $pdo->prepare(
         'INSERT INTO PLANTILLA_TECNICO_ASISTENTE

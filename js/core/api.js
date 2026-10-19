@@ -1,6 +1,31 @@
 /* Archivo extraído de app.js durante la modularización. */
 
-async function solicitarApi(ruta, opciones) {
+async function renovarTokenCsrf() {
+  const respuesta = await fetch('login.php', {
+    cache: 'no-store',
+    credentials: 'same-origin',
+    headers: { Accept: 'application/json' },
+  });
+  const envoltorio = await respuesta.json();
+  const estado = envoltorio && envoltorio.status === 'success' ? envoltorio.data : envoltorio;
+  if (!respuesta.ok || !estado || !estado.autenticado || !estado.csrf) {
+    throw new Error('La sesion vencio. Volve a iniciar sesion.');
+  }
+  if (typeof obtenerUsuarioActual === 'function' && typeof guardarUsuarioActual === 'function') {
+    const usuario = obtenerUsuarioActual();
+    if (usuario) {
+      usuario.csrfToken = estado.csrf;
+      guardarUsuarioActual(usuario, {
+        persistir: typeof leerStorage === 'function'
+          ? !!leerStorage(CLAVES_STORAGE.recordarSesion, false)
+          : false,
+      });
+    }
+  }
+  return estado.csrf;
+}
+
+async function solicitarApi(ruta, opciones, reintentarCsrf = true) {
   const configuracion = Object.assign({ cache: 'no-store', credentials: 'same-origin', headers: {} }, opciones || {});
   configuracion.headers = Object.assign({ Accept: 'application/json' }, configuracion.headers || {});
   const esFormData = typeof FormData !== 'undefined' && configuracion.body instanceof FormData;
@@ -11,7 +36,9 @@ async function solicitarApi(ruta, opciones) {
   const metodo = String(configuracion.method || 'GET').toUpperCase();
   if (!['GET', 'HEAD', 'OPTIONS'].includes(metodo) && typeof obtenerUsuarioActual === 'function') {
     const usuario = obtenerUsuarioActual();
-    if (usuario && usuario.csrfToken) configuracion.headers['X-CSRF-Token'] = usuario.csrfToken;
+    if (usuario) {
+      configuracion.headers['X-CSRF-Token'] = usuario.csrfToken || await renovarTokenCsrf();
+    }
   }
   const respuesta = await fetch(ruta, configuracion);
   let datos = null;
@@ -22,6 +49,10 @@ async function solicitarApi(ruta, opciones) {
   }
   if (!respuesta.ok || (datos && datos.status === 'error')) {
     const mensaje = (datos && (datos.message || datos.error)) || 'No se pudo completar la solicitud.';
+    if (respuesta.status === 403 && /token de seguridad|sesion de seguridad/i.test(mensaje) && reintentarCsrf) {
+      configuracion.headers['X-CSRF-Token'] = await renovarTokenCsrf();
+      return solicitarApi(ruta, configuracion, false);
+    }
     if (respuesta.status === 401 && !/login\.php$/i.test(location.pathname)) {
       try { window.localStorage.removeItem('usuarioActual'); window.sessionStorage.removeItem('usuarioActual'); } catch (error) {}
     }
@@ -32,10 +63,11 @@ async function solicitarApi(ruta, opciones) {
     : datos;
 }
 
-async function solicitarLogin(identificador, contrasena) {
+async function solicitarLogin(identificador, contrasena, recordarme) {
   const datosFormulario = new URLSearchParams();
   datosFormulario.set('identificador', identificador);
   datosFormulario.set('contrasena', contrasena);
+  datosFormulario.set('recordarme', recordarme ? '1' : '0');
   const respuesta = await fetch('login.php', {
     method: 'POST',
     credentials: 'same-origin',
@@ -52,6 +84,31 @@ async function solicitarLogin(identificador, contrasena) {
     throw new Error((datos && (datos.message || datos.error)) || 'No se pudo iniciar sesion.');
   }
   return datos && datos.status === 'success' ? datos.data : datos;
+}
+
+async function solicitarCodigoSegundoFactor(codigo) {
+  const datosFormulario = new URLSearchParams();
+  datosFormulario.set('accion', 'verificar_2fa');
+  datosFormulario.set('codigo', codigo);
+  return solicitarApi('login.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: datosFormulario.toString(),
+  });
+}
+
+async function leerEstadoSesionServidor() {
+  return solicitarApi('login.php');
+}
+
+function limpiarSesionLocal() {
+  window.localStorage.removeItem(CLAVES_STORAGE.usuarioActual);
+  window.localStorage.removeItem(CLAVES_STORAGE.recordarSesion);
+  try { window.sessionStorage.removeItem(CLAVES_STORAGE.usuarioActual); } catch (error) { /* sin almacenamiento */ }
+}
+
+async function cerrarSesionServidor() {
+  try { await solicitarApi('api/logout.php', { method: 'POST' }); } catch (error) { /* limpiar igualmente */ }
 }
 
 

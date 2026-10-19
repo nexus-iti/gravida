@@ -9,6 +9,7 @@ ejecutar(function () use ($pdo, $sesionActual): void {
     $metodo = $_SERVER['REQUEST_METHOD'];
     if ($metodo === 'GET') {
         $cedula = texto($_GET['cedula'] ?? '', 15);
+        $consultaIndividual = $cedula !== '';
         $soloResponsablesTarea = texto($_GET['responsablesTarea'] ?? '', 5) === '1';
         $esAdministrador = ($sesionActual['rol'] ?? '') === 'Administrador';
         $esGestion = in_array($sesionActual['rol'] ?? '', ['Tecnico_Asistente', 'Administrador'], true);
@@ -40,7 +41,7 @@ ejecutar(function () use ($pdo, $sesionActual): void {
         $consulta = $pdo->prepare($sql);
         $consulta->execute($parametros);
         $usuarios = array_map('usuarioCliente', $consulta->fetchAll(PDO::FETCH_ASSOC));
-        responder($cedula === '' ? $usuarios : ($usuarios[0] ?? null));
+        responder($consultaIndividual ? ($usuarios[0] ?? null) : $usuarios);
     }
 
     $datos = cuerpoJson();

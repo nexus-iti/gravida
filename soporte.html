@@ -87,16 +87,16 @@
     </main>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=4.1.0"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.1.0"></script>
+    <script src="js/core/portal.js?v=4.1.0"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
     <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
-    <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=4.1.0"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
     <script>
       (async function iniciarPaginaSoporte() {
@@ -178,7 +178,7 @@
         }
         
         if (!puedeSolicitar) {
-          formSoporte.style.display = 'none';
+          formSoporte.closest('.panel').remove();
           
         }
         
@@ -263,6 +263,9 @@
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(tickets[i], opcionesEstadoTicket);
+                if (tickets[i].estado === 'Resuelto' || tickets[i].estado === 'Denegado') {
+                  acciones += '<label class="input-stack"><span>Comentario asociado</span><textarea class="textarea-input" data-comentario-ticket="' + escaparHtml(tickets[i].id) + '" placeholder="Escribi un comentario sobre la resolucion">' + escaparHtml(tickets[i].comentarioResolucion || '') + '</textarea></label><button class="boton boton--outline boton--sm" data-guardar-comentario-ticket="' + escaparHtml(tickets[i].id) + '">Guardar comentario</button>';
+                }
                 acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-ticket="' + escaparHtml(tickets[i].id) + '">Dar de baja</button>';
               }
               html += crearTarjetaDeTicket(tickets[i], acciones);
@@ -272,6 +275,16 @@
         }
         
         document.addEventListener('click', async function (evento) {
+          const botonComentario = evento.target.closest('[data-guardar-comentario-ticket]');
+          if (botonComentario && puedeGestionar) {
+            const id = botonComentario.getAttribute('data-guardar-comentario-ticket');
+            const campo = document.querySelector('[data-comentario-ticket="' + CSS.escape(id) + '"]');
+            try {
+              await guardarComentarioTicket(id, campo ? campo.value : '');
+              await renderLista();
+            } catch (error) { manejarErrorCliente(error); }
+            return;
+          }
           const botonBaja = evento.target.closest('[data-baja-ticket]');
           if (botonBaja && puedeGestionar) {
             await darDeBajaOperacion('api/incidencias.php', botonBaja.getAttribute('data-baja-ticket'));

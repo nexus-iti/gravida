@@ -1,0 +1,35 @@
+Options -Indexes
+ServerSignature Off
+
+<FilesMatch "(^\.|\.(sql|md|log|bak|old|orig|swp|ini|conf|ps1|bat|sh|json\.lock)$|^config(\.example)?\.php$|^test-api\.html$)">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$ [NC]
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+    RewriteRule ^seguridad(/|$) - [F,L]
+    RewriteCond %{REQUEST_METHOD} !^(GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS)$
+    RewriteRule ^ - [R=405,L]
+</IfModule>
+
+LimitRequestBody 3145728
+
+<IfModule mod_headers.c>
+    Header always unset X-Powered-By
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set Referrer-Policy "same-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
+    Header always set Cross-Origin-Opener-Policy "same-origin"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ui-avatars.com; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+    <FilesMatch "\.(css|js)$">
+        Header set Cache-Control "public, max-age=3600, must-revalidate"
+    </FilesMatch>
+    <FilesMatch "\.(jpe?g|png|webp|svg|ico|woff2?)$">
+        Header set Cache-Control "public, max-age=604800"
+    </FilesMatch>
+</IfModule>

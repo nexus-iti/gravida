@@ -1,4 +1,4 @@
-# SGRSI — 2da entrega 3.0
+# NEXUS — 2da entrega 4.0
 
 Sistema de Gestión de Recursos y Servicios de Informática del ITI CEPT. Permite pedir recursos, coordinar servicios, atender soporte, mantener inventario y organizar el trabajo técnico-administrativo.
 
@@ -12,12 +12,11 @@ Sistema de Gestión de Recursos y Servicios de Informática del ITI CEPT. Permit
 
 1. Clonar el repositorio NEXUS dentro de `htdocs`.
 
-2. Para una instalación nueva, importar primero `database.sql` y después
-   `migration_2_0.sql`, ambos desde phpMyAdmin.
+2. Para una instalación nueva, importar `database.sql` y luego
+   `migration_2_0.sql`, `migration_3_0.sql` y `migration_4_0.sql` desde phpMyAdmin.
 
-   Si ya existe la base de la segunda entrega, conservarla e importar solamente
-   `migration_2_0.sql`. La migración es repetible: comprueba la existencia de
-   columnas antes de agregarlas.
+   Si ya existe la base de la versión 3.0, conservarla e importar solamente
+   `migration_4_0.sql`.
 
 3. Copiar la configuración de ejemplo:
 
@@ -27,11 +26,15 @@ Sistema de Gestión de Recursos y Servicios de Informática del ITI CEPT. Permit
 
 4. Iniciar Apache y MySQL.
 
-5. Abrir `http://localhost/NEXUS/proyecto%202da%20entrega%203.0/`.
+5. Abrir `http://localhost/proyecto%202da%20entrega%204.0/`.
 
-## Seguridad y API en la versión 3.0
+## Seguridad y API en la versión 4.0
 
-- Sesiones PHP con cookie `HttpOnly` y `SameSite=Lax`.
+- Sesiones PHP estrictas con cookie `HttpOnly`, `SameSite=Strict`, rotación y vencimiento.
+- Segundo factor TOTP obligatorio para administradores y opcional para otros roles.
+- Bloqueo de fuerza bruta, límites de solicitudes y auditoría de eventos.
+- Cierre de otras sesiones, historial de accesos y cambio seguro de contraseña.
+- Recodificación de fotos y protección web de archivos sensibles.
 - Autorización por rol aplicada en el servidor.
 - Protección CSRF en las operaciones autenticadas que modifican datos.
 - Contrato JSON uniforme: `status`, `message` y `data`.
@@ -42,7 +45,7 @@ Sistema de Gestión de Recursos y Servicios de Informática del ITI CEPT. Permit
 - Filtrado de incidencias, préstamos y servicios en el servidor según el usuario autenticado.
 - Cierre de sesión real mediante `api/logout.php`.
 
-Las pantallas y su diseño se mantienen respecto de la versión 2.0. Los cambios se concentran en la comunicación entre el navegador y PHP.
+Las funciones de la versión 3.0 se conservan. Los detalles, decisiones y límites del merge están en `INTEGRACION_CIBERSEGURIDAD_4_0.md` y `SEGURIDAD_4_0.md`.
 
 ## Alcance funcional heredado de la versión 2.0
 

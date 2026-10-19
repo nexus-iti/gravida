@@ -108,139 +108,82 @@
           </div>
         </section>
       </section>
+      <!-- F-08 (3ra entrega): herramientas contra el phishing y el robo de cuentas -->
+      <section class="panel account-security-panel regla-diseno-032" id="panel-seguridad">
+        <div class="panel__header regla-diseno-009">
+          <div>
+            <h2 class="panel__title regla-diseno-010">Seguridad de la cuenta</h2>
+            <p class="seguridad-nota">
+              Protege tu cuenta aunque alguien consiga tu contrasena con un correo o una pagina falsa.
+            </p>
+          </div>
+        </div>
+        <div class="panel__body regla-diseno-012">
+          <div id="mensaje-seguridad"></div>
+          <div class="seguridad-grid">
+            <article class="seguridad-bloque">
+              <h3 class="seguridad-bloque__titulo">Verificacion en dos pasos</h3>
+              <div id="bloque-2fa"><p class="seguridad-nota">Cargando...</p></div>
+            </article>
+            <article class="seguridad-bloque">
+              <h3 class="seguridad-bloque__titulo">Cambiar contrasena</h3>
+              <form id="form-contrasena" class="seguridad-form">
+                <div class="input-stack regla-diseno-025">
+                  <label for="contrasena-actual">Contrasena actual</label>
+                  <input class="text-input regla-diseno-026" id="contrasena-actual" type="password" autocomplete="current-password" required />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="contrasena-nueva">Contrasena nueva</label>
+                  <input class="text-input regla-diseno-026" id="contrasena-nueva" type="password" autocomplete="new-password" minlength="8" required />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="contrasena-repetir">Repeti la contrasena nueva</label>
+                  <input class="text-input regla-diseno-026" id="contrasena-repetir" type="password" autocomplete="new-password" minlength="8" required />
+                </div>
+                <button class="boton boton--primary boton--sm" type="submit">Cambiar contrasena</button>
+              </form>
+            </article>
+            <article class="seguridad-bloque seguridad-bloque--ancho">
+              <div class="seguridad-bloque__cabecera">
+                <h3 class="seguridad-bloque__titulo">Actividad reciente</h3>
+                <button class="boton boton--outline-danger boton--sm" id="boton-cerrar-sesiones" type="button">
+                  Cerrar todas las otras sesiones
+                </button>
+              </div>
+              <p class="seguridad-nota">
+                Si ves un ingreso que no reconoces, cambia la contrasena y cerra las demas sesiones.
+              </p>
+              <div id="tabla-actividad"></div>
+            </article>
+            <article class="seguridad-bloque" id="bloque-admin-2fa" hidden>
+              <h3 class="seguridad-bloque__titulo">Restablecer verificacion de otro usuario</h3>
+              <p class="seguridad-nota">Para quien perdio el telefono. Tambien cierra sus sesiones.</p>
+              <form id="form-restablecer-2fa" class="seguridad-form">
+                <div class="input-stack regla-diseno-025">
+                  <label for="cedula-restablecer">Cedula</label>
+                  <input class="text-input regla-diseno-026" id="cedula-restablecer" type="text" inputmode="numeric" pattern="[0-9.\-]{6,15}" required />
+                </div>
+                <button class="boton boton--outline-danger boton--sm" type="submit">Restablecer</button>
+              </form>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.0.1"></script>
+    <script src="js/core/portal.js?v=4.0.1"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
     <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
     <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/modules/seguridad-cuenta.js"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
-    <script>
-      
-      if (protegerRuta()) {
-        
-        mostrarEn(
-          'cabecera-superior',
-          crearCabeceraCompleta([
-            { etiqueta: 'Home', enlace: 'home.html' },
-            { etiqueta: 'Cuenta' },
-          ]),
-        );
-        mostrarEn(
-          'cabecera-de-pagina',
-          crearCabeceraDePagina({
-            titulo: 'Cuenta',
-            subtitulo:
-              'Revisa tu informacion personal, actualiza tu foto y deja claro desde que area trabajas.',
-          }),
-        );
-        
-        const formCuenta = document.getElementById('form-cuenta');
-        const mensajeCuenta = document.getElementById('mensaje-cuenta');
-        const camposCuenta = {
-          nombre: document.getElementById('cuenta-nombre'),
-          correo: document.getElementById('cuenta-correo'),
-          rol: document.getElementById('cuenta-rol'),
-          area: document.getElementById('cuenta-area'),
-          descripcion: document.getElementById('cuenta-descripcion'),
-          fechaRegistro: document.getElementById('cuenta-fecha-registro'),
-          foto: document.getElementById('cuenta-foto'),
-        };
-        
-        function mostrarMensaje(texto, tipo) {
-          mostrarMensajeFormulario(mensajeCuenta, texto, tipo);
-        }
-        
-        function renderPerfil() {
-          const usuarioActual = obtenerUsuarioActual();
-          const avatarGrande = usuarioActual.fotoPerfil
-            ? '<img class="profile-card__avatar" src="' +
-              escaparHtml(usuarioActual.fotoPerfil) +
-              '" alt="Foto de perfil" />'
-            : '<span class="profile-card__avatar-fallback">' +
-              crearIcono('user', 'icon-lg') +
-              '</span>';
-          mostrarEn(
-            'perfil-resumen',
-              ` <article class="profile-card regla-diseno-037"> <div class="profile-card__cover regla-diseno-038"> ${avatarGrande} <h2 class="profile-card__name regla-diseno-039">${escaparHtml(usuarioActual.nombreCompleto)}</h2> <p class="profile-card__role regla-diseno-011">${escaparHtml(obtenerEtiquetaRol(usuarioActual.rol))} | ${escaparHtml(usuarioActual.correo)}</p> </div> <div class="profile-card__body regla-diseno-012"> <button class="boton boton--outline profile-card__logout regla-diseno-005" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span data-clave="cerrar_sesion">Cerrar sesion</span> </button> </div> </article> `,
-          );
-          camposCuenta.nombre.value = usuarioActual.nombreCompleto || '';
-          camposCuenta.correo.value = usuarioActual.correo || '';
-          camposCuenta.rol.value = obtenerEtiquetaRol(usuarioActual.rol) || '';
-          camposCuenta.area.value = usuarioActual.area || '';
-          camposCuenta.descripcion.value = usuarioActual.descripcion || '';
-          camposCuenta.fechaRegistro.value = usuarioActual.fechaRegistro
-            ? formatearFechaHumana(usuarioActual.fechaRegistro)
-            : '';
-        }
-
-        camposCuenta.foto.addEventListener('change', async function () {
-          const archivo = camposCuenta.foto.files && camposCuenta.foto.files[0];
-          if (!archivo) {
-            return;
-          }
-          try {
-            await subirFotoPerfil(archivo);
-            mostrarMensaje('Foto de perfil actualizada.', 'success');
-            renderPerfil();
-            mostrarEn(
-              'cabecera-superior',
-              crearCabeceraCompleta([
-                { etiqueta: 'Home', enlace: 'home.html' },
-                { etiqueta: 'Cuenta' },
-              ]),
-            );
-            dibujarIconos();
-          } catch (error) {
-            manejarErrorCliente(error, mostrarMensaje);
-          } finally {
-            camposCuenta.foto.value = '';
-          }
-        });
-        
-        formCuenta.addEventListener('submit', async function (evento) {
-          evento.preventDefault();
-          if (!validarFormularioCliente(formCuenta, mostrarMensaje)) {
-            return;
-          }
-          try {
-            await actualizarPerfil({
-              nombreCompleto: camposCuenta.nombre.value.trim(),
-              correo: camposCuenta.correo.value.trim(),
-              area: camposCuenta.area.value.trim(),
-              descripcion: camposCuenta.descripcion.value.trim(),
-            });
-            mostrarMensaje(
-              'Perfil actualizado. Tus nuevos datos ya estan visibles en la cuenta.',
-              'success',
-            );
-            renderPerfil();
-            mostrarEn(
-              'cabecera-superior',
-              crearCabeceraCompleta([
-                { etiqueta: 'Home', enlace: 'home.html' },
-                { etiqueta: 'Cuenta' },
-              ]),
-            );
-            dibujarIconos();
-          } catch (error) {
-            manejarErrorCliente(error, mostrarMensaje);
-          }
-        });
-        
-        renderPerfil();
-        dibujarIconos();
-      }
-    </script>
+    <script src="js/paginas/cuenta.js"></script>
   </body>
 </html>
-
-
-

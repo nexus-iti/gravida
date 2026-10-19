@@ -204,6 +204,20 @@ async function actualizarEstadoSolicitud(idSolicitud, nuevoEstado) {
   );
 }
 
+async function guardarComentarioTicket(idTicket, comentario) {
+  return solicitarApi('api/incidencias.php', {
+    method: 'PATCH',
+    body: JSON.stringify({ accion: 'comentar', id: idTicket, comentario: comentario }),
+  });
+}
+
+async function guardarComentarioPrestamo(idPrestamo, comentario) {
+  return solicitarApi('api/prestamos.php', {
+    method: 'PATCH',
+    body: JSON.stringify({ accion: 'comentar', id: idPrestamo, comentario: comentario }),
+  });
+}
+
 async function darDeBajaOperacion(ruta, id) {
   return solicitarApi(ruta, { method: 'DELETE', body: JSON.stringify({ id: id }) });
 }

@@ -109,16 +109,16 @@
     </main>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=4.1.0"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.1.0"></script>
+    <script src="js/core/portal.js?v=4.1.0"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
     <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
-    <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=4.1.0"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
     <script>
       (async function iniciarPaginaPrestamos() {
@@ -201,7 +201,7 @@
         }
         
         if (!puedeSolicitar) {
-          formPrestamo.style.display = 'none';
+          formPrestamo.closest('.panel').remove();
           
         }
         
@@ -345,6 +345,9 @@
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(prestamos[i], opcionesEstadoPrestamo);
+                if (prestamos[i].estado === 'Aprobado' || prestamos[i].estado === 'Denegado' || prestamos[i].estado === 'Devuelto') {
+                  acciones += '<label class="input-stack"><span>Comentario asociado</span><textarea class="textarea-input" data-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '" placeholder="Escribi un comentario sobre el prestamo">' + escaparHtml(prestamos[i].comentarioResolucion || '') + '</textarea></label><button class="boton boton--outline boton--sm" data-guardar-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '">Guardar comentario</button>';
+                }
                 acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-prestamo="' + escaparHtml(prestamos[i].id) + '">Dar de baja</button>';
               }
               html += crearTarjetaDePrestamo(prestamos[i], acciones);
@@ -354,6 +357,16 @@
         }
         
         document.addEventListener('click', async function (evento) {
+          const botonComentario = evento.target.closest('[data-guardar-comentario-prestamo]');
+          if (botonComentario && puedeGestionar) {
+            const id = botonComentario.getAttribute('data-guardar-comentario-prestamo');
+            const campo = document.querySelector('[data-comentario-prestamo="' + CSS.escape(id) + '"]');
+            try {
+              await guardarComentarioPrestamo(id, campo ? campo.value : '');
+              await renderListaPrestamos();
+            } catch (error) { manejarErrorCliente(error); }
+            return;
+          }
           const botonBaja = evento.target.closest('[data-baja-prestamo]');
           if (botonBaja && puedeGestionar) {
             await darDeBajaOperacion('api/prestamos.php', botonBaja.getAttribute('data-baja-prestamo'));

@@ -5,7 +5,8 @@ require_once __DIR__ . '/common.php';
 function estadoTareaBase(string $estado): string {
     return match (texto($estado, 20)) {
         'Pendiente' => 'Pendiente',
-        'En curso', 'En revision', 'En proceso' => 'En proceso',
+        'En curso', 'En proceso' => 'En curso',
+        'En revision' => 'En revision',
         'Completado', 'Completada' => 'Completada',
         default => errorApi('Estado de tarea no valido.'),
     };
@@ -39,11 +40,11 @@ autorizarEndpoint('tareas');
 ejecutar(function () use ($pdo): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta = $pdo->prepare(
-            'SELECT t.id_tarea, t.titulo_tarea, t.descripcion_tarea, t.plazo_tarea, t.categoria_tarea,
+            'SELECT t.id_tarea, t.titulo_tarea, t.descripcion_tarea, t.plazo_tarea, t.categoria_tarea, t.dificultad_tarea,
                     t.estado_tarea, t.color_tarea, t.fecha_agregada, MIN(rt.cedula) AS tecnico_cedula
              FROM TAREAS t LEFT JOIN REALIZA_TAREA rt ON rt.id_tarea = t.id_tarea
              GROUP BY t.id_tarea, t.titulo_tarea, t.descripcion_tarea, t.plazo_tarea, t.categoria_tarea,
-                      t.estado_tarea, t.color_tarea, t.fecha_agregada
+                      t.dificultad_tarea, t.estado_tarea, t.color_tarea, t.fecha_agregada
              ORDER BY t.plazo_tarea, t.id_tarea DESC'
         );
         $consulta->execute();
@@ -55,7 +56,7 @@ ejecutar(function () use ($pdo): void {
                 'estado' => estadoTareaCliente($fila['estado_tarea']), 'color' => $fila['color_tarea'] ?: '#16A34A',
                 'fechaAgregada' => $fila['fecha_agregada'], 'plazoInicio' => $fila['plazo_tarea'],
                 'plazoFin' => $fila['plazo_tarea'], 'tecnicoId' => (string) ($fila['tecnico_cedula'] ?? ''),
-                'dificultad' => 'Media',
+                'dificultad' => $fila['dificultad_tarea'] ?: 'Media',
             ];
         }
         responder($tareas);
@@ -93,7 +94,10 @@ ejecutar(function () use ($pdo): void {
     $plazo = fecha($datos['plazoFin'] ?? ($datos['plazoInicio'] ?? ''), 'plazoFin', true);
     $valores = [
         $titulo, texto($datos['descripcion'] ?? '', 65535), $plazo,
-        texto($datos['categoria'] ?? 'Otro', 60), estadoTareaBase((string) ($datos['estado'] ?? 'Pendiente')),
+        texto($datos['categoria'] ?? 'Otro', 60),
+        in_array(texto($datos['dificultad'] ?? 'Media', 10), ['Baja', 'Media', 'Alta'], true)
+            ? texto($datos['dificultad'] ?? 'Media', 10) : 'Media',
+        estadoTareaBase((string) ($datos['estado'] ?? 'Pendiente')),
         texto($datos['color'] ?? '#16A34A', 7), $tecnico,
     ];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -101,9 +105,9 @@ ejecutar(function () use ($pdo): void {
         try {
             $consulta = $pdo->prepare(
                 'INSERT INTO TAREAS (titulo_tarea, descripcion_tarea, plazo_tarea, categoria_tarea,
-                 estado_tarea, color_tarea, fecha_agregada) VALUES (?, ?, ?, ?, ?, ?, CURDATE())'
+                 dificultad_tarea, estado_tarea, color_tarea, fecha_agregada) VALUES (?, ?, ?, ?, ?, ?, ?, CURDATE())'
             );
-            $consulta->execute(array_slice($valores, 0, 6));
+            $consulta->execute(array_slice($valores, 0, 7));
             $id = (int) $pdo->lastInsertId();
             if ($tecnico !== '') {
                 $asignar = $pdo->prepare('INSERT INTO REALIZA_TAREA (cedula, id_tarea) VALUES (?, ?)');
@@ -122,10 +126,12 @@ ejecutar(function () use ($pdo): void {
     try {
         $actualizar = $pdo->prepare(
             'UPDATE TAREAS SET titulo_tarea = ?, descripcion_tarea = ?, plazo_tarea = ?, categoria_tarea = ?,
-             estado_tarea = ?, color_tarea = ? WHERE id_tarea = ?'
+             dificultad_tarea = ?, estado_tarea = ?, color_tarea = ? WHERE id_tarea = ?'
         );
-        $actualizar->execute([...array_slice($valores, 0, 6), $id]);
-        if ($actualizar->rowCount() === 0) {
+        $actualizar->execute([...array_slice($valores, 0, 7), $id]);
+        $existe = $pdo->prepare('SELECT 1 FROM TAREAS WHERE id_tarea = ?');
+        $existe->execute([$id]);
+        if (!$existe->fetchColumn()) {
             $pdo->rollBack();
             errorApi('No existe la tarea indicada.', 404);
         }

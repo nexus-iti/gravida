@@ -84,16 +84,16 @@
     </main>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=4.1.0"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.1.0"></script>
+    <script src="js/core/portal.js?v=4.1.0"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
     <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
-    <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/modules/operaciones.js?v=4.1.0"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
     <script>
       (async function iniciarPaginaSolicitudes() {
@@ -185,7 +185,7 @@
         }
         
         if (!puedeSolicitar) {
-          formSolicitud.style.display = 'none';
+          formSolicitud.closest('.panel').remove();
       
         }
         
@@ -202,11 +202,12 @@
           }
         }
         
-        function renderTipos() {
+        async function renderTipos() {
+          const tiposDisponibles = await solicitarApi('api/catalogos.php?tipo=servicio_disponible');
           let opciones = '<option value="" data-clave="elegir_tipo_servicio">Elegir tipo de servicio</option>';
-          for (let i = 0; i < tiposDeSolicitud.length; i++) {
+          for (let i = 0; i < tiposDisponibles.length; i++) {
             opciones +=
-              '<option value="' + tiposDeSolicitud[i] + '">' + tiposDeSolicitud[i] + '</option>';
+              '<option value="' + escaparHtml(tiposDisponibles[i].nombre) + '">' + escaparHtml(tiposDisponibles[i].nombre) + '</option>';
           }
           selectTipo.innerHTML = opciones;
           inicializarSelectsPersonalizados(selectTipo);
@@ -342,7 +343,7 @@
           }
         });
 
-        renderTipos();
+        await renderTipos();
         await renderLugares();
         actualizarTituloPanel();
         await renderFiltrosSolicitudes();

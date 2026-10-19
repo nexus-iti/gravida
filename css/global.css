@@ -117,8 +117,22 @@
   to { transform: translateY(0); opacity: 1; }
 }
 * {
-    box-sizing: border-box;
-  }
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+.report-tray + .report-tray { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--color-borde-suave); }
+.resolved-folder { margin-top: 18px; border: 1px solid var(--color-borde-medio); border-radius: 12px; overflow: hidden; background:var(--color-fondo-tarjeta); }
+.resolved-folder summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 18px; cursor: pointer; font-weight: 700; background: var(--color-fondo-hover); list-style:none; user-select:none; }
+.resolved-folder summary::-webkit-details-marker { display:none; }
+.resolved-folder__title { display:flex; align-items:center; gap:10px; }
+.resolved-folder__chevron { display:inline-grid; place-items:center; width:22px; height:22px; color:var(--color-primario); font-size:25px; line-height:1; transition:transform var(--transicion-media); }
+.resolved-folder[open] .resolved-folder__chevron { transform:rotate(90deg); }
+.resolved-folder[open] summary { border-bottom: 1px solid #c4c6cf; }
+.resolved-folder > .activity-stack { padding: 16px; background:var(--color-fondo-pagina); }
 
   *::before {
     box-sizing: border-box;
@@ -3394,6 +3408,42 @@
     object-fit: cover;
   }
 
+  .auth-visual-card--administrative {
+    background: #e7f1f4;
+  }
+
+  .auth-visual-card img.auth-visual-card__administrative-image {
+    display: block;
+    object-position: center;
+  }
+
+  .auth-visual-card--administrative::after {
+    display: none;
+  }
+
+.recovery-page { min-height: 100vh; background: radial-gradient(circle at 82% 4%, rgba(26,115,232,.12), transparent 28rem), linear-gradient(180deg,#f8fbff 0,#eef3f8 100%); }
+.recovery-shell { width: min(1100px, calc(100% - 32px)); margin: 0 auto; padding: 24px 0 56px; }
+.recovery-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 56px; }
+.recovery-header .public-brand strong { color: #002244; }
+.recovery-header .public-brand small { color: #596574; }
+.recovery-intro { display:grid; grid-template-columns:minmax(0,1.35fr) minmax(260px,.65fr); gap:40px; align-items:end; margin-bottom:32px; padding:32px; border:1px solid #dbe5ef; border-radius:20px; background:rgba(255,255,255,.82); box-shadow:0 18px 50px rgba(22,50,79,.08); }
+.recovery-intro__copy { max-width:700px; }
+.recovery-intro h1 { margin: 14px 0 10px; color: #0d1c2e; font-size: clamp(32px, 5vw, 48px); }
+.recovery-intro p, .recovery-card .panel__header p { color: #596574; line-height: 1.55; }
+.recovery-intro__steps { display:grid; gap:10px; }
+.recovery-intro__steps span { display:flex; align-items:center; gap:10px; color:#30445a; font-weight:600; }
+.recovery-intro__steps b { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; color:#fff; background:#0b63ce; }
+.recovery-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.recovery-card { overflow: hidden; border-color:#dbe5ef; box-shadow:0 12px 32px rgba(22,50,79,.07); }
+.recovery-card .panel__header { background: #f8fafc; }
+.recovery-card .auth-form { gap: 18px; }
+.recovery-result { display:grid; gap:8px; margin-top:18px; }
+.recovery-code { display:block; width:max-content; padding:8px 12px; border-radius:8px; background:#eaf3ff; color:#064f9e; font-size:18px; letter-spacing:.06em; }
+.recovery-credential { display: grid; gap: 8px; margin-top: 10px; padding: 18px; border: 1px solid #8fc5cc; border-radius: 12px; background: #fff; }
+.recovery-credential strong { width:max-content; padding:10px 14px; border:1px dashed #71aab3; border-radius:8px; background:#f5fbfc; font-size:22px; letter-spacing:.06em; user-select:all; }
+.recovery-credential__actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:6px; }
+@media (max-width: 760px) { .recovery-grid,.recovery-intro { grid-template-columns: 1fr; } .recovery-header { align-items: flex-start; flex-direction: column; margin-bottom: 36px; } .recovery-intro { padding:24px; } }
+
   .auth-visual-card img.auth-visual-card__icon {
     width: clamp(150px, 38%, 220px);
     height: auto;
@@ -5910,3 +5960,261 @@
 .regla-diseno-157 { display: flex; min-height: 16rem; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; border-radius: var(--radio-borde-grande); border: 1px solid var(--color-borde-suave); padding: 2rem; text-align: center; }
 .regla-diseno-158 { max-width: 20rem; font-size: 0.875rem; line-height: 1.25rem; line-height: 1.5rem; }
 .regla-diseno-159 { display: flex; max-height: 100vh; width: 100%; max-width: 32rem; flex-direction: column; border-radius: var(--radio-borde-extra-grande); box-shadow: var(--sombra-modal); }
+
+/* ---------- 3ra entrega: seguridad (F-08 phishing) ---------- */
+.auth-2fa[hidden],
+.auth-form[hidden],
+.auth-2fa__activar[hidden],
+.seguridad-bloque[hidden] {
+  display: none !important;
+}
+
+.auth-2fa__activar {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--color-primario-borde);
+  border-radius: var(--radio-borde-medio);
+  background: var(--color-fondo-seleccionado);
+  color: var(--color-texto-principal);
+}
+
+.auth-2fa__titulo {
+  margin: 0;
+  font-weight: 700;
+}
+
+.auth-2fa__pasos,
+.seguridad-pasos {
+  margin: 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 4px;
+  color: var(--color-texto-secundario);
+}
+
+.auth-2fa__secreto {
+  display: block;
+  padding: 10px 12px;
+  border-radius: var(--radio-borde-pequeno);
+  background: var(--color-fondo-tarjeta);
+  border: 1px dashed var(--color-borde-medio);
+  font-family: Consolas, 'Courier New', monospace;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  word-break: break-all;
+  user-select: all;
+  color: var(--color-texto-principal);
+}
+
+.auth-2fa__enlace {
+  color: var(--color-primario);
+  font-weight: 600;
+}
+
+.auth-2fa__nota,
+.seguridad-nota {
+  margin: 0;
+  color: var(--color-texto-secundario);
+  font-size: 0.9rem;
+}
+
+.auth-2fa__volver {
+  background: none;
+  border: none;
+  color: var(--color-primario);
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.auth-dominio {
+  display: block;
+  margin: 8px 0 4px;
+  color: var(--color-texto-principal);
+  word-break: break-all;
+}
+
+.aviso-seguridad {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-primario-borde);
+  border-radius: var(--radio-borde-medio);
+  background: var(--color-fondo-seleccionado);
+  color: var(--color-primario-texto);
+}
+
+.aviso-seguridad p {
+  margin: 0;
+  flex: 1;
+}
+
+.aviso-seguridad a {
+  color: inherit;
+  font-weight: 700;
+}
+
+.aviso-seguridad__cerrar {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+}
+
+[data-tema="oscuro"] .aviso-seguridad,
+[data-tema="oscuro"] .auth-2fa__activar {
+  color: var(--color-texto-principal);
+}
+
+.account-security-panel {
+  margin-top: 24px;
+}
+
+.seguridad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 16px;
+}
+
+.seguridad-bloque {
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-borde-grande);
+  background: var(--color-fondo-tarjeta);
+  min-width: 0;
+}
+
+.seguridad-bloque--ancho {
+  grid-column: 1 / -1;
+}
+
+.seguridad-bloque__cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.seguridad-bloque__titulo {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--color-texto-principal);
+}
+
+.seguridad-form {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.seguridad-form .input-stack {
+  width: 100%;
+}
+
+.seguridad-estado {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.seguridad-estado--ok {
+  color: var(--color-exito-texto);
+}
+
+.seguridad-estado--alerta {
+  color: var(--color-advertencia);
+}
+
+.seguridad-tabla {
+  min-width: 0;
+}
+
+.seguridad-fila--alerta td {
+  color: var(--color-peligro-texto);
+}
+
+/* La pagina de cuenta usa un diseno oscuro propio: el panel de seguridad lo acompana. */
+.account-redesign .account-security-panel {
+  background: #0d1421;
+  border-color: rgba(255, 255, 255, 0.06);
+  border-radius: 24px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+}
+
+.account-redesign .account-security-panel .panel__title,
+.account-redesign .seguridad-bloque__titulo,
+.account-redesign .auth-2fa__secreto {
+  color: #ffffff;
+}
+
+.account-redesign .seguridad-nota,
+.account-redesign .seguridad-pasos {
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.account-redesign .seguridad-bloque {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.account-redesign .auth-2fa__secreto {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.account-redesign .auth-2fa__enlace {
+  color: #93c5fd;
+}
+
+.account-redesign .seguridad-estado--ok {
+  color: #4ade80;
+}
+
+.account-redesign .seguridad-estado--alerta {
+  color: #fbbf24;
+}
+
+.account-redesign .seguridad-tabla {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.account-redesign .seguridad-tabla thead th {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.account-redesign .seguridad-tabla td {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.account-redesign .seguridad-fila--alerta td {
+  color: #fca5a5;
+}
+
+.account-redesign .seguridad-tabla tbody tr:nth-child(n),
+.account-redesign .seguridad-tabla tbody tr:nth-child(n) td {
+  background: transparent;
+}
+
+.account-redesign .seguridad-tabla tbody tr:nth-child(even) td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.auth-dominio__valor {
+  font-style: normal;
+  color: var(--color-primario);
+}

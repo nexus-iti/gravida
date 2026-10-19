@@ -37,8 +37,24 @@ function manejarErrorCliente(error, mostrarMensaje, mensaje) {
   if (window.console && typeof window.console.error === 'function') {
     window.console.error(error);
   }
+  const texto = mensaje || (error && error.message) || 'No se pudo completar la accion. Intenta nuevamente.';
   if (typeof mostrarMensaje === 'function') {
-    mostrarMensaje(mensaje || 'No se pudo completar la accion. Intenta nuevamente.', 'error');
+    mostrarMensaje(texto, 'error');
+    return;
+  }
+  // Varias pantallas operativas no tienen un contenedor propio. En esos casos se
+  // muestra igualmente el error en la parte superior, en lugar de fallar en silencio.
+  let destino = document.getElementById('mensaje-global-operacion');
+  if (!destino) {
+    destino = document.createElement('div');
+    destino.id = 'mensaje-global-operacion';
+    destino.setAttribute('role', 'alert');
+    const principal = document.querySelector('main');
+    if (principal) principal.insertBefore(destino, principal.firstChild);
+  }
+  if (destino) {
+    mostrarMensajeFormulario(destino, texto, 'error');
+    destino.scrollIntoView({ block: 'start', behavior: 'smooth' });
   }
 }
 
@@ -201,7 +217,9 @@ function usuarioEsPersonalDelPlantel(usuario) {
 }
 
 async function obtenerPersonalDelPlantel() {
-  const usuarios = await obtenerUsuariosRegistrados();
+  // Esta consulta está habilitada para técnicos y administradores y devuelve
+  // exclusivamente el plantel que puede participar en tareas/planillas.
+  const usuarios = await obtenerResponsablesTareaRegistrados();
   const personal = [];
   for (let i = 0; i < usuarios.length; i++) {
     if (usuarioEsPersonalDelPlantel(usuarios[i])) {

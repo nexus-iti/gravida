@@ -1,18 +1,9 @@
 <?php
 declare(strict_types=1);
 
-header('Content-Type: application/json; charset=utf-8');
-header('X-Content-Type-Options: nosniff');
-
-if (session_status() !== PHP_SESSION_ACTIVE) {
-    session_set_cookie_params([
-        'httponly' => true,
-        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-        'samesite' => 'Lax',
-        'path' => '/',
-    ]);
-    session_start();
-}
+require_once dirname(__DIR__) . '/seguridad/bootstrap.php';
+segFiltroTemprano();
+segIniciarSesion();
 
 $config = dirname(__DIR__) . '/config.php';
 if (!is_file($config)) {
@@ -25,6 +16,11 @@ if (!is_file($config)) {
     exit;
 }
 require_once $config;
+
+// La identidad y el rol se vuelven a leer en cada solicitud. Esto invalida de inmediato
+// cuentas desactivadas, cambios de rol y sesiones cerradas desde otro dispositivo.
+$SEG_PDO = $pdo;
+segCargarUsuario($pdo);
 
 function responder($datos = null, int $estado = 200, string $mensaje = ''): void {
     http_response_code($estado);
@@ -50,10 +46,7 @@ function errorApi(string $mensaje, int $estado = 400): void {
 }
 
 function usuarioSesion(): ?array {
-    if (empty($_SESSION['usuario']) || !is_array($_SESSION['usuario'])) {
-        return null;
-    }
-    return $_SESSION['usuario'];
+    return segUsuario();
 }
 
 function exigirSesion(): array {
@@ -73,13 +66,17 @@ function exigirRol(array $roles): array {
 }
 
 function tokenCsrf(): string {
-    if (empty($_SESSION['csrf'])) {
-        $_SESSION['csrf'] = bin2hex(random_bytes(32));
-    }
-    return (string) $_SESSION['csrf'];
+    return segCsrf();
 }
 
 function exigirCsrf(): void {
+    $origen = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
+    if ($origen !== '') {
+        $hostOrigen = parse_url($origen, PHP_URL_HOST) . (parse_url($origen, PHP_URL_PORT) ? ':' . parse_url($origen, PHP_URL_PORT) : '');
+        if (strcasecmp($hostOrigen, (string) ($_SERVER['HTTP_HOST'] ?? '')) !== 0) {
+            errorApi('Origen de la solicitud no permitido.', 403);
+        }
+    }
     $recibido = (string) ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
     $esperado = (string) ($_SESSION['csrf'] ?? '');
     if ($esperado === '' || $recibido === '' || !hash_equals($esperado, $recibido)) {
@@ -94,12 +91,17 @@ function autorizarEndpoint(string $recurso): ?array {
         ($recurso === 'recuperacion' && $metodo === 'POST') ||
         ($recurso === 'reportes_error' && $metodo === 'POST');
     if ($publica) {
+        if ($recurso === 'solicitudes_registro') {
+            segExigirRegistroAbierto();
+            segLimitarPeticiones('registro', SEG_REGISTROS_POR_HORA, 3600, true);
+        }
         return null;
     }
     $usuario = exigirSesion();
     $administrador = ['Administrador'];
     $gestion = ['Tecnico_Asistente', 'Administrador'];
-    if (in_array($recurso, ['catalogos', 'configuracion', 'solicitudes_registro'], true)
+    if ((in_array($recurso, ['catalogos', 'configuracion'], true) && $metodo !== 'GET')
+        || $recurso === 'solicitudes_registro'
         || ($recurso === 'usuarios' && in_array($metodo, ['POST', 'DELETE'], true))
         || ($recurso === 'cambios_rol' && $metodo !== 'POST')) {
         $usuario = exigirRol($administrador);
@@ -109,6 +111,8 @@ function autorizarEndpoint(string $recurso): ?array {
         $usuario = exigirRol($gestion);
     } elseif (in_array($recurso, ['equipos', 'ubicaciones', 'tareas'], true) && $metodo !== 'GET') {
         $usuario = exigirRol($gestion);
+    } elseif (in_array($recurso, ['incidencias', 'prestamos', 'servicios'], true) && $metodo === 'POST') {
+        $usuario = exigirRol(['Solicitante', 'Administrador']);
     } elseif (in_array($recurso, ['incidencias', 'prestamos', 'servicios'], true)
         && in_array($metodo, ['PUT', 'PATCH', 'DELETE'], true)) {
         $usuario = exigirRol($gestion);
@@ -116,6 +120,7 @@ function autorizarEndpoint(string $recurso): ?array {
     if (!in_array($metodo, ['GET', 'HEAD', 'OPTIONS'], true)) {
         exigirCsrf();
     }
+    segLimitarPeticiones('api-usuario-' . ($usuario['cedula'] ?? 'anonimo'), SEG_API_PETICIONES_POR_MINUTO, 60);
     return $usuario;
 }
 

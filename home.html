@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/global.css" />
+    <link rel="stylesheet" href="css/global.css?v=4.1.4" />
 </head>
   <body data-section="home" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -18,6 +18,7 @@
       <section id="hero-home"></section>
       <div id="mensaje-kanban"></div>
       <section class="calendar-toolbar regla-diseno-002" id="kanban-toolbar">
+        <div><strong>Tablero del equipo técnico</strong><p>Organiza y asigna las tareas internas.</p></div>
         <button
           class="boton boton--primary regla-diseno-005"
           type="button"
@@ -40,7 +41,7 @@
         </article>
       </section>
       <section class="panel-grid panel-grid--single regla-diseno-007" id="gestion-reportes-2" hidden>
-        <article class="panel"><div class="panel__header"><div><h2 class="panel__title">Reportes y recuperación de acceso</h2></div><a class="boton boton--outline" id="enlace-administracion" href="administracion.html">Administración</a></div><div class="panel__body"><div id="lista-reportes-2"></div></div></article>
+        <article class="panel"><div class="panel__header"><div><h2 class="panel__title">Reportes y recuperación de acceso</h2><p>Revisa cada solicitud antes de tomar una decisión.</p></div><a class="boton boton--outline" id="enlace-administracion" href="administracion.html" hidden>Administración</a></div><div class="panel__body"><div id="lista-reportes-2"></div></div></article>
       </section>
     </main>
     <div
@@ -195,20 +196,21 @@
     </div>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
-    <script src="js/componentes.js?v=responsive"></script>
+    <script src="js/componentes.js?v=4.1.0"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.1.0"></script>
+    <script src="js/core/portal.js?v=4.1.0"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
-    <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
-    <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/modules/tareas-planilla.js?v=4.1.0"></script>
+    <script src="js/modules/operaciones.js?v=4.1.0"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
     <script>
       (async function iniciarHome() {
       if (protegerRuta()) {
+        await verificarSesionEnServidor();
         await Promise.all([obtenerUsuariosRegistrados(), obtenerResponsablesTareaRegistrados()]);
         const usuarioActual = obtenerUsuarioActual();
         const puedeVerKanban = usuarioPuedeAccederACalendarioTA(usuarioActual);
@@ -595,9 +597,12 @@
     (async function iniciarGestionReportes2(){
       const usuario=obtenerUsuarioActual();if(!usuario||!usuarioPuedeGestionarOperaciones(usuario))return;
       const panel=document.getElementById('gestion-reportes-2');panel.hidden=false;
-      if(!usuarioEsAdministrativo(usuario))document.getElementById('enlace-administracion').hidden=true;
-      async function cargar(){const datos=await Promise.all([solicitarApi('api/reportes_error.php'),solicitarApi('api/recuperacion.php')]);let html='<h3>Reportes públicos</h3>'+(datos[0].map(x=>'<p><strong>#'+x.id+' '+x.asunto+'</strong> - '+x.estado+' <button data-reporte="'+x.id+'" data-estado="En proceso">Tomar</button> <button data-reporte="'+x.id+'" data-estado="Resuelto">Resolver</button> <button data-reporte="'+x.id+'" data-estado="Rechazado">Rechazar</button></p>').join('')||'<p>Sin reportes.</p>');html+='<h3>Recuperaciones de contraseña</h3>'+(datos[1].map(x=>'<p><strong>Ticket #'+x.ticketId+' - '+x.usuario+'</strong> - '+x.estado+' <button data-recuperacion="'+x.id+'" data-accion="tomar">Tomar</button> <button data-recuperacion="'+x.id+'" data-accion="resolver">Resolver</button> <button data-recuperacion="'+x.id+'" data-accion="rechazar">Rechazar</button></p>').join('')||'<p>Sin solicitudes.</p>');document.getElementById('lista-reportes-2').innerHTML=html;}
-      document.getElementById('lista-reportes-2').addEventListener('click',async e=>{try{if(e.target.dataset.reporte){await solicitarApi('api/reportes_error.php',{method:'PATCH',body:JSON.stringify({id:e.target.dataset.reporte,estado:e.target.dataset.estado,responsableCedula:usuario.cedula,respuesta:e.target.dataset.estado==='Resuelto'?'Reporte resuelto.':''})});}if(e.target.dataset.recuperacion){await solicitarApi('api/recuperacion.php',{method:'PATCH',body:JSON.stringify({id:e.target.dataset.recuperacion,accion:e.target.dataset.accion,responsableCedula:usuario.cedula})});}await cargar();}catch(x){alert(x.message);}});await cargar();
+      if(usuarioEsAdministrativo(usuario)){document.getElementById('enlace-administracion').hidden=false;}else{document.querySelector('#gestion-reportes-2 .panel__title').textContent='Bandeja técnica de incidencias y accesos';}
+      function tarjetaReporte(x, finalizado){return '<article class="activity-card"><h4>#'+escaparHtml(x.id)+' '+escaparHtml(x.asunto)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p>'+(finalizado?'<p>'+escaparHtml(x.respuesta||'Reporte cerrado.')+'</p>':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-reporte="'+x.id+'" data-estado="En proceso">Tomar</button><button class="boton boton--primary boton--sm" data-reporte="'+x.id+'" data-estado="Resuelto">Resolver</button><button class="boton boton--outline-danger boton--sm" data-reporte="'+x.id+'" data-estado="Rechazado">Rechazar</button></div>')+'</article>';}
+      function tarjetaRecuperacion(x, finalizado){return '<article class="activity-card"><h4>Ticket #'+escaparHtml(x.ticketId)+' · '+escaparHtml(x.usuario)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p><p>'+(finalizado?'Solicitud cerrada.':'Al resolver se genera una contraseña temporal y se cierran las sesiones anteriores.')+'</p>'+(finalizado?'':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-recuperacion="'+x.id+'" data-accion="tomar">Tomar</button><button class="boton boton--primary boton--sm" data-recuperacion="'+x.id+'" data-accion="resolver">Resolver</button><button class="boton boton--outline-danger boton--sm" data-recuperacion="'+x.id+'" data-accion="rechazar">Rechazar</button></div>')+'</article>';}
+      function bloqueFinalizados(titulo, elementos){if(!elementos.length)return '';return '<details class="resolved-folder"><summary><span class="resolved-folder__title"><span class="resolved-folder__chevron" aria-hidden="true">›</span>'+escaparHtml(titulo)+'</span><span class="etiqueta etiqueta--primary">'+elementos.length+'</span></summary><div class="activity-stack">'+elementos.join('')+'</div></details>';}
+      async function cargar(){const datos=await Promise.all([solicitarApi('api/reportes_error.php'),solicitarApi('api/recuperacion.php')]);const reportesPendientes=[],reportesFinalizados=[],recuperacionesPendientes=[],recuperacionesFinalizadas=[];datos[0].forEach(x=>{const finalizado=['Resuelto','Rechazado'].includes(x.estado);(finalizado?reportesFinalizados:reportesPendientes).push(tarjetaReporte(x,finalizado));});datos[1].forEach(x=>{const finalizado=['Resuelto','Rechazado'].includes(x.estado);(finalizado?recuperacionesFinalizadas:recuperacionesPendientes).push(tarjetaRecuperacion(x,finalizado));});let html='<section class="report-tray"><h3>Reportes públicos pendientes</h3><div class="activity-stack">'+(reportesPendientes.join('')||'<p>Sin reportes pendientes.</p>')+'</div>'+bloqueFinalizados('Reportes públicos resueltos y cerrados',reportesFinalizados)+'</section>';html+='<section class="report-tray"><h3>Recuperaciones de contraseña pendientes</h3><div class="activity-stack">'+(recuperacionesPendientes.join('')||'<p>Sin solicitudes pendientes.</p>')+'</div>'+bloqueFinalizados('Recuperaciones resueltas y cerradas',recuperacionesFinalizadas)+'</section>';document.getElementById('lista-reportes-2').innerHTML=html;}
+      document.getElementById('lista-reportes-2').addEventListener('click',async e=>{const botonReporte=e.target.closest('[data-reporte]'),botonRecuperacion=e.target.closest('[data-recuperacion]');if(!botonReporte&&!botonRecuperacion)return;try{if(botonReporte){await solicitarApi('api/reportes_error.php',{method:'PATCH',body:JSON.stringify({id:botonReporte.dataset.reporte,estado:botonReporte.dataset.estado,responsableCedula:usuario.cedula,respuesta:botonReporte.dataset.estado==='Resuelto'?'Reporte resuelto.':''})});}if(botonRecuperacion){await solicitarApi('api/recuperacion.php',{method:'PATCH',body:JSON.stringify({id:botonRecuperacion.dataset.recuperacion,accion:botonRecuperacion.dataset.accion,responsableCedula:usuario.cedula})});}await cargar();}catch(x){alert(x.message);}});await cargar();
     })();
     </script>
   </body>

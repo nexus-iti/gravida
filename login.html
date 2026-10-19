@@ -98,6 +98,45 @@
                   <i data-lucide="log-in" class="icon icon-sm regla-diseno-006"></i>
                 </button>
               </form>
+              <!-- F-08 (3ra entrega): segundo paso del ingreso (verificacion en dos pasos) -->
+              <form id="form-2fa" class="auth-form auth-2fa regla-diseno-033" hidden>
+                <div id="auth-message-2fa"></div>
+                <div id="activar-2fa" class="auth-2fa__activar" hidden>
+                  <p class="auth-2fa__titulo">Tu cuenta de administrador necesita verificacion en dos pasos</p>
+                  <ol class="auth-2fa__pasos">
+                    <li>Instala en tu telefono Google Authenticator, Microsoft Authenticator o Authy.</li>
+                    <li>Agrega una cuenta nueva y escribi esta clave (o abri el enlace desde el telefono):</li>
+                  </ol>
+                  <code id="secreto-2fa" class="auth-2fa__secreto"></code>
+                  <a id="enlace-2fa" class="auth-2fa__enlace" href="#">Abrir en la app autenticadora</a>
+                  <p class="auth-2fa__nota">Guarda la clave en un lugar seguro. Sin el telefono no vas a poder entrar.</p>
+                </div>
+                <p id="texto-codigo-2fa" class="auth-2fa__nota">
+                  Escribi el codigo de 6 digitos que muestra tu app autenticadora.
+                </p>
+                <div class="auth-field regla-diseno-025">
+                  <label for="codigo-2fa">Codigo de verificacion</label>
+                  <div class="auth-input-shell auth-input-shell--credential">
+                    <i data-lucide="shield-check" class="icon icon-sm regla-diseno-006"></i>
+                    <input
+                      id="codigo-2fa"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      maxlength="6"
+                      placeholder="123456"
+                      required
+                    />
+                  </div>
+                </div>
+                <button class="auth-submit regla-diseno-070" type="submit">
+                  <span>Verificar e ingresar</span>
+                  <i data-lucide="shield-check" class="icon icon-sm regla-diseno-006"></i>
+                </button>
+                <button id="volver-login" class="auth-2fa__volver" type="button">Volver a la contrasena</button>
+              </form>
+
               <p class="auth-alt-action regla-diseno-101">
                 No tenes cuenta?
                 <a href="register.html" data-clave="registrate">Registrate</a>
@@ -110,6 +149,9 @@
                 <p>
                   El acceso es solo para personal autorizado. Las acciones quedan registradas para
                   cuidar la informacion institucional.
+                  <strong class="auth-dominio">Estas en: <em id="dominio-actual" class="auth-dominio__valor"></em></strong>
+                  Antes de escribir tu contrasena, revisa que esa sea la direccion del portal y que empiece
+                  con https. Nunca te vamos a pedir la contrasena ni codigos por correo, WhatsApp o telefono.
                 </p>
               </div>
             </article>
@@ -131,66 +173,19 @@
         </div>
       </footer>
     </main>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <script src="js/datos.js"></script>
     <script src="js/componentes.js?v=responsive"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.0.1"></script>
+    <script src="js/core/portal.js?v=4.0.1"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
     <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
     <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
-    <script>
-      
-      (function iniciarPaginaLogin() {
-        
-        if (redirigirSiYaHaySesion()) {
-          return;
-        }
-
-        
-        const formLogin = document.getElementById('form-login');
-        const checkRecordarme = document.getElementById('login-recordarme');
-        const mensajeLogin = document.getElementById('auth-message-login');
-
-        function mostrarMensaje(mensaje, tipo) {
-          mostrarMensajeFormulario(mensajeLogin, mensaje, tipo);
-        }
-
-        formLogin.addEventListener('submit', async function (evento) {
-          evento.preventDefault();
-          if (!validarFormularioCliente(formLogin, mostrarMensaje)) {
-            return;
-          }
-
-          try {
-
-            const respuesta = await iniciarSesion(
-              document.getElementById('login-identificador').value,
-              document.getElementById('login-contrasena').value,
-              { recordarme: checkRecordarme.checked },
-            );
-            if (!respuesta.ok) {
-              mostrarMensaje(respuesta.mensaje, 'error');
-              return;
-            }
-            window.location.href = respuesta.usuario.debeCambiarContrasena ? 'cambiar-contrasena.html' : 'home.html';
-          } catch (error) {
-            manejarErrorCliente(error, mostrarMensaje);
-          }
-        });
-        
-        if (leerStorage(CLAVES_STORAGE.recordarSesion, false)) {
-          checkRecordarme.checked = true;
-        }
-        
-        dibujarIconos();
-      })();
-    </script>
+    <script src="js/paginas/login.js?v=4.1.0"></script>
   </body>
 </html>
-

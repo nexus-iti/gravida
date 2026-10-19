@@ -26,7 +26,7 @@ ejecutar(function () use ($pdo, $sesionActual): void {
         
         $consulta = $pdo->prepare(
             'SELECT i.id_ticket, i.categoria, i.descripcion, i.titulo, i.fecha_de_solicitud, i.lugar,
-                    i.fecha_cierre, i.estado, i.diagnostico, i.solucion, i.id_equipo,
+                    i.fecha_cierre, i.estado, i.diagnostico, i.solucion, i.comentario_resolucion, i.id_equipo,
                     i.cedula_crea, i.cedula_responde,
                     creador.nombre AS nombre_crea, creador.apellido AS apellido_crea,
                     responsable.nombre AS nombre_responde, responsable.apellido AS apellido_responde
@@ -60,6 +60,7 @@ ejecutar(function () use ($pdo, $sesionActual): void {
                 'creadoEn' => $fila['fecha_de_solicitud'],
                 'diagnostico' => $fila['diagnostico'],
                 'solucion' => $fila['solucion'],
+                'comentarioResolucion' => $fila['comentario_resolucion'] ?? '',
                 'fechaCierre' => $fila['fecha_cierre'],
             ];
         }
@@ -110,6 +111,22 @@ ejecutar(function () use ($pdo, $sesionActual): void {
         responder(['ok' => true]);
     }
     $tecnico = (string) $sesionActual['cedula'];
+
+    if ($accion === 'comentar') {
+        exigirIncidencia($pdo, $id);
+        $comentario = texto($datos['comentario'] ?? '', 65535);
+        if ($comentario === '') {
+            errorApi('El comentario no puede quedar vacio.');
+        }
+        $consulta = $pdo->prepare(
+            "UPDATE INCIDENCIA SET comentario_resolucion = ? WHERE id_ticket = ? AND estado IN ('Resuelto', 'Cerrado')"
+        );
+        $consulta->execute([$comentario, $id]);
+        if (!$consulta->rowCount()) {
+            errorApi('Solo se puede comentar una incidencia resuelta o cerrada.', 409);
+        }
+        responder(['ok' => true]);
+    }
 
     if ($accion === 'modificar_diagnostico') {
         exigirIncidencia($pdo, $id);

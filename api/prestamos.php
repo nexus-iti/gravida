@@ -9,7 +9,7 @@ ejecutar(function () use ($pdo, $sesionActual): void {
     if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $consulta = $pdo->prepare(
             'SELECT p.id_prestamo, p.categoria, p.estado, p.fecha_solicitado, p.fecha_devolucion,
-                    p.recursos_solicitados, p.jornada, p.lugar_entrega, p.descripcion, p.cedula,
+                    p.recursos_solicitados, p.jornada, p.lugar_entrega, p.descripcion, p.comentario_resolucion, p.cedula,
                     u.nombre, u.apellido, e.id_equipo, e.nombre_equipo
              FROM PRESTAMO p
              INNER JOIN USUARIO u ON u.cedula = p.cedula
@@ -39,6 +39,7 @@ ejecutar(function () use ($pdo, $sesionActual): void {
                 'ubicacion' => $fila['lugar_entrega'],
                 'estado' => estadoPrestamoCliente($fila['estado']),
                 'detalle' => $fila['descripcion'],
+                'comentarioResolucion' => $fila['comentario_resolucion'] ?? '',
                 'solicitante' => trim($fila['nombre'] . ' ' . $fila['apellido']),
                 'solicitanteId' => (string) $fila['cedula'],
                 'equipoId' => (string) $fila['id_equipo'],
@@ -121,6 +122,21 @@ ejecutar(function () use ($pdo, $sesionActual): void {
         $consulta = $pdo->prepare("UPDATE PRESTAMO SET esta_activo = 0, estado = 'Cancelado' WHERE id_prestamo = ? AND esta_activo = 1");
         $consulta->execute([$id]);
         if (!$consulta->rowCount()) errorApi('No existe el prestamo activo indicado.', 404);
+        responder(['ok' => true]);
+    }
+    $accion = texto($datos['accion'] ?? '', 30);
+    if ($accion === 'comentar') {
+        $comentario = texto($datos['comentario'] ?? '', 65535);
+        if ($comentario === '') {
+            errorApi('El comentario no puede quedar vacio.');
+        }
+        $consulta = $pdo->prepare(
+            "UPDATE PRESTAMO SET comentario_resolucion = ? WHERE id_prestamo = ? AND estado IN ('Activo', 'Devuelto', 'Cancelado')"
+        );
+        $consulta->execute([$comentario, $id]);
+        if (!$consulta->rowCount()) {
+            errorApi('Solo se puede comentar un prestamo que ya fue atendido.', 409);
+        }
         responder(['ok' => true]);
     }
     $estado = estadoPrestamoBase((string) ($datos['estado'] ?? ''));

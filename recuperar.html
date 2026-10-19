@@ -1,10 +1,38 @@
-<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Recuperar contraseña | SGRSI</title><link rel="stylesheet" href="css/global.css"></head>
-<body><main class="portal-main"><section class="panel-grid"><article class="panel"><div class="panel__body">
-<h1>Recuperar contraseña</h1><p>La solicitud se enviará como ticket a técnicos y administradores.</p>
-<form id="form-recuperar"><div class="input-stack"><label>Cédula</label><input id="rec-cedula" required maxlength="15"></div><div class="input-stack"><label>Correo registrado</label><input id="rec-correo" type="email" required></div><button class="boton boton--primary" type="submit">Crear ticket</button></form><div id="mensaje-recuperar"></div>
-<hr><h2>Consultar solicitud</h2><form id="form-consultar"><div class="input-stack"><label>Cédula</label><input id="con-cedula" required></div><div class="input-stack"><label>Código de seguimiento</label><input id="con-codigo" required maxlength="12"></div><button class="boton boton--outline" type="submit">Consultar</button></form><div id="resultado-consulta"></div><p><a href="login.html">Volver al inicio de sesión</a></p>
-</div></article></section></main><script src="js/core/api.js"></script><script>
-const mensaje=document.getElementById('mensaje-recuperar'),resultado=document.getElementById('resultado-consulta');
-document.getElementById('form-recuperar').addEventListener('submit',async e=>{e.preventDefault();try{const r=await solicitarApi('api/recuperacion.php',{method:'POST',body:JSON.stringify({cedula:document.getElementById('rec-cedula').value,correo:document.getElementById('rec-correo').value})});mensaje.innerHTML='<div class="form-message form-message--success">Ticket creado. Guardá este código: <strong>'+r.codigo+'</strong></div>';}catch(x){mensaje.innerHTML='<div class="form-message form-message--error">'+x.message+'</div>';}});
-document.getElementById('form-consultar').addEventListener('submit',async e=>{e.preventDefault();try{const r=await solicitarApi('api/recuperacion.php',{method:'POST',body:JSON.stringify({accion:'consultar',cedula:document.getElementById('con-cedula').value,codigo:document.getElementById('con-codigo').value})});let html='<div class="form-message form-message--success">Estado: <strong>'+r.estado+'</strong>';if(r.contrasenaTemporal)html+='<br>Contraseña temporal (se muestra una sola vez): <strong>'+r.contrasenaTemporal+'</strong>';html+='</div>';resultado.innerHTML=html;}catch(x){resultado.innerHTML='<div class="form-message form-message--error">'+x.message+'</div>';}});
-</script></body></html>
+<!doctype html>
+<html lang="es" data-tema="claro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Recuperar contraseña | SGRSI</title>
+  <link rel="stylesheet" href="css/global.css?v=4.1.3">
+</head>
+<body class="recovery-page">
+  <main class="recovery-shell">
+    <header class="recovery-header">
+      <a href="login.html" class="public-brand"><span class="public-brand__mark"><img src="images/header.jpeg" alt="ITI CEPT"></span><span><strong>SGRSI</strong><small>Gestión TI Institucional</small></span></a>
+      <a class="boton boton--outline boton--sm" href="login.html">Volver al inicio de sesión</a>
+    </header>
+    <section class="recovery-intro">
+      <div class="recovery-intro__copy"><span class="etiqueta etiqueta--primary">Recuperación segura</span>
+      <h1>Recuperá el acceso a tu cuenta</h1>
+      <p>Creá una solicitud y consultá su avance sin iniciar sesión. Un técnico o administrador verificará el caso antes de emitir una contraseña temporal.</p></div>
+      <div class="recovery-intro__steps" aria-label="Pasos de recuperación"><span><b>1</b> Creá el ticket</span><span><b>2</b> Guardá el código</span><span><b>3</b> Consultá la respuesta</span></div>
+    </section>
+    <section class="recovery-grid">
+      <article class="panel recovery-card"><div class="panel__header"><div><h2 class="panel__title">1. Crear solicitud</h2><p>Ingresá los mismos datos registrados en tu cuenta.</p></div></div><div class="panel__body">
+        <form id="form-recuperar" class="auth-form"><label class="input-stack"><span>Cédula</span><input class="text-input" id="rec-cedula" inputmode="numeric" required maxlength="15"></label><label class="input-stack"><span>Correo registrado</span><input class="text-input" id="rec-correo" type="email" required></label><button class="boton boton--primary" type="submit">Crear ticket</button></form><div id="mensaje-recuperar" aria-live="polite"></div>
+      </div></article>
+      <article class="panel recovery-card"><div class="panel__header"><div><h2 class="panel__title">2. Consultar solicitud</h2><p>Usá el código de seguimiento entregado al crear el ticket.</p></div></div><div class="panel__body">
+        <form id="form-consultar" class="auth-form"><label class="input-stack"><span>Cédula</span><input class="text-input" id="con-cedula" inputmode="numeric" required maxlength="15"></label><label class="input-stack"><span>Código de seguimiento</span><input class="text-input mono" id="con-codigo" required maxlength="12"></label><button class="boton boton--outline" type="submit">Consultar estado</button></form><div id="resultado-consulta" aria-live="polite"></div>
+      </div></article>
+    </section>
+  </main>
+  <script src="js/core/api.js?v=4.1.0"></script>
+  <script>
+    const mensaje=document.getElementById('mensaje-recuperar'),resultado=document.getElementById('resultado-consulta');
+    const seguro=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    document.getElementById('form-recuperar').addEventListener('submit',async e=>{e.preventDefault();try{const r=await solicitarApi('api/recuperacion.php',{method:'POST',body:JSON.stringify({cedula:document.getElementById('rec-cedula').value,correo:document.getElementById('rec-correo').value})});mensaje.innerHTML='<div class="form-message form-message--success recovery-result"><span>Solicitud registrada correctamente</span><small>Guardá este código para consultar el estado:</small><strong class="mono recovery-code">'+seguro(r.codigo)+'</strong></div>';document.getElementById('con-cedula').value=document.getElementById('rec-cedula').value;document.getElementById('con-codigo').value=r.codigo;}catch(x){mensaje.innerHTML='<div class="form-message form-message--error">'+seguro(x.message)+'</div>';}});
+    document.getElementById('form-consultar').addEventListener('submit',async e=>{e.preventDefault();try{const r=await solicitarApi('api/recuperacion.php',{method:'POST',body:JSON.stringify({accion:'consultar',cedula:document.getElementById('con-cedula').value,codigo:document.getElementById('con-codigo').value})});let html='<div class="form-message form-message--success recovery-result"><strong>Estado: '+seguro(r.estado)+'</strong>';if(r.contrasenaTemporal)html+='<div class="recovery-credential"><span>Tu contraseña temporal</span><strong class="mono" id="clave-temporal">'+seguro(r.contrasenaTemporal)+'</strong><small>Se muestra una sola vez. Copiala ahora e ingresá con tu cédula. Después el sistema te pedirá crear una contraseña definitiva.</small><div class="recovery-credential__actions"><button class="boton boton--primary boton--sm" type="button" id="copiar-clave">Copiar contraseña</button><a class="boton boton--outline boton--sm" href="login.html">Ir al inicio de sesión</a></div></div>';html+='</div>';resultado.innerHTML=html;const copiar=document.getElementById('copiar-clave');if(copiar)copiar.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(r.contrasenaTemporal);copiar.textContent='Contraseña copiada';}catch(_){document.getElementById('clave-temporal').focus();}});}catch(x){resultado.innerHTML='<div class="form-message form-message--error">'+seguro(x.message)+'</div>';}});
+  </script>
+</body>
+</html>

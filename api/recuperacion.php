@@ -50,7 +50,18 @@ ejecutar(function() use($pdo,$sesionActual):void{
     if(!in_array($accion,['resolver','rechazar'],true))errorApi('Accion no valida.');
     $estado=$accion==='resolver'?'Resuelto':'Rechazado';$temporal=$accion==='resolver'?contrasenaTemporal():null;$pdo->beginTransaction();
     try{
-        if($temporal){$u=$pdo->prepare('UPDATE USUARIO SET contrasena=?,debe_cambiar_contrasena=1 WHERE cedula=?');$u->execute([password_hash($temporal,PASSWORD_DEFAULT),$r['cedula']]);}
+        if($temporal){
+            $hashTemporal=segHashContrasena($temporal);
+            if(!password_verify($temporal,$hashTemporal))throw new RuntimeException('No se pudo validar la contraseña temporal.');
+            $u=$pdo->prepare('UPDATE USUARIO SET contrasena=?,debe_cambiar_contrasena=1,sesion_version=sesion_version+1 WHERE cedula=?');
+            $u->execute([$hashTemporal,$r['cedula']]);
+            if($u->rowCount()!==1)throw new RuntimeException('No se pudo actualizar la cuenta solicitada.');
+            // La recuperación debe devolver el acceso inmediatamente. Los intentos fallidos
+            // que llevaron al usuario a solicitar ayuda no pueden bloquear la clave nueva.
+            $claveIntentos=hash('sha256','cuenta:'.$r['cedula']);
+            $limpiar=$pdo->prepare('DELETE FROM seguridad_intentos_login WHERE identificador=? AND exito=0');
+            $limpiar->execute([$claveIntentos]);
+        }
         $q=$pdo->prepare('UPDATE RECUPERACION_CONTRASENA SET estado=?,contrasena_temporal=?,cedula_responsable=?,fecha_resolucion=NOW() WHERE id_recuperacion=?');$q->execute([$estado,$temporal,$responsable?:null,$id]);
         $q=$pdo->prepare("UPDATE INCIDENCIA SET estado=?,fecha_cierre=CURDATE(),cedula_responde=?,diagnostico=?,solucion=? WHERE id_ticket=?");
         $q->execute([$accion==='resolver'?'Resuelto':'Cerrado',$responsable?:null,'Solicitud de recuperacion revisada.',$accion==='resolver'?'Se genero una contraseña temporal.':'Solicitud rechazada.',$r['id_ticket']]);

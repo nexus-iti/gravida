@@ -24,13 +24,13 @@
     <script src="js/componentes.js?v=baja-modal-cancel-2"></script>
     <script src="js/traducciones.js"></script>
     <script src="js/core/ui.js?v=modular-1"></script>
-    <script src="js/core/api.js?v=modular-1"></script>
-    <script src="js/core/portal.js?v=modular-1"></script>
+    <script src="js/core/api.js?v=4.0.1"></script>
+    <script src="js/core/portal.js?v=4.0.1"></script>
     <script src="js/modules/inventario.js?v=modular-1"></script>
     <script src="js/modules/usuarios.js?v=modular-1"></script>
     <script src="js/modules/tareas-planilla.js?v=modular-1"></script>
     <script src="js/modules/operaciones.js?v=modular-1"></script>
-    <script src="js/core/sesion.js?v=modular-1"></script>
+    <script src="js/core/sesion.js?v=4.0.1"></script>
     <script src="js/app.js?v=modular-1"></script>
     <script>
       
@@ -159,7 +159,14 @@
             cuerpo: cuerpoModalTraslado,
             pieDeModal: pieModalTraslado,
           }) +
-            crearModalBajaEquipoInventario('modal-baja-equipo'),
+            crearModalBajaEquipoInventario('modal-baja-equipo') +
+            crearModal({
+              id: 'modal-editar-equipo',
+              titulo: 'Editar equipo',
+              icono: 'pencil',
+              cuerpo: '<form id="form-editar-equipo" class="auth-form"><div class="field-grid"><label class="input-stack"><span>Nombre</span><input class="text-input" id="editar-equipo-nombre" required value="' + escaparHtml(equipo.nombre) + '"></label><label class="input-stack"><span>Categoria</span><input class="text-input" id="editar-equipo-tipo" required value="' + escaparHtml(equipo.tipo) + '"></label><label class="input-stack"><span>Marca</span><input class="text-input" id="editar-equipo-marca" value="' + escaparHtml(equipo.marca || '') + '"></label><label class="input-stack"><span>Cantidad</span><input class="text-input" id="editar-equipo-cantidad" type="number" min="1" required value="' + escaparHtml(equipo.cantidad || 1) + '"></label><label class="input-stack"><span>Estado</span><select class="select-input" id="editar-equipo-estado"><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option></select></label></div><label class="input-stack"><span>Observaciones</span><textarea class="textarea-input" id="editar-equipo-observaciones">' + escaparHtml(equipo.observaciones || '') + '</textarea></label></form>',
+              pieDeModal: '<button class="boton boton--outline" type="button" data-modal-close>Cancelar</button><button class="boton boton--primary" type="submit" form="form-editar-equipo">Guardar cambios</button>',
+            }),
         );
         const observaciones = equipo.observaciones || 'Sin observaciones cargadas.';
         const botonTrasladoDeshabilitado =
@@ -173,14 +180,9 @@
           document.addEventListener('click', async function (evento) {
             const botonEditar = evento.target.closest('[data-edit-equipo]');
             if (botonEditar) {
-              const nombre = prompt('Nombre', equipo.nombre); if (nombre === null) return;
-              const tipo = prompt('Categoria', equipo.tipo); if (tipo === null) return;
-              const marca = prompt('Marca', equipo.marca || ''); if (marca === null) return;
-              const cantidad = prompt('Cantidad', equipo.cantidad || 1); if (cantidad === null) return;
-              const observaciones = prompt('Observaciones', equipo.observaciones || ''); if (observaciones === null) return;
-              const estado = prompt('Estado: Disponible o Mantenimiento', equipo.estado === 'Mantenimiento' ? 'Mantenimiento' : 'Disponible'); if (estado === null) return;
-              await solicitarApi('api/equipos.php', { method: 'PATCH', body: JSON.stringify({ accion:'editar', id:equipo.id, nombre:nombre, tipo:tipo, marca:marca, cantidad:Number(cantidad), observaciones:observaciones, estado:estado, seccionId:equipo.seccionId }) });
-              window.location.reload(); return;
+              document.getElementById('editar-equipo-estado').value = equipo.estado === 'Mantenimiento' ? 'Mantenimiento' : 'Disponible';
+              abrirModal('modal-editar-equipo');
+              return;
             }
           const botonCancelarBaja = evento.target.closest('[data-cancel-delete-equipo]');
           if (botonCancelarBaja) {
@@ -230,6 +232,22 @@
             botonBaja.getAttribute('data-delete-equipo'),
             botonBaja.getAttribute('data-equipo-nombre'),
           );
+        });
+        document.getElementById('form-editar-equipo').addEventListener('submit', async function (evento) {
+          evento.preventDefault();
+          try {
+            await solicitarApi('api/equipos.php', { method: 'PATCH', body: JSON.stringify({
+              accion: 'editar', id: equipo.id,
+              nombre: document.getElementById('editar-equipo-nombre').value,
+              tipo: document.getElementById('editar-equipo-tipo').value,
+              marca: document.getElementById('editar-equipo-marca').value,
+              cantidad: Number(document.getElementById('editar-equipo-cantidad').value),
+              observaciones: document.getElementById('editar-equipo-observaciones').value,
+              estado: document.getElementById('editar-equipo-estado').value,
+              seccionId: equipo.seccionId,
+            }) });
+            window.location.reload();
+          } catch (error) { mostrarMensajeEquipo(error.message, 'error'); }
         });
         dibujarIconos();
         })();

@@ -1,0 +1,96 @@
+name: Bug
+description: Reportar un comportamiento incorrecto o un error
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por reportar. Completá los campos para poder reproducir el problema.
+
+  - type: textarea
+    id: descripcion
+    attributes:
+      label: Descripción
+      description: Qué pasó y qué esperabas que pasara.
+    validations:
+      required: true
+
+  - type: textarea
+    id: pasos
+    attributes:
+      label: Pasos para reproducir
+      description: Lista numerada, desde el estado inicial hasta el error.
+      placeholder: |
+        1. Ingresar con un usuario de rol ...
+        2. Ir a ...
+        3. Hacer clic en ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: esperado
+    attributes:
+      label: Comportamiento esperado
+    validations:
+      required: true
+
+  - type: dropdown
+    id: modulo
+    attributes:
+      label: Módulo afectado
+      options:
+        - Autenticación / cuenta
+        - Usuarios
+        - Inventario
+        - Operaciones
+        - Planilla de tareas
+        - Seguridad
+        - Otro
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severidad
+    attributes:
+      label: Severidad
+      options:
+        - Baja (molestia visual o de texto)
+        - Media (funcionalidad degradada, hay workaround)
+        - Alta (funcionalidad bloqueada)
+        - Crítica (seguridad o pérdida de datos)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Versión
+      description: Versión del sistema (campo `version` de `package.json` o commit).
+      placeholder: "1.0.0"
+
+  - type: textarea
+    id: entorno
+    attributes:
+      label: Entorno
+      description: Navegador, sistema operativo, versión de PHP y MySQL/MariaDB si aplica.
+      placeholder: |
+        - Navegador: Chrome 130
+        - SO: Windows 11
+        - PHP: 8.2 / MariaDB 10.4
+
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Evidencia
+      description: Capturas, mensajes de error o fragmentos de log. No pegues contraseñas, tokens ni datos personales.
+
+  - type: checkboxes
+    id: verificaciones
+    attributes:
+      label: Verificaciones
+      options:
+        - label: Revisé que el problema no esté ya reportado en otro issue.
+          required: true
+        - label: Pude reproducirlo al menos una vez.
+          required: true

@@ -1,0 +1,74 @@
+name: Feature
+description: Proponer una funcionalidad nueva o una mejora de una existente
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describí el problema de usuario antes que la solución. Así se puede evaluar mejor el alcance.
+
+  - type: textarea
+    id: problema
+    attributes:
+      label: Problema o necesidad
+      description: Qué no se puede hacer hoy, o qué cuesta más de lo necesario, y para quién.
+    validations:
+      required: true
+
+  - type: textarea
+    id: propuesta
+    attributes:
+      label: Propuesta de solución
+      description: Cómo imaginás la funcionalidad. Flujo, pantallas o endpoints involucrados si los conocés.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      description: Lista de condiciones verificables que deben cumplirse para dar el issue por terminado.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: modulo
+    attributes:
+      label: Módulo
+      options:
+        - Autenticación / cuenta
+        - Usuarios
+        - Inventario
+        - Operaciones
+        - Planilla de tareas
+        - Seguridad
+        - Transversal / infraestructura
+    validations:
+      required: true
+
+  - type: dropdown
+    id: prioridad
+    attributes:
+      label: Prioridad sugerida
+      options:
+        - Baja
+        - Media
+        - Alta
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
+      description: Otras formas de resolverlo que descartaste y por qué.
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto adicional
+      description: Referencias, capturas o issues relacionados.

@@ -1,0 +1,56 @@
+name: Tarea técnica
+description: Refactor, deuda técnica, infraestructura, tests, documentación o mantenimiento
+title: "[Tarea] "
+labels: ["chore"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Para trabajo que no cambia el comportamiento visible para el usuario.
+
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo
+      description: Qué se quiere lograr y por qué ahora.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alcance
+    attributes:
+      label: Alcance
+      description: Archivos, carpetas o módulos que se tocan. Qué queda fuera.
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo
+      options:
+        - Refactor
+        - Deuda técnica
+        - Documentación
+        - Tests
+        - Infraestructura / despliegue
+        - Seguridad
+        - Otro
+    validations:
+      required: true
+
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto adicional
+      description: Referencias, issues o PRs relacionados.

@@ -1,0 +1,46 @@
+name: Deploy
+
+# Deploy del entorno de prueba (nexus.wefaber.net) en cada push a dev.
+#
+# El repo es publico y el runner es self-hosted: por eso este workflow NO escucha
+# pull_request ni pull_request_target. Solo se dispara con un push a dev (que requiere
+# permiso de escritura) o a mano desde la pestana Actions. Asi ningun PR de un fork
+# puede ejecutar codigo en el VPS.
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag de imagenes a usar (vacio = HEAD del branch)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+# Un deploy a la vez y sin cancelar el que esta corriendo: cancelar a mitad deja
+# contenedores recreados y el entorno a medio actualizar.
+concurrency:
+  group: deploy-nexus
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy a nexus.wefaber.net
+    runs-on: [self-hosted, vps-nexus]
+    environment: nexus-preview
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        env:
+          # Podman rootless de hermes: el socket vive en su runtime dir, no en /run/podman.
+          DOCKER_HOST: unix:///run/user/1001/podman/podman.sock
+          XDG_RUNTIME_DIR: /run/user/1001
+          # Credenciales del stack: viven en el servidor, nunca en el repo ni en un secret.
+          NEXUS_ENV_FILE: /home/hermes/deploy/env/nexus-test.env
+          IMAGE_TAG: ${{ inputs.tag }}
+        run: bash deploy/nexus-deploy.sh

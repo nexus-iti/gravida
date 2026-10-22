@@ -49,6 +49,9 @@ services:
       retries: 30
 
   back:
+    # Imagen taggeada por deploy (deploy/nexus-deploy.sh pasa IMAGE_TAG con el commit).
+    # Es lo que permite volver al deploy anterior sin depender de git.
+    image: nexus-back:${IMAGE_TAG:-local}
     build:
       context: ..
       dockerfile: containers/back/Containerfile
@@ -68,12 +71,16 @@ services:
       - internal
 
   front:
+    image: nexus-front:${IMAGE_TAG:-local}
     build:
       context: ..
       dockerfile: containers/front/Containerfile
     restart: unless-stopped
     ports:
-      - "${FRONT_PORT:-8080}:80"
+      # Solo loopback: nginx del host es el unico que habla con el front (y aplica
+      # Cloudflare Access). Publicar en 0.0.0.0 dejaria el entorno al alcance de la IP
+      # publica sin pasar por el gate.
+      - "127.0.0.1:${FRONT_PORT:-8080}:80"
     volumes:
       - uploads:/usr/share/nginx/html/uploads:ro
     depends_on:

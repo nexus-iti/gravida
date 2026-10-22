@@ -89,6 +89,23 @@ bun run format:check # verifica sin modificar
 El formato cubre JavaScript y CSS. Las páginas HTML y el backend PHP quedan
 fuera para no reescribir el marcado ni el código servidor.
 
+## CI/CD
+
+Cada push y cada PR corren `.github/workflows/ci.yml`: formato, lint, sintaxis PHP y
+validación del compose. Si algo falla, el merge queda bloqueado.
+
+Cada push a `dev` deploya el entorno de prueba (`nexus.wefaber.net`) con
+`.github/workflows/deploy.yml` en el runner self-hosted del VPS: build de imágenes
+taggeadas con el commit, recreación de front y back, healthcheck real contra la base
+de datos y rollback automático si no levanta. La db no se toca en un deploy.
+
+```bash
+bash deploy/nexus-deploy.sh status   # tag activo y healthcheck
+bash deploy/nexus-deploy.sh rollback # volver al deploy anterior
+```
+
+Detalles y credenciales: `deploy/README.md`.
+
 ## Instalación
 
 1. Clonar el repositorio NEXUS dentro de `htdocs`.

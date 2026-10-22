@@ -1,6 +1,6 @@
 {
   "name": "nexus-codigo",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "private": true,
   "description": "Sistema de Gestión de Recursos y Servicios de Informática (SGRSI / NEXUS)",
   "scripts": {

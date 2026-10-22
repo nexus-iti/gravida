@@ -1,21 +1,48 @@
 /* Archivo extraído de app.js durante la modularización. */
 
-function obtenerTipoEquipoInventario(tipo) {
-  const valor = String(tipo || '').trim();
+function normalizarTipoEquipoInventario(tipo) {
+  return String(tipo || '')
+    .trim()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+}
+
+// Los tipos vienen del catálogo de categorías ("Monitor", "All in one"): se
+// comparan sin distinguir mayúsculas ni tildes, con el valor o con la etiqueta.
+function buscarTipoEquipoInventario(tipo) {
+  const buscado = normalizarTipoEquipoInventario(tipo);
+  if (!buscado) {
+    return null;
+  }
   for (let i = 0; i < tiposDeEquipoInventario.length; i++) {
-    if (tiposDeEquipoInventario[i].valor === valor) {
-      return tiposDeEquipoInventario[i];
+    const candidato = tiposDeEquipoInventario[i];
+    if (
+      normalizarTipoEquipoInventario(candidato.valor) === buscado ||
+      normalizarTipoEquipoInventario(candidato.etiqueta) === buscado
+    ) {
+      return candidato;
     }
   }
-  return tiposDeEquipoInventario[0];
+  return null;
+}
+
+// Solo para obtener un ícono: un tipo desconocido usa el primero de la lista.
+function obtenerTipoEquipoInventario(tipo) {
+  return buscarTipoEquipoInventario(tipo) || tiposDeEquipoInventario[0];
 }
 
 function obtenerIconoEquipoInventario(tipo) {
   return obtenerTipoEquipoInventario(tipo).icono;
 }
 
+// Un tipo que no está en la lista fija se muestra tal cual; antes caía en "Televisor".
 function obtenerEtiquetaTipoEquipoInventario(tipo) {
-  return obtenerTipoEquipoInventario(tipo).etiqueta;
+  const conocido = buscarTipoEquipoInventario(tipo);
+  if (conocido) {
+    return conocido.etiqueta;
+  }
+  return String(tipo || '').trim() || 'Otro';
 }
 
 async function obtenerSeccionesInventario() {
@@ -348,6 +375,7 @@ async function guardarNuevoEquipoInventario(datos) {
       tipo: tipoValor,
       seccionId: seccion.id,
       estado: 'Activo',
+      marca: String(datos && datos.marca ? datos.marca : '').trim(),
       observaciones: String(datos && datos.observaciones ? datos.observaciones : '').trim(),
       cantidad: Number(datos && datos.cantidad) || 1,
     }),
@@ -363,6 +391,7 @@ async function guardarNuevoEquipoInventario(datos) {
     fechaAlta: fechaIsoLocal(new Date()),
     actualizado: 'hoy',
     estado: 'Activo',
+    marca: String(datos && datos.marca ? datos.marca : '').trim(),
     observaciones: String(datos && datos.observaciones ? datos.observaciones : '').trim(),
   };
   return {

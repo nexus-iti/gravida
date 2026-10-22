@@ -464,6 +464,10 @@ function registrarElementosI18nEnNodo(raiz) {
     const padre = nodos[i].parentElement;
     const claveTexto = obtenerClaveI18nPorTexto(nodos[i].nodeValue);
     if (padre && claveTexto && padre.childElementCount === 0) {
+      if (!padre.hasAttribute('data-clave')) {
+        // Marca las claves deducidas del texto: si el texto cambia después, ya no valen.
+        padre.setAttribute('data-clave-auto', '');
+      }
       padre.setAttribute('data-clave', claveTexto);
     }
   }
@@ -472,6 +476,18 @@ function registrarElementosI18nEnNodo(raiz) {
 function aplicarElementoI18n(elemento, idioma) {
   const clave = elemento.getAttribute('data-clave');
   const destino = elemento.getAttribute('data-clave-destino');
+  if (
+    clave &&
+    !destino &&
+    elemento.hasAttribute('data-clave-auto') &&
+    normalizarClaveTraduccion(elemento.textContent) !== '' &&
+    obtenerClaveI18nPorTexto(elemento.textContent) !== clave
+  ) {
+    // El contenido se reemplazó con texto dinámico: no se pisa con el original.
+    elemento.removeAttribute('data-clave');
+    elemento.removeAttribute('data-clave-auto');
+    return;
+  }
   if (clave) {
     const traduccion = obtenerTraduccionPorClave(clave, idioma);
     if (traduccion) {

@@ -29,14 +29,6 @@ async function obtenerTareasPendientesCalendarioTA() {
   return pendientes;
 }
 
-function fechaIsoLocal(fecha) {
-  const valorFecha = fecha || new Date();
-  const anio = valorFecha.getFullYear();
-  const mes = String(valorFecha.getMonth() + 1).padStart(2, '0');
-  const dia = String(valorFecha.getDate()).padStart(2, '0');
-  return anio + '-' + mes + '-' + dia;
-}
-
 function normalizarFechaIso(valor, valorPorDefecto) {
   const texto = String(valor || '').trim();
   if (/^\d{4}-\d{2}-\d{2}$/.test(texto)) {

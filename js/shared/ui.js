@@ -66,6 +66,11 @@ function obtenerIdiomaActual() {
   return idiomaGuardado === 'en' ? 'en' : 'es';
 }
 
+// Formato numérico día/mes/año en ambos idiomas; solo cambian los nombres de mes.
+function obtenerLocaleFechas() {
+  return obtenerIdiomaActual() === 'en' ? 'en-GB' : 'es-UY';
+}
+
 function sincronizarAtributoDeTema(tema) {
   const temaNormalizado = tema === 'oscuro' ? 'oscuro' : 'claro';
   document.documentElement.setAttribute('data-tema', temaNormalizado);
@@ -136,6 +141,18 @@ function normalizarClaveTraduccion(texto) {
     .trim();
 }
 
+// Clave de búsqueda del índice: ignora tildes para que "Seccion destino" y
+// "Sección destino" resuelvan a la misma entrada del diccionario.
+// Marcas diacríticas combinantes (U+0300 a U+036F) y signos de apertura ¿ ¡.
+const MARCAS_Y_SIGNOS_I18N = new RegExp(
+  '[' + String.fromCharCode(0x300) + '-' + String.fromCharCode(0x36f) + '¿¡]',
+  'g',
+);
+
+function claveBusquedaI18n(texto) {
+  return normalizarClaveTraduccion(texto).normalize('NFD').replace(MARCAS_Y_SIGNOS_I18N, '');
+}
+
 const ATRIBUTOS_I18N = ['placeholder', 'aria-label', 'title', 'alt', 'data-label'];
 
 function crearIndiceI18n() {
@@ -147,8 +164,8 @@ function crearIndiceI18n() {
     const claves = Object.keys(tabla);
     for (let j = 0; j < claves.length; j++) {
       const clave = claves[j];
-      const texto = normalizarClaveTraduccion(tabla[clave]);
-      if (texto) {
+      const texto = claveBusquedaI18n(tabla[clave]);
+      if (texto && !Object.prototype.hasOwnProperty.call(indice, texto)) {
         indice[texto] = clave;
       }
     }
@@ -199,9 +216,23 @@ const CLAVES_I18N_LEGADAS = {
   'Navegacion principal': 'navegacion_principal',
 };
 
+const CLAVES_I18N_LEGADAS_POR_BUSQUEDA = (function () {
+  const indice = {};
+  const textos = Object.keys(CLAVES_I18N_LEGADAS);
+  for (let i = 0; i < textos.length; i++) {
+    indice[claveBusquedaI18n(textos[i])] = CLAVES_I18N_LEGADAS[textos[i]];
+  }
+  return indice;
+})();
+
 function obtenerClaveI18nPorTexto(texto) {
-  const normalizado = normalizarClaveTraduccion(texto);
-  return CLAVES_I18N_POR_TEXTO[normalizado] || CLAVES_I18N_LEGADAS[normalizado] || '';
+  const busqueda = claveBusquedaI18n(texto);
+  return (
+    (Object.prototype.hasOwnProperty.call(CLAVES_I18N_POR_TEXTO, busqueda) &&
+      CLAVES_I18N_POR_TEXTO[busqueda]) ||
+    CLAVES_I18N_LEGADAS_POR_BUSQUEDA[busqueda] ||
+    ''
+  );
 }
 
 function obtenerTraduccionPorClave(clave, idioma) {
@@ -236,6 +267,49 @@ const CLAVES_ESTADO_TAREA = {
 
 function traducirEstadoTarea(estado) {
   return tClave(CLAVES_ESTADO_TAREA[estado] || normalizarClaveTraduccion(estado));
+}
+
+// Plantillas con variables ({0}, {1}...) definidas en traducciones.js como pares
+// [español, inglés]. Se compilan una sola vez; la coincidencia ignora tildes pero
+// los valores capturados se toman del texto original.
+const PLANTILLAS_I18N = (function () {
+  const pares = window.plantillasTraduccion || [];
+  const compilar = function (plantilla) {
+    const marcadores = [];
+    const patron = claveBusquedaI18n(plantilla)
+      .replace(/[.*+?^$()|[\]\\]/g, '\\$&')
+      .replace(/\{(\d+)\}/g, function (_, numero) {
+        marcadores.push(Number(numero));
+        return '(.+?)';
+      });
+    return { expresion: new RegExp('^' + patron + '$', 'd'), marcadores: marcadores };
+  };
+  return pares.map(function (par) {
+    return { es: compilar(par[0]), en: compilar(par[1]), plantillaEs: par[0], plantillaEn: par[1] };
+  });
+})();
+
+function traducirPorPlantilla(texto, idioma) {
+  const origen = idioma === 'en' ? 'es' : 'en';
+  const original = normalizarClaveTraduccion(texto).normalize('NFC');
+  const busqueda = claveBusquedaI18n(original);
+  for (let i = 0; i < PLANTILLAS_I18N.length; i++) {
+    const plantilla = PLANTILLAS_I18N[i];
+    const coincidencia = plantilla[origen].expresion.exec(busqueda);
+    if (!coincidencia || busqueda.length !== original.length) {
+      continue;
+    }
+    const valores = {};
+    for (let j = 0; j < plantilla[origen].marcadores.length; j++) {
+      const rango = coincidencia.indices[j + 1];
+      valores[plantilla[origen].marcadores[j]] = original.slice(rango[0], rango[1]);
+    }
+    const destino = idioma === 'en' ? plantilla.plantillaEn : plantilla.plantillaEs;
+    return destino.replace(/\{(\d+)\}/g, function (_, numero) {
+      return Object.prototype.hasOwnProperty.call(valores, numero) ? valores[numero] : '';
+    });
+  }
+  return '';
 }
 
 function traducirVariable(textoNormalizado, idioma) {
@@ -299,7 +373,7 @@ function traducirVariable(textoNormalizado, idioma) {
       return textoNormalizado.replace('Administrative user |', 'Usuario administrativo |');
     }
   }
-  return '';
+  return traducirPorPlantilla(textoNormalizado, idioma);
 }
 
 function traducirContenido(texto, idioma) {
@@ -318,6 +392,14 @@ function traducirContenido(texto, idioma) {
   const traduccionVariable = traducirVariable(normalizado, idioma);
   if (traduccionVariable) {
     return inicio + traduccionVariable + fin;
+  }
+  // Etiquetas con dos puntos ("Lugar:"): se traduce el texto sin los dos puntos.
+  if (normalizado.length > 1 && normalizado.endsWith(':')) {
+    const sinDosPuntos = obtenerClaveI18nPorTexto(normalizado.slice(0, -1));
+    const traduccionEtiqueta = sinDosPuntos ? obtenerTraduccionPorClave(sinDosPuntos, idioma) : '';
+    if (traduccionEtiqueta) {
+      return inicio + traduccionEtiqueta + ':' + fin;
+    }
   }
   return valor;
 }
@@ -396,7 +478,9 @@ function aplicarElementoI18n(elemento, idioma) {
       if (destino) {
         elemento.setAttribute(destino, traduccion);
       } else if (!['INPUT', 'TEXTAREA', 'IMG'].includes(elemento.tagName)) {
-        elemento.textContent = traduccion;
+        if (elemento.textContent !== traduccion) {
+          elemento.textContent = traduccion;
+        }
       }
     }
   }
@@ -488,7 +572,10 @@ function aplicarTraduccionesEnNodo(raiz, idioma) {
     nodos.push(walker.currentNode);
   }
   for (let i = 0; i < nodos.length; i++) {
-    nodos[i].nodeValue = traducirContenido(nodos[i].nodeValue, idioma);
+    const traducido = traducirContenido(nodos[i].nodeValue, idioma);
+    if (traducido !== nodos[i].nodeValue) {
+      nodos[i].nodeValue = traducido;
+    }
   }
   const elementos = raiz.querySelectorAll('*');
   for (let i = 0; i < elementos.length; i++) {
@@ -530,11 +617,61 @@ function aplicarIdioma(idioma) {
   aplicarIdiomaActualAlDom();
 }
 
+// Traduce el contenido que las páginas insertan con innerHTML después de la
+// carga (modales, listas, mensajes), sin que cada render deba pedirlo.
+let observadorI18n = null;
+const nodosI18nPendientes = new Set();
+
+function procesarNodosI18nPendientes() {
+  const nodos = Array.from(nodosI18nPendientes);
+  nodosI18nPendientes.clear();
+  const idioma = obtenerIdiomaActual();
+  observadorI18n.disconnect();
+  try {
+    for (let i = 0; i < nodos.length; i++) {
+      if (nodos[i].isConnected) {
+        aplicarTraduccionesEnNodo(nodos[i], idioma);
+      }
+    }
+  } finally {
+    observadorI18n.takeRecords();
+    observadorI18n.observe(document.body, { childList: true, subtree: true });
+  }
+}
+
+function iniciarObservadorI18n() {
+  if (observadorI18n || !document.body || typeof MutationObserver === 'undefined') {
+    return;
+  }
+  observadorI18n = new MutationObserver(function (mutaciones) {
+    for (let i = 0; i < mutaciones.length; i++) {
+      const agregados = mutaciones[i].addedNodes;
+      for (let j = 0; j < agregados.length; j++) {
+        const nodo = agregados[j];
+        const elemento = nodo.nodeType === 1 ? nodo : nodo.parentElement;
+        if (elemento) {
+          nodosI18nPendientes.add(elemento);
+        }
+      }
+    }
+    if (nodosI18nPendientes.size > 0) {
+      window.requestAnimationFrame(function () {
+        if (nodosI18nPendientes.size > 0) {
+          procesarNodosI18nPendientes();
+        }
+      });
+    }
+  });
+  observadorI18n.observe(document.body, { childList: true, subtree: true });
+}
+
 function aplicarIdiomaActualAlDom() {
   const idiomaActual = obtenerIdiomaActual();
   aplicarIdiomaEnDocumento(idiomaActual);
   aplicarTraduccionesEnNodo(document.body, idiomaActual);
   sincronizarBotonesDeIdioma();
+  inicializarSelectsPersonalizados(document);
+  iniciarObservadorI18n();
 }
 
 function aplicarIdiomaGuardado() {
@@ -669,7 +806,7 @@ function obtenerTextoSelectPersonalizado(select) {
   if (!opcion) {
     return 'Seleccionar';
   }
-  return opcion.textContent.trim() || opcion.value || 'Seleccionar';
+  return t(opcion.textContent.trim() || opcion.value || 'Seleccionar');
 }
 
 function crearOpcionesSelectPersonalizado(select) {
@@ -690,7 +827,7 @@ function crearOpcionesSelectPersonalizado(select) {
       '"' +
       (estaDeshabilitada ? ' disabled aria-disabled="true"' : '') +
       '>' +
-      escaparHtml(opcion.textContent.trim() || opcion.value) +
+      escaparHtml(t(opcion.textContent.trim() || opcion.value)) +
       '</button>';
   }
   return html;
@@ -977,7 +1114,7 @@ function crearMensajeFormulario(texto, tipo, claseExtra) {
         ? 'form-message--info'
         : 'form-message--error';
   const extra = claseExtra ? ' ' + claseExtra : '';
-  return '<div class="form-message ' + claseTipo + extra + '">' + escaparHtml(texto) + '</div>';
+  return '<div class="form-message ' + claseTipo + extra + '">' + escaparHtml(t(texto)) + '</div>';
 }
 
 function mostrarMensajeFormulario(destino, texto, tipo, claseExtra) {

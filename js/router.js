@@ -42,8 +42,9 @@
       'shared/ui.js',
       'shared/api.js',
     ],
-    // Páginas internas que no usan la cabecera completa.
-    interna: COMUN.slice(),
+    // Páginas internas que no usan la cabecera completa. Incluyen app.js para que
+    // el tema y el idioma guardados se apliquen igual que en el resto del portal.
+    interna: COMUN.concat(['app.js']),
     // Portal con cabecera, navegación y arranque de tema/idioma.
     completa: COMUN.concat(['shared/componentes.js', 'app.js']),
     ninguna: [],

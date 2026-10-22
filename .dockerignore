@@ -1,0 +1,20 @@
+.git
+.github
+.claude
+node_modules
+bun.lock
+graphify-out
+docs
+database old
+config.php
+config.local.php
+.env
+.env.*
+containers/.env
+seguridad/almacen
+uploads/perfiles/*
+!uploads/perfiles/.htaccess
+!uploads/perfiles/.gitkeep
+*.log
+*.bak
+*.old

@@ -12,9 +12,9 @@
 [CmdletBinding()]
 param(
     [Parameter(Mandatory)] [string] $Server,
-    [ValidateSet('check', 'deploy', 'rollback', 'status')] [string] $Command = 'deploy',
+    [ValidateSet('check', 'deploy', 'rollback', 'status', 'start', 'stop', 'autostart')] [string] $Command = 'deploy',
     [string] $Ref,
-    [ValidateSet('auto', 'native', 'podman')] [string] $Mode,
+    [ValidateSet('auto', 'native', 'user', 'podman')] [string] $Mode,
     [switch] $Seed,
     [switch] $DryRun,
     [int] $Port = 22,

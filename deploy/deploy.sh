@@ -153,7 +153,7 @@ cmd_check() {
       local q; q="$( { [ -n "$DB_ADMIN_USER" ] && mysql_admin -N -e 'SELECT @@lower_case_table_names' \
                        || mysql_app -N -e 'SELECT @@lower_case_table_names'; } 2>/dev/null || true)"
       case "$q" in
-        0) miss "lower_case_table_names=0: el codigo usa USUARIO/EQUIPO en mayusculas y database.sql crea minusculas. Admin: lower_case_table_names=1 en [mysqld] y reinicializar la DB, o usar modo podman" ;;
+        0) miss "lower_case_table_names=0: el codigo usa USUARIO/EQUIPO en mayusculas y database.sql crea minusculas. Admin: lower_case_table_names=1 en [mysqld] y o usar --mode user (MariaDB propio, sin root)" ;;
         1|2) ok "lower_case_table_names=$q" ;;
         *) warn "no se pudo conectar a la DB con las credenciales de $ENV_FILE" ;;
       esac

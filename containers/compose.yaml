@@ -1,0 +1,92 @@
+# Entorno de prueba de Nexus con Podman.
+# Uso: podman compose -f containers/compose.yaml --env-file containers/.env up -d --build
+#
+# Redes:
+#   public   -> solo el front. Es la unica red con salida al host (puerto publicado).
+#   internal -> back y db. `internal: true` quita la ruta al host y a Internet:
+#               desde afuera no se llega a back ni a db.
+name: nexus-test
+
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile: Containerfile
+    restart: unless-stopped
+    # Podman rootless: el proceso tiene que correr como uid 0 del contenedor (= uid del
+    # usuario que corre podman en el host). Si corre como el usuario mysql de la imagen,
+    # cae en un uid subordinado (166xxx) y crun no puede senalarlo
+    # (pidfd_send_signal -> EPERM): podman stop / rm -f / compose down mueren con
+    # "given PID did not die within timeout". Por eso user 0 + --user=root + el
+    # Containerfile de db/, que quita el `exec gosu mysql` del entrypoint.
+    user: "0"
+    # init: catatonit como PID 1. mariadbd como PID 1 del namespace no recibe las senales
+    # que crun le manda (podman stop se cuelga 10s y despues falla con "given PID did not
+    # die within timeout"), aunque un kill(2) directo si lo mata. Con catatonit de PID 1 las
+    # senales llegan al init del contenedor, que las reenvia y ademas cosecha zombies.
+    init: true
+    # El codigo consulta tablas en mayusculas (USUARIO, EQUIPO...) y database.sql las crea
+    # en minusculas. En Linux MariaDB distingue mayusculas por defecto; XAMPP en Windows no.
+    command: ["--lower-case-table-names=1", "--user=root"]
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?definir en containers/.env}
+      MARIADB_DATABASE: nexus
+      MARIADB_USER: ${DB_USER:-nexus_app}
+      MARIADB_PASSWORD: ${DB_PASSWORD:?definir en containers/.env}
+    volumes:
+      # Esquema y datos oficiales del proyecto; solo corre en la primera inicializacion.
+      - ../database.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      # Datos ficticios de prueba (usuarios de los tres roles, equipos, prestamos...).
+      # Solo corre en la primera inicializacion; para cargarlo a mano ver containers/seed/README.md
+      - ./seed/datos-prueba.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      - db-data:/var/lib/mysql
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  back:
+    build:
+      context: ..
+      dockerfile: containers/back/Containerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_NAME: nexus
+      DB_USER: ${DB_USER:-nexus_app}
+      DB_PASSWORD: ${DB_PASSWORD:?definir en containers/.env}
+    volumes:
+      - uploads:/var/www/html/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - internal
+
+  front:
+    build:
+      context: ..
+      dockerfile: containers/front/Containerfile
+    restart: unless-stopped
+    ports:
+      - "${FRONT_PORT:-8080}:80"
+    volumes:
+      - uploads:/usr/share/nginx/html/uploads:ro
+    depends_on:
+      - back
+    networks:
+      - public
+      - internal
+
+networks:
+  public: {}
+  internal:
+    internal: true
+
+volumes:
+  db-data: {}
+  uploads: {}

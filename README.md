@@ -72,11 +72,11 @@ El proyecto usa [oxlint](https://oxc.rs/docs/guide/usage/linter) para lint y
 [oxfmt](https://oxc.rs/docs/guide/usage/formatter) para formato.
 
 ```bash
-npm install
-npm run lint         # analiza js/
-npm run lint:fix     # aplica correcciones seguras
-npm run format       # formatea js/ y css/
-npm run format:check # verifica sin modificar
+bun install
+bun run lint         # analiza js/
+bun run lint:fix     # aplica correcciones seguras
+bun run format       # formatea js/ y css/
+bun run format:check # verifica sin modificar
 ```
 
 - `.oxlintrc.json`: entorno de navegador, categorías `correctness` y

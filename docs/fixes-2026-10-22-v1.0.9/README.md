@@ -13,9 +13,9 @@ Casos de prueba marcados como fallidos (`ttttest.docx`). Un PR por grupo, apilad
 
 ## Equipos
 
-- [ ] CT-12 Alta de equipo: el tipo guardado no coincide con el elegido y no se puede indicar la marca.
-- [ ] CT-14 Modificar equipo: el tipo no se guarda.
-- [ ] CT-15 Trasladar equipo desde el menú de la sección.
+- [x] CT-12 Alta de equipo: el tipo se guardaba bien pero el detalle lo mostraba como "Televisor": `obtenerTipoEquipoInventario` buscaba solo por valor interno (`monitor`) y los tipos del catálogo son "Monitor"; al no coincidir caía en el primero de la lista. Ahora compara por valor o etiqueta sin tildes ni mayúsculas y un tipo desconocido se muestra tal cual. El alta pide la marca y el detalle la muestra. También se arregló `fechaIsoLocal is not defined` que cortaba el flujo después de crear el equipo.
+- [x] CT-14 Modificar equipo: mismo origen que CT-12 (el tipo sí se guardaba, el detalle lo mostraba mal). Verificado Monitor → Notebook y marca Dell.
+- [x] CT-15 Trasladar equipo desde el menú de la sección: faltaba `sincronizarSelectPersonalizado` tras cargar las secciones destino, por lo que el selector visible quedaba sin opciones (`equipos.html` sí lo hacía). Además `ui.js` ya no pisa con el texto original el contenido que la página cambia dinámicamente (el resumen del traslado volvía a "Selecciona un equipo"). Las fechas AAAA-MM-DD (alta, etc.) se mostraban un día antes en zonas UTC-3: ahora se formatean sin pasar por UTC.
 
 ## Tareas
 

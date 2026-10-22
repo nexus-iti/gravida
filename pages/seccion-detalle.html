@@ -153,6 +153,10 @@
           '</select>' +
           '</div>' +
           '<div class="input-stack regla-diseno-025">' +
+          '<label for="nuevo-equipo-marca">Marca</label>' +
+          '<input class="text-input regla-diseno-026" id="nuevo-equipo-marca" type="text" maxlength="60" placeholder="Ej. Samsung" />' +
+          '</div>' +
+          '<div class="input-stack regla-diseno-025">' +
           '<label for="nuevo-equipo-observaciones">Observaciones</label>' +
           '<textarea class="textarea-input regla-diseno-026" id="nuevo-equipo-observaciones" rows="3" placeholder="Detalle opcional del estado o ubicacion dentro del salon." data-clave-placeholder="detalle_opcional_equipo"></textarea>' +
           '</div>';
@@ -193,6 +197,7 @@
         function limpiarFormularioEquipo() {
           document.getElementById('nuevo-equipo-nombre').value = '';
           document.getElementById('nuevo-equipo-tipo').value = '';
+          document.getElementById('nuevo-equipo-marca').value = '';
           document.getElementById('nuevo-equipo-observaciones').value = '';
         }
 
@@ -227,8 +232,11 @@
             equipoTrasladoSeleccionado.nombre + ' | Seccion actual: ' + equipoTrasladoSeleccionado.seccion;
           const selectDestino = document.getElementById('equipo-seccion-destino-lista');
           selectDestino.innerHTML = opcionesSeccionesDestinoTraslado(equipoTrasladoSeleccionado);
+          sincronizarSelectPersonalizado(selectDestino);
           const botonConfirmar = document.querySelector('[data-confirm-move-equipo]');
-          botonConfirmar.disabled = seccionesInventario.length < 2;
+          botonConfirmar.disabled = !Array.from(selectDestino.options).some(function (opcion) {
+            return opcion.value !== '' && !opcion.disabled;
+          });
           abrirModal('modal-traslado-equipo-lista');
         }
 
@@ -259,6 +267,7 @@
             const resultado = await guardarNuevoEquipoInventario({
               nombre: document.getElementById('nuevo-equipo-nombre').value,
               tipo: document.getElementById('nuevo-equipo-tipo').value,
+              marca: document.getElementById('nuevo-equipo-marca').value,
               seccionId: seccionActual ? seccionActual.id : '',
               observaciones: document.getElementById('nuevo-equipo-observaciones').value,
             });

@@ -347,12 +347,26 @@ function filtrarRegistrosVisibles(registros, usuarioActual) {
   return visibles;
 }
 
+function fechaIsoLocal(fecha) {
+  const valorFecha = fecha || new Date();
+  const anio = valorFecha.getFullYear();
+  const mes = String(valorFecha.getMonth() + 1).padStart(2, '0');
+  const dia = String(valorFecha.getDate()).padStart(2, '0');
+  return anio + '-' + mes + '-' + dia;
+}
+
 function formatearFechaHumana(valor) {
   if (!valor) {
     return '';
   }
   if (typeof valor === 'string' && /^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
     return valor;
+  }
+  // Una fecha sin hora (AAAA-MM-DD) se arma a mano: new Date() la toma como UTC y,
+  // en zonas al oeste de Greenwich, mostraba el día anterior.
+  const soloFecha = typeof valor === 'string' ? valor.match(/^(\d{4})-(\d{2})-(\d{2})$/) : null;
+  if (soloFecha) {
+    return soloFecha[3] + '/' + soloFecha[2] + '/' + soloFecha[1];
   }
   const fecha = new Date(valor);
   if (Number.isNaN(fecha.getTime())) {

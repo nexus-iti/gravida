@@ -1555,6 +1555,7 @@ Object.assign(traduccionesPortal.es, {
   seguro_que_queres_dar_de_baja_este_ticket: '¿Seguro que querés dar de baja este ticket?',
   va_a_pasar_a_la_seccion_tickets_borrados: 'Va a pasar a la sección Tickets borrados.',
   si_confirmar: 'Sí, confirmar',
+  ej_samsung: 'Ej. Samsung',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -2115,6 +2116,7 @@ Object.assign(traduccionesPortal.en, {
   seguro_que_queres_dar_de_baja_este_ticket: 'Are you sure you want to remove this ticket?',
   va_a_pasar_a_la_seccion_tickets_borrados: 'It will move to the Deleted tickets section.',
   si_confirmar: 'Yes, confirm',
+  ej_samsung: 'E.g. Samsung',
 });
 
 window.traducciones = traduccionesPortal;

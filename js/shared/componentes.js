@@ -378,9 +378,9 @@ function crearParcelaPlanillaTA(parcela, puedeEditar) {
         '">' +
         obtenerTextoSeguro(tarea.titulo) +
         ' | ' +
-        obtenerTextoSeguro(tarea.estado) +
+        obtenerTextoSeguro(traducirEstadoTarea(tarea.estado)) +
         ' | ' +
-        obtenerTextoSeguro(tecnico) +
+        obtenerTextoSeguro(t(tecnico)) +
         '</option>';
     }
     tareasKanbanHtml = ` <label class="planilla-parcela__task-picker"> <span>Agregar tarea desde kanban</span> <select class="select-input regla-diseno-026" data-planilla-task-picker> ${opcionesTareasKanban} </select> </label> `;

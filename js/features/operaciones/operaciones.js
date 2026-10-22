@@ -21,10 +21,6 @@ async function obtenerSolicitudesServicio() {
   return solicitarApi('api/servicios.php');
 }
 
-async function obtenerPlanillaTA() {
-  return solicitarApi('api/planilla_ta.php');
-}
-
 async function obtenerPrestamosVisibles() {
   const usuarioActual = obtenerUsuarioActual();
   return filtrarRegistrosVisibles(await obtenerPrestamos(), usuarioActual);
@@ -60,7 +56,12 @@ async function guardarNuevoPrestamo(datos) {
           'Cada recurso seleccionado debe pertenecer a un equipo valido del inventario.',
         );
       }
-      recursosDetalle.push({ idEquipo: idEquipo, nombre: nombre, cantidad: cantidad });
+      recursosDetalle.push({
+        idEquipo: idEquipo,
+        nombre: nombre,
+        cantidad: cantidad,
+        categoria: String(datos.recursosDetalle[i].categoria || datos.categoria || '').trim(),
+      });
     }
   }
   if (recursosDetalle.length === 0) {
@@ -70,7 +71,7 @@ async function guardarNuevoPrestamo(datos) {
   for (let i = 0; i < recursosDetalle.length; i++) {
     nuevosPrestamos.push({
       id: '',
-      categoria: datos.categoria,
+      categoria: recursosDetalle[i].categoria,
       recurso: recursosDetalle[i].cantidad + ' ' + recursosDetalle[i].nombre,
       cantidad: recursosDetalle[i].cantidad,
       recursosDetalle: [recursosDetalle[i]],

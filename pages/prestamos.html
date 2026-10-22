@@ -29,19 +29,18 @@
             <form id="form-prestamo" class="auth-form regla-diseno-033">
               <div class="field-grid regla-diseno-024">
                 <div class="input-stack regla-diseno-025">
-                  <label for="prestamo-categoria" data-clave="categoria">Categoria</label>
+                  <label for="prestamo-categoria" data-clave="filtrar_por_categoria">Filtrar por categoria</label>
                   <select
                     class="select-input regla-diseno-026"
                     id="prestamo-categoria"
-                    required
                   ></select>
                 </div>
               </div>
               <div class="input-stack regla-diseno-025">
                 <label data-clave="recursos_y_cantidades">Recursos y cantidades</label>
-                <div id="prestamo-recursos" class="loan-resource-picker regla-diseno-075">
+                <div id="prestamo-recursos" class="loan-selector">
                   <div class="empty-inline regla-diseno-043">
-                    Primero elegi una categoria para ver los recursos disponibles.
+                    Cargando equipos disponibles...
                   </div>
                 </div>
               </div>
@@ -208,103 +207,44 @@
           
         }
         
+        let selectorRecursos = null;
+        let nombresCategoriasCatalogo = [];
+
         async function renderCategorias() {
           const datosCategorias = await Promise.all([
             obtenerEquiposDisponiblesParaPrestamo(),
             solicitarApi('api/catalogos.php?tipo=categoria_tecnologica'),
           ]);
           equiposPrestamoDisponibles = datosCategorias[0];
-          let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoria</option>';
-          for (let i = 0; i < datosCategorias[1].length; i++) {
-            const categoria = datosCategorias[1][i].nombre;
+          nombresCategoriasCatalogo = datosCategorias[1].map(function (categoria) {
+            return categoria.nombre;
+          });
+          // El selector filtra la lista: solo ofrece los tipos que tienen equipos.
+          const grupos = agruparEquiposPorTipo(equiposPrestamoDisponibles, nombresCategoriasCatalogo);
+          let opciones = '<option value= data-clave="todas_las_categorias">Todas las categorias</option>';
+          for (let i = 0; i < grupos.length; i++) {
             opciones +=
-              '<option value="' + escaparHtml(categoria) + '">' + escaparHtml(categoria) + '</option>';
+              '<option value="' + escaparHtml(grupos[i].clave) + '">' + escaparHtml(grupos[i].etiqueta) + '</option>';
           }
           selectCategoria.innerHTML = opciones;
           inicializarSelectsPersonalizados(selectCategoria);
         }
 
-        function normalizarCategoriaPrestamo(valor) {
-          return String(valor || '')
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, ' ')
-            .replace(/\b([a-z0-9]{3,})s\b/g, '$1')
-            .trim();
-        }
-        
         function renderRecursosPorCategoria() {
-          const categoria = selectCategoria.value;
-          if (!categoria) {
-            contenedorRecursos.innerHTML =
-              '<div class="empty-inline regla-diseno-043">' + t('Primero elegi una categoria para ver los equipos disponibles.') + '</div>';
-            return;
-          }
-          const categoriaNormalizada = normalizarCategoriaPrestamo(categoria);
-          const recursos = equiposPrestamoDisponibles.filter(function (equipo) {
-            return normalizarCategoriaPrestamo(equipo.tipo) === categoriaNormalizada;
+          selectorRecursos = iniciarSelectorRecursos(contenedorRecursos, {
+            equipos: equiposPrestamoDisponibles,
+            categorias: nombresCategoriasCatalogo,
           });
-          if (recursos.length === 0) {
-            contenedorRecursos.innerHTML =
-              '<div class="empty-inline regla-diseno-043">' + t('No hay equipos disponibles para esta categoria.') + '</div>';
-            return;
+          selectCategoria.value = selectorRecursos.categoriaGuardada;
+          if (selectCategoria.value !== selectorRecursos.categoriaGuardada) {
+            selectCategoria.value = '';
+            selectorRecursos.aplicarCategoria('');
           }
-          let html = '';
-          for (let i = 0; i < recursos.length; i++) {
-            const recurso = recursos[i];
-            const id = 'prestamo-recurso-' + i;
-            const disponible = Number(recurso.cantidadDisponible);
-            const total = Number(recurso.cantidad);
-            const reservado = Math.max(total - disponible, 0);
-            if (recurso.estado !== 'Activo' || disponible < 1) {
-              html += ` <div class="loan-resource-option regla-diseno-107"> <label class="loan-resource-option__check regla-diseno-015" for="${id}"> <input id="${id}" type="checkbox" disabled /> <span>${escaparHtml(recurso.nombre)}</span> </label> <div class="loan-resource-option__qty regla-diseno-015"><span>${escaparHtml(t('Total'))}: ${escaparHtml(total)} · ${escaparHtml(t('Reservados'))}: ${escaparHtml(reservado)}</span><strong>${escaparHtml(t('No hay equipos disponibles'))}</strong></div> </div> `;
-              continue;
-            }
-            html += ` <div class="loan-resource-option regla-diseno-107"> <label class="loan-resource-option__check regla-diseno-015" for="${id}"> <input id="${id}" type="checkbox" value="${escaparHtml(recurso.nombre)}" data-equipo-id="${escaparHtml(recurso.id)}" data-loan-resource /> <span>${escaparHtml(recurso.nombre)}</span> </label> <label class="loan-resource-option__qty regla-diseno-015"> <span>${escaparHtml(t('Total'))}: ${escaparHtml(total)} · ${escaparHtml(t('Reservados'))}: ${escaparHtml(reservado)} · ${escaparHtml(t('Disponibles'))}: ${escaparHtml(disponible)}</span> <input class="text-input regla-diseno-026" type="number" min="1" max="${escaparHtml(disponible)}" placeholder="0" disabled data-loan-quantity aria-label="${escaparHtml(t('Cantidad de'))} ${escaparHtml(recurso.nombre)}" /> </label> </div> `;
-          }
-          contenedorRecursos.innerHTML = html;
+          inicializarSelectsPersonalizados(selectCategoria);
         }
-        
+
         function obtenerRecursosSeleccionados() {
-          const seleccionados = contenedorRecursos.querySelectorAll('[data-loan-resource]:checked');
-          const recursos = [];
-          let total = 0;
-          if (seleccionados.length === 0) {
-            return {
-              ok: false,
-              mensaje: 'Elegi al menos un recurso e indica la cantidad.',
-              recursos: [],
-              total: 0,
-            };
-          }
-          for (let i = 0; i < seleccionados.length; i++) {
-            const opcion = seleccionados[i].closest('.loan-resource-option');
-            const inputCantidad = opcion.querySelector('[data-loan-quantity]');
-            const cantidad = Number(inputCantidad.value);
-            if (!Number.isInteger(cantidad) || cantidad < 1) {
-              return {
-                ok: false,
-                mensaje:
-                  'Revisa las cantidades: cada recurso seleccionado necesita un numero valido.',
-                recursos: [],
-                total: 0,
-              };
-            }
-            const idEquipo = Number(seleccionados[i].dataset.equipoId);
-            const cantidadDisponible = Number(inputCantidad.max);
-            if (!Number.isInteger(idEquipo) || idEquipo < 1 || cantidad > cantidadDisponible) {
-              return {
-                ok: false,
-                mensaje: 'La cantidad solicitada debe corresponder a un equipo disponible.',
-                recursos: [],
-                total: 0,
-              };
-            }
-            recursos.push({ idEquipo: idEquipo, nombre: seleccionados[i].value, cantidad: cantidad });
-            total += cantidad;
-          }
-          return { ok: true, mensaje: '', recursos: recursos, total: total };
+          return obtenerRecursosSeleccionadosPrestamo(contenedorRecursos);
         }
         
         async function renderLugares() {
@@ -419,28 +359,14 @@
         });
         
         selectCategoria.addEventListener('change', function () {
-          renderRecursosPorCategoria();
+          if (selectorRecursos) {
+            selectorRecursos.aplicarCategoria(selectCategoria.value);
+          }
           dibujarIconos();
         });
 
         filtrosPrestamos.addEventListener('input', renderListaPrestamos);
         filtrosPrestamos.addEventListener('change', renderListaPrestamos);
-        
-        contenedorRecursos.addEventListener('change', function (evento) {
-          const checkbox = evento.target.closest('[data-loan-resource]');
-          if (!checkbox) {
-            return;
-          }
-          const opcion = checkbox.closest('.loan-resource-option');
-          const inputCantidad = opcion.querySelector('[data-loan-quantity]');
-          inputCantidad.disabled = !checkbox.checked;
-          if (checkbox.checked && !inputCantidad.value) {
-            inputCantidad.value = '1';
-          }
-          if (!checkbox.checked) {
-            inputCantidad.value = '';
-          }
-        });
         
         formPrestamo.addEventListener('submit', async function (evento) {
           evento.preventDefault();
@@ -456,7 +382,6 @@
               return;
             }
             await guardarNuevoPrestamo({
-              categoria: document.getElementById('prestamo-categoria').value,
               recursosDetalle: recursosSeleccionados.recursos,
               cantidad: recursosSeleccionados.total,
               fecha: document.getElementById('prestamo-fecha').value,
@@ -465,7 +390,9 @@
               detalle: document.getElementById('prestamo-detalle').value,
             });
             formPrestamo.reset();
-            renderRecursosPorCategoria();
+            selectorRecursos.limpiar();
+            selectCategoria.value = '';
+            inicializarSelectsPersonalizados(selectCategoria);
             await renderFiltrosPrestamos();
             await renderListaPrestamos();
             dibujarIconos();

@@ -6,8 +6,10 @@
   --color-fondo-seleccionado: #dbeafe;
   --color-texto-principal: #111827;
   --color-texto-secundario: #4b5563;
-  --color-texto-desactivado: #9ca3af;
+  --color-texto-desactivado: #6b7280;
   --color-texto-inverso: #ffffff;
+  --color-aviso-fondo: #facc15;
+  --color-aviso-texto: #422006;
   --color-borde-suave: #e5e7eb;
   --color-borde-medio: #d1d5db;
   --color-borde-fuerte: #93c5fd;
@@ -20,6 +22,7 @@
   --color-exito-fondo: #bbf7d0;
   --color-exito-texto: #047857;
   --color-advertencia: #d97706;
+  --color-advertencia-texto: #b45309;
   --color-advertencia-fondo: #fef3c7;
   --color-peligro: #dc2626;
   --color-peligro-fondo: #fca5a5;
@@ -27,6 +30,7 @@
   --color-info: #0d9488;
   --color-info-fondo: #99f6e4;
   --color-purpura: #7c3aed;
+  --color-purpura-texto: #6d28d9;
   --color-purpura-fondo: #ddd6fe;
   --color-navbar-fondo: #ffffff;
   --color-navbar-texto: #111827;
@@ -35,6 +39,9 @@
   --color-sidebar-texto: #111827;
   --color-sidebar-hover: #f3f4f6;
   --color-sidebar-activo: #dbeafe;
+  --border-color: var(--color-borde-suave);
+  --text-muted: var(--color-texto-secundario);
+  --surface-subtle: var(--color-fondo-entrada);
   --radio-borde-pequeno: 6px;
   --radio-borde-medio: 8px;
   --radio-borde-grande: 12px;
@@ -85,7 +92,7 @@
   --color-fondo-seleccionado: #172554;
   --color-texto-principal: #f8fafc;
   --color-texto-secundario: #cbd5e1;
-  --color-texto-desactivado: #64748b;
+  --color-texto-desactivado: #94a3b8;
   --color-texto-inverso: #0f172a;
   --color-borde-suave: #263244;
   --color-borde-medio: #334155;
@@ -99,6 +106,7 @@
   --color-exito-fondo: #064e3b;
   --color-exito-texto: #86efac;
   --color-advertencia: #f59e0b;
+  --color-advertencia-texto: #fbbf24;
   --color-advertencia-fondo: #451a03;
   --color-peligro: #f87171;
   --color-peligro-fondo: #7f1d1d;
@@ -106,6 +114,7 @@
   --color-info: #2dd4bf;
   --color-info-fondo: #134e4a;
   --color-purpura: #a78bfa;
+  --color-purpura-texto: #c4b5fd;
   --color-purpura-fondo: #312e81;
   --color-navbar-fondo: #111827;
   --color-navbar-texto: #f8fafc;
@@ -485,8 +494,8 @@ p {
 }
 
 [data-tema='oscuro'] .etiqueta--warn {
-  background: #facc15;
-  color: #fff;
+  background: var(--color-aviso-fondo);
+  color: var(--color-aviso-texto);
 }
 
 [data-tema='oscuro'] .etiqueta--danger {
@@ -754,7 +763,7 @@ p {
 
 .boton--primary {
   background: var(--color-primario);
-  color: #fff;
+  color: var(--color-texto-inverso);
   font-weight: 600;
 }
 
@@ -903,7 +912,7 @@ p {
 
 .etiqueta--primary {
   background: var(--color-fondo-seleccionado);
-  color: var(--color-primario);
+  color: var(--color-primario-texto);
 }
 
 .etiqueta--success {
@@ -914,8 +923,8 @@ p {
 }
 
 .etiqueta--warn {
-  background: #facc15;
-  color: #fff;
+  background: var(--color-aviso-fondo);
+  color: var(--color-aviso-texto);
   font-weight: 700;
 }
 
@@ -926,12 +935,12 @@ p {
 
 .etiqueta--purple {
   background: var(--color-purpura-fondo);
-  color: #6d28d9;
+  color: var(--color-purpura-texto);
 }
 
 .etiqueta--info {
   background: var(--color-fondo-seleccionado);
-  color: var(--color-primario);
+  color: var(--color-primario-texto);
 }
 
 .etiqueta--lg {
@@ -3975,6 +3984,130 @@ p {
 
 .loan-resource-option__qty input:disabled {
   opacity: 0.55;
+}
+
+.loan-selector {
+  display: grid;
+  gap: 14px;
+}
+
+.loan-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.loan-toolbar .text-input {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.loan-toolbar__summary {
+  margin-left: auto;
+  color: var(--color-texto-secundario);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.loan-group {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.loan-group[hidden],
+.loan-resource-option[hidden],
+.loan-empty[hidden] {
+  display: none;
+}
+
+.loan-group__header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--color-borde-suave);
+}
+
+.loan-group__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-texto-principal);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.loan-group__check input {
+  width: 16px;
+  height: 16px;
+}
+
+.loan-group__count {
+  color: var(--color-texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.loan-resource-option__main {
+  min-width: 0;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.loan-resource-option__meta {
+  color: var(--color-texto-secundario);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.loan-resource-option__details {
+  color: var(--color-texto-secundario);
+  font-size: 12px;
+}
+
+.loan-resource-option__details summary {
+  cursor: pointer;
+  color: var(--color-primario-texto);
+  font-weight: 600;
+}
+
+.loan-resource-option__details dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  margin: 6px 0 0;
+}
+
+.loan-resource-option__details dt {
+  font-weight: 700;
+}
+
+.loan-resource-option__details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.loan-resource-option__link {
+  color: var(--color-primario-texto);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.loan-resource-option--unavailable {
+  opacity: 0.75;
+}
+
+.loan-resource-option:has(input[data-loan-resource]:checked) {
+  border-color: var(--color-primario);
+  background: var(--color-fondo-seleccionado);
 }
 
 .mini-kanban {
@@ -7248,63 +7381,63 @@ p {
 
 /* La pagina de cuenta usa un diseno oscuro propio: el panel de seguridad lo acompana. */
 .account-redesign .account-security-panel {
-  background: #0d1421;
-  border-color: rgba(255, 255, 255, 0.06);
+  background: var(--color-fondo-tarjeta);
+  border-color: var(--color-borde-suave);
   border-radius: 24px;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.22);
+  box-shadow: var(--sombra-suave);
 }
 
 .account-redesign .account-security-panel .panel__title,
 .account-redesign .seguridad-bloque__titulo,
 .account-redesign .auth-2fa__secreto {
-  color: #ffffff;
+  color: var(--color-texto-principal);
 }
 
 .account-redesign .seguridad-nota,
 .account-redesign .seguridad-pasos {
-  color: rgba(255, 255, 255, 0.62);
+  color: var(--color-texto-secundario);
 }
 
 .account-redesign .seguridad-bloque {
-  background: rgba(255, 255, 255, 0.03);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-fondo-entrada);
+  border-color: var(--color-borde-suave);
 }
 
 .account-redesign .auth-2fa__secreto {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--color-fondo-hover);
+  border-color: var(--color-borde-medio);
 }
 
 .account-redesign .auth-2fa__enlace {
-  color: #93c5fd;
+  color: var(--color-primario);
 }
 
 .account-redesign .seguridad-estado--ok {
-  color: #4ade80;
+  color: var(--color-exito-texto);
 }
 
 .account-redesign .seguridad-estado--alerta {
-  color: #fbbf24;
+  color: var(--color-advertencia-texto);
 }
 
 .account-redesign .seguridad-tabla {
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-borde-suave);
 }
 
 .account-redesign .seguridad-tabla thead th {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.7);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: var(--color-fondo-hover);
+  color: var(--color-texto-secundario);
+  border-color: var(--color-borde-suave);
 }
 
 .account-redesign .seguridad-tabla td {
-  color: rgba(255, 255, 255, 0.85);
-  border-color: rgba(255, 255, 255, 0.06);
+  color: var(--color-texto-principal);
+  border-color: var(--color-borde-suave);
 }
 
 .account-redesign .seguridad-fila--alerta td {
-  color: #fca5a5;
+  color: var(--color-peligro-texto);
 }
 
 .account-redesign .seguridad-tabla tbody tr:nth-child(n),
@@ -7313,7 +7446,7 @@ p {
 }
 
 .account-redesign .seguridad-tabla tbody tr:nth-child(even) td {
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--color-fondo-entrada);
 }
 
 .auth-dominio__valor {
@@ -7390,7 +7523,7 @@ p {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #2563eb;
+  color: var(--color-primario-texto);
 }
 .admin-grid {
   display: grid;

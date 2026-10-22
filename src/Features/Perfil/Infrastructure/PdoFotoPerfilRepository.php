@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);namespace Nexus\Features\Perfil\Infrastructure;use Nexus\Features\Perfil\Domain\FotoPerfilRepository;use Nexus\Shared\Domain\ValueObject\Cedula;
+final class PdoFotoPerfilRepository implements FotoPerfilRepository{private \PDO $pdo;public function __construct(\PDO $p){$this->pdo=$p;}public function fotoActual(Cedula $c):?string{$q=$this->pdo->prepare('SELECT foto_perfil FROM USUARIO WHERE cedula=?');$q->execute([$c->value()]);$v=$q->fetchColumn();return $v===false?null:(string)$v;}public function guardar(Cedula $c,string $a):void{$q=$this->pdo->prepare('UPDATE USUARIO SET foto_perfil=? WHERE cedula=?');$q->execute([$a,$c->value()]);}}

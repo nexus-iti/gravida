@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Home | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/global.css?v=4.1.4" />
+</head>
+  <body data-section="home" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <section id="hero-home"></section>
+      <div id="mensaje-kanban" aria-live="polite" aria-atomic="true"></div>
+      <section class="calendar-toolbar regla-diseno-002" id="kanban-toolbar">
+        <div><strong>Tablero del equipo técnico</strong><p>Organiza y asigna las tareas internas.</p></div>
+        <button
+          class="boton boton--primary regla-diseno-005"
+          type="button"
+          data-task-new
+        >
+          <i data-lucide="plus" class="icon icon-sm regla-diseno-006"></i>
+          <span data-clave="agregar_tarea">Agregar tarea</span>
+        </button>
+      </section>
+      <section class="panel-grid panel-grid--single regla-diseno-007" id="kanban-section">
+        <article class="panel calendar-panel calendar-panel--kanban regla-diseno-008">
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010" data-clave="tablero_de_tareas">Tablero de tareas</h2>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <div id="kanban-tareas" class="kanban-board regla-diseno-013"></div>
+          </div>
+        </article>
+      </section>
+      <section class="panel-grid panel-grid--single regla-diseno-007" id="gestion-reportes-2" hidden>
+        <article class="panel"><div class="panel__header"><div><h2 class="panel__title">Reportes y recuperación de acceso</h2><p>Revisa cada solicitud antes de tomar una decisión.</p></div><a class="boton boton--outline" id="enlace-administracion" href="administracion.html" hidden>Administración</a></div><div class="panel__body"><div id="lista-reportes-2"></div></div></article>
+      </section>
+    </main>
+    <div
+      class="dialogo-overlay regla-diseno-018"
+      id="modal-tarea"
+      style="display:none"
+      data-modal
+    >
+      <div
+        class="dialogo dialogo--wide regla-diseno-019"
+      >
+        <header class="dialogo__header regla-diseno-020">
+          <h3 class="dialogo__title regla-diseno-021">
+            <i data-lucide="clipboard-list" class="icon icon-md regla-diseno-017"></i>
+            <span id="titulo-modal-tarea" data-clave="detalle_tarea">Detalle de la tarea</span>
+          </h3>
+          <button
+            class="dialogo__close regla-diseno-022"
+            type="button"
+            data-modal-close
+          >
+            <i data-lucide="x" class="icon icon-md regla-diseno-017"></i>
+          </button>
+        </header>
+        <form id="form-tarea-calendario">
+          <div class="dialogo__body regla-diseno-023">
+            <input type="hidden" id="tarea-id" />
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-titulo" data-clave="nombre_tarea">Nombre de la tarea</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-titulo"
+                  type="text"
+                  required
+                />
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-estado" data-clave="estado">Estado</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-estado"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="input-stack regla-diseno-025">
+              <label for="tarea-descripcion" data-clave="que_hay_que_hacer">Que hay que hacer</label>
+              <textarea
+                class="textarea-input regla-diseno-026"
+                id="tarea-descripcion"
+                rows="5"
+                required
+              ></textarea>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-categoria" data-clave="categoria">Categoria</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-categoria"
+                  required
+                ></select>
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-prioridad" data-clave="prioridad">Prioridad</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-prioridad"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-fecha-agregada" data-clave="fecha_de_carga">Fecha de carga</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-fecha-agregada"
+                  type="date"
+                  readonly
+                />
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-tecnico" data-clave="responsable">Responsable</label>
+                <select
+                  class="select-input regla-diseno-026"
+                  id="tarea-tecnico"
+                  required
+                ></select>
+              </div>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-plazo-inicio" data-clave="empieza">Empieza</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-plazo-inicio"
+                  type="date"
+                  required
+                />
+              </div>
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-plazo-fin" data-clave="termina">Termina</label>
+                <input
+                  class="text-input regla-diseno-026"
+                  id="tarea-plazo-fin"
+                  type="date"
+                  required
+                />
+              </div>
+            </div>
+            <div class="field-grid regla-diseno-024">
+              <div class="input-stack regla-diseno-025">
+                <label for="tarea-color" data-clave="color_en_el_calendario">Color en el calendario</label>
+                <input
+                  class="text-input color-input regla-diseno-026"
+                  id="tarea-color"
+                  type="color"
+                  value="#16A34A"
+                />
+              </div>
+              <div class="task-detail-note" id="tarea-detalle-resumen"></div>
+            </div>
+          </div>
+          <footer class="dialogo__footer regla-diseno-027">
+            <button
+              class="boton boton--outline regla-diseno-005"
+              type="button"
+              data-modal-close
+             data-clave="cancelar">
+              Cancelar
+            </button>
+            <button
+              class="boton boton--outline-danger regla-diseno-005"
+              type="button"
+              data-task-delete
+              hidden
+            >
+              <i data-lucide="trash-2" class="icon icon-sm regla-diseno-006"></i>
+              <span data-clave="eliminar_tarea">Eliminar tarea</span>
+            </button>
+            <button
+              class="boton boton--primary regla-diseno-005"
+              type="submit"
+             data-clave="guardar_cambios">
+              Guardar cambios
+            </button>
+          </footer>
+        </form>
+      </div>
+    </div>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../js/router.js?v=5.0.0"></script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script>
+      (async function iniciarHome() {
+      if (protegerRuta()) {
+        await verificarSesionEnServidor();
+        const usuarioActual = obtenerUsuarioActual();
+        const puedeVerKanban = usuarioPuedeAccederACalendarioTA(usuarioActual);
+        if (puedeVerKanban) {
+          await Promise.all([obtenerUsuariosRegistrados(), obtenerResponsablesTareaRegistrados()]);
+        } else {
+          await obtenerUsuariosRegistrados();
+        }
+        const seccionKanban = document.getElementById('kanban-section');
+        const toolbarKanban = document.getElementById('kanban-toolbar');
+        const mensajeKanban = document.getElementById('mensaje-kanban');
+
+        mostrarEn('cabecera-superior', crearBarraDeNavegacion());
+        mostrarEn(
+          'hero-home',
+          ` <section class="hero-banner regla-diseno-076"> <div class="hero-banner__copy"> <h1 class="hero-banner__title regla-diseno-078">Bienvenida, ${escaparHtml(obtenerNombreCorto(usuarioActual.nombreCompleto))}</h1> <p class="hero-banner__text regla-diseno-079" data-clave="home_hero_desc">${escaparHtml(t('SGRSI es la herramienta que busca gestionar tu trabajo diario de forma eficiente y segura'))}</p> </div> <figure class="hero-banner__media hero-banner__media--welcome regla-diseno-080" aria-hidden="true"> <img class="hero-banner__welcome-icon" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWxvZ3MtaWNvbiBsdWNpZGUtbG9ncyI+PHBhdGggZD0iTTMgNWgxIi8+PHBhdGggZD0iTTMgMTJoMSIvPjxwYXRoIGQ9Ik0zIDE5aDEiLz48cGF0aCBkPSJNOCA1aDEiLz48cGF0aCBkPSJNOCAxMmgxIi8+PHBhdGggZD0iTTggMTloMSIvPjxwYXRoIGQ9Ik0xMyA1aDgiLz48cGF0aCBkPSJNMTMgMTJoOCIvPjxwYXRoIGQ9Ik0xMyAxOWg4Ii8+PC9zdmc+" alt="" /> </figure> </section> `,
+        );
+
+        if (!puedeVerKanban) {
+          if (seccionKanban) {
+            seccionKanban.remove();
+          }
+          if (toolbarKanban) {
+            toolbarKanban.remove();
+          }
+          if (mensajeKanban) {
+            mensajeKanban.remove();
+          }
+          dibujarIconos();
+        } else {
+          let kanbanPointerDrag = null;
+          let suprimirClickKanban = false;
+
+          function opcionesHtml(lista, seleccionado) {
+            let html = '';
+            for (let i = 0; i < lista.length; i++) {
+              const selected = lista[i] === seleccionado ? ' selected' : '';
+              html +=
+                '<option value="' +
+                escaparHtml(t(lista[i])) +
+                '"' +
+                selected +
+                '>' +
+                escaparHtml(lista[i]) +
+                '</option>';
+            }
+            return html;
+          }
+
+          function opcionesResponsablesTareaHtml(seleccionado) {
+            const responsables = obtenerResponsablesTareaDelPlantel();
+            if (responsables.length === 0) {
+              return '<option value="" disabled selected>No hay responsables activos</option>';
+            }
+            let html = '';
+            for (let i = 0; i < responsables.length; i++) {
+              const selected = responsables[i].id === seleccionado ? ' selected' : '';
+              const etiquetaRol = obtenerEtiquetaRol(responsables[i].rol).replace('Usuario ', '');
+              html +=
+                '<option value="' +
+                escaparHtml(responsables[i].id) +
+                '"' +
+                selected +
+                '>' +
+                escaparHtml(responsables[i].nombreCompleto + ' - ' + etiquetaRol) +
+                '</option>';
+            }
+            return html;
+          }
+
+          function mostrarMensajeKanban(texto, tipo) {
+            mostrarMensajeFormulario('mensaje-kanban', texto, tipo);
+          }
+
+          async function renderKanban() {
+            const tareas = await obtenerTareasCalendarioTA();
+            let html = '';
+            for (let i = 0; i < estadosKanbanTA.length; i++) {
+              const estado = estadosKanbanTA[i];
+              let tareasHtml = '';
+              let cantidad = 0;
+              for (let j = 0; j < tareas.length; j++) {
+                if (tareas[j].estado === estado) {
+                  tareasHtml += crearTarjetaTareaKanban(tareas[j]);
+                  cantidad++;
+                }
+              }
+              if (!tareasHtml) {
+                tareasHtml =
+                  '<div class="kanban-empty regla-diseno-028">Sin tareas por ahora</div>';
+              }
+              html += ` <section class="kanban-column regla-diseno-029" data-kanban-drop="${escaparHtml(estado)}"> <header class="kanban-column__header regla-diseno-030"> <span>${escaparHtml(traducirEstadoTarea(estado))}</span> <strong>${cantidad}</strong> </header> <div class="kanban-column__body regla-diseno-031">${tareasHtml}</div> </section> `;
+            }
+            mostrarEn('kanban-tareas', html);
+          }
+
+          async function renderTodo() {
+            await renderKanban();
+            dibujarIconos();
+          }
+
+          function limpiarColumnasDropKanban() {
+            const columnas = document.querySelectorAll('[data-kanban-drop]');
+            for (let i = 0; i < columnas.length; i++) {
+              columnas[i].classList.remove('kanban-column--drop-target');
+            }
+          }
+
+          async function moverTareaKanban(tareaId, estadoDestino) {
+            const tarea = await obtenerTareaCalendarioPorId(tareaId);
+            if (!tarea || !estadoDestino || tarea.estado === estadoDestino) {
+              return;
+            }
+            const resultado = await actualizarTareaCalendarioTA(tareaId, {
+              titulo: tarea.titulo,
+              descripcion: tarea.descripcion,
+              prioridad: tarea.prioridad,
+              categoria: tarea.categoria,
+              estado: estadoDestino,
+              fechaAgregada: tarea.fechaAgregada,
+              plazoInicio: tarea.plazoInicio,
+              plazoFin: tarea.plazoFin,
+              tecnicoId: tarea.tecnicoId,
+              color: tarea.color,
+            });
+            mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (resultado.ok) {
+              await renderTodo();
+            }
+          }
+
+          function crearTareaFormularioVacia() {
+            const hoy = fechaIsoLocal(new Date());
+            return {
+              id: '',
+              titulo: '',
+              descripcion: '',
+              prioridad: 'Media',
+              categoria: 'Hardware',
+              estado: 'Pendiente',
+              fechaAgregada: hoy,
+              plazoInicio: hoy,
+              plazoFin: hoy,
+              tecnicoId: obtenerResponsableTareaIdValido(''),
+              color: '#16A34A',
+            };
+          }
+
+          function llenarFormularioTarea(tarea) {
+            const tareaFormulario = tarea || crearTareaFormularioVacia();
+            document.getElementById('titulo-modal-tarea').textContent = tarea
+              ? 'Detalle de la tarea'
+              : 'Agregar tarea';
+            document.getElementById('tarea-id').value = tareaFormulario.id;
+            document.getElementById('tarea-titulo').value = tareaFormulario.titulo;
+            document.getElementById('tarea-descripcion').value = tareaFormulario.descripcion;
+            document.getElementById('tarea-fecha-agregada').value = tareaFormulario.fechaAgregada;
+            document.getElementById('tarea-plazo-inicio').value = tareaFormulario.plazoInicio;
+            document.getElementById('tarea-plazo-fin').value = tareaFormulario.plazoFin;
+            document.getElementById('tarea-color').value = obtenerColorSeguroTarea(tareaFormulario);
+            document.getElementById('tarea-estado').innerHTML = opcionesHtml(
+              estadosKanbanTA,
+              tareaFormulario.estado,
+            );
+            document.getElementById('tarea-categoria').innerHTML = opcionesHtml(
+              categoriasTareaTA,
+              tareaFormulario.categoria,
+            );
+            document.getElementById('tarea-prioridad').innerHTML = opcionesHtml(
+              prioridadesTareaTA,
+              tareaFormulario.prioridad,
+            );
+            const selectResponsable = document.getElementById('tarea-tecnico');
+            selectResponsable.innerHTML = opcionesResponsablesTareaHtml(
+              tareaFormulario.tecnicoId,
+            );
+            selectResponsable.value = obtenerResponsableTareaIdValido(tareaFormulario.tecnicoId);
+            if (!selectResponsable.value && selectResponsable.options.length > 0) {
+              selectResponsable.selectedIndex = 0;
+            }
+            inicializarSelectsPersonalizados(selectResponsable);
+            document.querySelector('[data-task-delete]').hidden = !tarea;
+            document.getElementById('tarea-detalle-resumen').innerHTML =
+              '<strong>Plazo:</strong><span>' +
+              escaparHtml(formatearFechaHumana(tareaFormulario.plazoInicio)) +
+              ' - ' +
+              escaparHtml(formatearFechaHumana(tareaFormulario.plazoFin)) +
+              '</span><strong>Estado:</strong><span>' +
+              escaparHtml(tareaFormulario.estado) +
+              '</span>';
+          }
+
+          function obtenerDatosFormularioTarea() {
+            return {
+              titulo: document.getElementById('tarea-titulo').value,
+              descripcion: document.getElementById('tarea-descripcion').value,
+              prioridad: document.getElementById('tarea-prioridad').value,
+              categoria: document.getElementById('tarea-categoria').value,
+              estado: document.getElementById('tarea-estado').value,
+              fechaAgregada: document.getElementById('tarea-fecha-agregada').value,
+              plazoInicio: document.getElementById('tarea-plazo-inicio').value,
+              plazoFin: document.getElementById('tarea-plazo-fin').value,
+              tecnicoId: document.getElementById('tarea-tecnico').value,
+              color: document.getElementById('tarea-color').value,
+            };
+          }
+
+          async function abrirDetalleTarea(tareaId) {
+            const tarea = await obtenerTareaCalendarioPorId(tareaId);
+            if (!tarea) {
+              mostrarMensajeKanban('No encontramos esa tarea.', 'error');
+              return;
+            }
+            llenarFormularioTarea(tarea);
+            abrirModal('modal-tarea');
+            dibujarIconos();
+          }
+
+          document.addEventListener('click', async function (evento) {
+            const botonNueva = evento.target.closest('[data-task-new]');
+            if (botonNueva) {
+              llenarFormularioTarea(null);
+              abrirModal('modal-tarea');
+              dibujarIconos();
+              return;
+            }
+            const botonAbrir = evento.target.closest('[data-task-open]');
+            if (botonAbrir) {
+              if (suprimirClickKanban) {
+                suprimirClickKanban = false;
+                return;
+              }
+              await abrirDetalleTarea(botonAbrir.getAttribute('data-task-open'));
+              return;
+            }
+            const botonEliminar = evento.target.closest('[data-task-delete]');
+            if (botonEliminar) {
+              const tareaId = document.getElementById('tarea-id').value;
+              if (!tareaId) {
+                return;
+              }
+              const confirmar = window.confirm('Seguro que queres eliminar esta tarea?');
+              if (!confirmar) {
+                return;
+              }
+              const resultado = await eliminarTareaCalendarioTA(tareaId);
+              mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
+              if (resultado.ok) {
+                cerrarModal('modal-tarea');
+                await renderTodo();
+              }
+            }
+          });
+
+          document.addEventListener('dragstart', function (evento) {
+            const tarjeta = evento.target.closest('[data-task-drag]');
+            if (!tarjeta) {
+              return;
+            }
+            evento.dataTransfer.setData('text/plain', tarjeta.getAttribute('data-task-drag'));
+            evento.dataTransfer.effectAllowed = 'move';
+            tarjeta.classList.add('kanban-task-card--dragging');
+          });
+
+          document.addEventListener('dragend', function (evento) {
+            const tarjeta = evento.target.closest('[data-task-drag]');
+            if (tarjeta) {
+              tarjeta.classList.remove('kanban-task-card--dragging');
+            }
+            limpiarColumnasDropKanban();
+          });
+
+          document.addEventListener('dragover', function (evento) {
+            const columna = evento.target.closest('[data-kanban-drop]');
+            if (!columna) {
+              return;
+            }
+            evento.preventDefault();
+            evento.dataTransfer.dropEffect = 'move';
+            columna.classList.add('kanban-column--drop-target');
+          });
+
+          document.addEventListener('dragleave', function (evento) {
+            const columna = evento.target.closest('[data-kanban-drop]');
+            if (!columna || columna.contains(evento.relatedTarget)) {
+              return;
+            }
+            columna.classList.remove('kanban-column--drop-target');
+          });
+
+          document.addEventListener('drop', async function (evento) {
+            const columna = evento.target.closest('[data-kanban-drop]');
+            if (!columna) {
+              return;
+            }
+            evento.preventDefault();
+            columna.classList.remove('kanban-column--drop-target');
+            await moverTareaKanban(
+              evento.dataTransfer.getData('text/plain'),
+              columna.getAttribute('data-kanban-drop'),
+            );
+          });
+
+          document.addEventListener('mousedown', function (evento) {
+            const tarjeta = evento.target.closest('[data-task-drag]');
+            if (!tarjeta) {
+              return;
+            }
+            kanbanPointerDrag = {
+              tareaId: tarjeta.getAttribute('data-task-drag'),
+              tarjeta: tarjeta,
+              inicioX: evento.clientX,
+              inicioY: evento.clientY,
+              movido: false,
+            };
+          });
+
+          document.addEventListener('mousemove', function (evento) {
+            if (!kanbanPointerDrag) {
+              return;
+            }
+            const distanciaX = Math.abs(evento.clientX - kanbanPointerDrag.inicioX);
+            const distanciaY = Math.abs(evento.clientY - kanbanPointerDrag.inicioY);
+            if (distanciaX < 8 && distanciaY < 8) {
+              return;
+            }
+            kanbanPointerDrag.movido = true;
+            kanbanPointerDrag.tarjeta.classList.add('kanban-task-card--dragging');
+            limpiarColumnasDropKanban();
+            const columnaActual = document
+              .elementFromPoint(evento.clientX, evento.clientY)
+              ?.closest('[data-kanban-drop]');
+            if (columnaActual) {
+              columnaActual.classList.add('kanban-column--drop-target');
+            }
+          });
+
+          document.addEventListener('mouseup', async function (evento) {
+            if (!kanbanPointerDrag) {
+              return;
+            }
+            const dragActual = kanbanPointerDrag;
+            kanbanPointerDrag = null;
+            dragActual.tarjeta.classList.remove('kanban-task-card--dragging');
+            limpiarColumnasDropKanban();
+            if (!dragActual.movido) {
+              return;
+            }
+            suprimirClickKanban = true;
+            window.setTimeout(function () {
+              suprimirClickKanban = false;
+            }, 0);
+            const columnaDestino = document
+              .elementFromPoint(evento.clientX, evento.clientY)
+              ?.closest('[data-kanban-drop]');
+            if (columnaDestino) {
+              await moverTareaKanban(dragActual.tareaId, columnaDestino.getAttribute('data-kanban-drop'));
+            }
+          });
+
+          const formTareaCalendario = document.getElementById('form-tarea-calendario');
+          formTareaCalendario.addEventListener('submit', async function (evento) {
+            evento.preventDefault();
+            if (!validarFormularioCliente(formTareaCalendario, mostrarMensajeKanban)) {
+              return;
+            }
+            try {
+              const datos = obtenerDatosFormularioTarea();
+              const tareaId = document.getElementById('tarea-id').value;
+              const resultado = tareaId
+                ? await actualizarTareaCalendarioTA(tareaId, datos)
+                : await guardarNuevaTareaCalendarioTA(datos);
+              mostrarMensajeKanban(resultado.mensaje, resultado.ok ? 'success' : 'error');
+              if (resultado.ok) {
+                cerrarModal('modal-tarea');
+                await renderTodo();
+              }
+            } catch (error) {
+              manejarErrorCliente(error, mostrarMensajeKanban);
+            }
+          });
+
+          await renderTodo();
+        }
+      }
+      })();
+    </script>
+    <script>
+    (async function iniciarGestionReportes2(){
+      const usuario=obtenerUsuarioActual();if(!usuario||!usuarioPuedeGestionarOperaciones(usuario))return;
+      const panel=document.getElementById('gestion-reportes-2');panel.hidden=false;
+      if(usuarioEsAdministrativo(usuario)){document.getElementById('enlace-administracion').hidden=false;}else{document.querySelector('#gestion-reportes-2 .panel__title').textContent='Bandeja técnica de incidencias y accesos';}
+      function tarjetaReporte(x, finalizado){return '<article class="activity-card"><h4>#'+escaparHtml(x.id)+' '+escaparHtml(x.asunto)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p>'+(finalizado?'<p>'+escaparHtml(x.respuesta||'Reporte cerrado.')+'</p>':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-reporte="'+x.id+'" data-estado="En proceso">Tomar</button><button class="boton boton--primary boton--sm" data-reporte="'+x.id+'" data-estado="Resuelto">Resolver</button><button class="boton boton--outline-danger boton--sm" data-reporte="'+x.id+'" data-estado="Rechazado">Rechazar</button></div>')+'</article>';}
+      function tarjetaRecuperacion(x, finalizado){return '<article class="activity-card"><h4>Ticket #'+escaparHtml(x.ticketId)+' · '+escaparHtml(x.usuario)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p><p>'+(finalizado?'Solicitud cerrada.':'Al resolver se genera una contraseña temporal y se cierran las sesiones anteriores.')+'</p>'+(finalizado?'':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-recuperacion="'+x.id+'" data-accion="tomar">Tomar</button><button class="boton boton--primary boton--sm" data-recuperacion="'+x.id+'" data-accion="resolver">Resolver</button><button class="boton boton--outline-danger boton--sm" data-recuperacion="'+x.id+'" data-accion="rechazar">Rechazar</button></div>')+'</article>';}
+      function bloqueFinalizados(titulo, elementos){if(!elementos.length)return '';return '<details class="resolved-folder"><summary><span class="resolved-folder__title"><span class="resolved-folder__chevron" aria-hidden="true">›</span>'+escaparHtml(titulo)+'</span><span class="etiqueta etiqueta--primary">'+elementos.length+'</span></summary><div class="activity-stack">'+elementos.join('')+'</div></details>';}
+      async function cargar(){const datos=await Promise.all([solicitarApi('api/reportes_error.php'),solicitarApi('api/recuperacion.php')]);const reportesPendientes=[],reportesFinalizados=[],recuperacionesPendientes=[],recuperacionesFinalizadas=[];datos[0].forEach(x=>{const finalizado=['Resuelto','Rechazado'].includes(x.estado);(finalizado?reportesFinalizados:reportesPendientes).push(tarjetaReporte(x,finalizado));});datos[1].forEach(x=>{const finalizado=['Resuelto','Rechazado'].includes(x.estado);(finalizado?recuperacionesFinalizadas:recuperacionesPendientes).push(tarjetaRecuperacion(x,finalizado));});let html='<section class="report-tray"><h3>Reportes públicos pendientes</h3><div class="activity-stack">'+(reportesPendientes.join('')||'<p>Sin reportes pendientes.</p>')+'</div>'+bloqueFinalizados('Reportes públicos resueltos y cerrados',reportesFinalizados)+'</section>';html+='<section class="report-tray"><h3>Recuperaciones de contraseña pendientes</h3><div class="activity-stack">'+(recuperacionesPendientes.join('')||'<p>Sin solicitudes pendientes.</p>')+'</div>'+bloqueFinalizados('Recuperaciones resueltas y cerradas',recuperacionesFinalizadas)+'</section>';document.getElementById('lista-reportes-2').innerHTML=html;}
+      document.getElementById('lista-reportes-2').addEventListener('click',async e=>{const botonReporte=e.target.closest('[data-reporte]'),botonRecuperacion=e.target.closest('[data-recuperacion]');if(!botonReporte&&!botonRecuperacion)return;try{if(botonReporte){await solicitarApi('api/reportes_error.php',{method:'PATCH',body:JSON.stringify({id:botonReporte.dataset.reporte,estado:botonReporte.dataset.estado,responsableCedula:usuario.cedula,respuesta:botonReporte.dataset.estado==='Resuelto'?'Reporte resuelto.':''})});}if(botonRecuperacion){await solicitarApi('api/recuperacion.php',{method:'PATCH',body:JSON.stringify({id:botonRecuperacion.dataset.recuperacion,accion:botonRecuperacion.dataset.accion,responsableCedula:usuario.cedula})});}await cargar();}catch(x){alert(x.message);}});await cargar();
+    })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | SGRSI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/global.css" />
+</head>
+  <body>
+    <main class="auth-shell regla-diseno-058">
+      <header
+        class="public-topbar auth-page__header regla-diseno-059"
+      >
+        <a
+          class="public-brand regla-diseno-060"
+          href="index.html"
+          aria-label="Inicio SGRSI"
+         data-clave-aria-label="inicio_sgrsi">
+          <span
+            class="public-brand__mark regla-diseno-061"
+          >
+            <img src="../images/header.jpeg" alt="ITI CEPT" data-clave-alt="iti_cept" />
+          </span>
+          <span>
+            <strong data-clave="sgrsi">SGRSI</strong>
+            <small data-clave="gestion_ti_institucional">Gestion TI Institucional</small>
+          </span>
+        </a>
+        <div class="public-language segmented-control" role="group" aria-label="Cambiar idioma" data-clave-aria-label="cambiar_idioma">
+          <button type="button" data-idioma-opcion="es" aria-pressed="true">ES</button>
+          <button type="button" data-idioma-opcion="en" aria-pressed="false">EN</button>
+        </div>
+      </header>
+      <section class="auth-main regla-diseno-062">
+        <section class="auth-view auth-view--login auth-view--active regla-diseno-063" data-auth-view="login">
+          <div class="auth-login-shell regla-diseno-097">
+            <div class="auth-center-copy regla-diseno-098">
+              <span
+                class="auth-badge regla-diseno-099"
+              >
+                <i
+                  data-lucide="shield-check"
+                  class="icon icon-sm regla-diseno-006"
+                ></i>
+                <span data-clave="acceso_seguro_iti">Acceso seguro ITI CEPT</span>
+              </span>
+              <h1 data-clave="bienvenido_de_nuevo">Bienvenido de nuevo</h1>
+              <p data-clave="ingresa_portal">Ingresá con tu correo o cédula para continuar trabajando en el portal.</p>
+            </div>
+            <article class="auth-card auth-card--login regla-diseno-065">
+              <form id="form-login" class="auth-form regla-diseno-033">
+                <div id="auth-message-login" aria-live="polite" aria-atomic="true"></div>
+                <div class="auth-field regla-diseno-025">
+                  <label for="login-identificador" data-clave="correo_o_cedula">Correo o cedula</label>
+                  <div class="auth-input-shell auth-input-shell--credential">
+                    <i data-lucide="user" class="icon icon-sm regla-diseno-006"></i>
+                    <input
+                      id="login-identificador"
+                      type="text"
+                      placeholder="usuario@campus.local"
+                      autocomplete="username"
+                      required
+                    data-clave-placeholder="usuario_campus_placeholder" />
+                  </div>
+                </div>
+                <div class="auth-field regla-diseno-025">
+                  <label for="login-contrasena" data-clave="contrasena">Contraseña</label>
+                  <div class="auth-input-shell auth-input-shell--credential">
+                    <i data-lucide="lock" class="icon icon-sm regla-diseno-006"></i>
+                    <input
+                      id="login-contrasena"
+                      type="password"
+                      placeholder="********"
+                      autocomplete="current-password"
+                      required
+                    />
+                    <button
+                      class="auth-password-toggle regla-diseno-022"
+                      type="button"
+                      data-toggle-password="login-contrasena"
+                      aria-label="Mostrar contraseña"
+                     data-clave-aria-label="mostrar_contrasena">
+                      <i data-lucide="eye" class="icon icon-sm regla-diseno-006"></i>
+                    </button>
+                  </div>
+                </div>
+                <label class="auth-check regla-diseno-100">
+                  <input id="login-recordarme" type="checkbox" />
+                  <span data-clave="mantener_sesion">Mantener sesion iniciada</span>
+                </label>
+                <button
+                  class="auth-submit regla-diseno-070"
+                  type="submit"
+                >
+                  <span data-clave="entrar_al_portal">Entrar al portal</span>
+                  <i data-lucide="log-in" class="icon icon-sm regla-diseno-006"></i>
+                </button>
+              </form>
+              <!-- F-08 (3ra entrega): segundo paso del ingreso (verificacion en dos pasos) -->
+              <form id="form-2fa" class="auth-form auth-2fa regla-diseno-033" hidden>
+                <div id="auth-message-2fa" aria-live="polite" aria-atomic="true"></div>
+                <div id="activar-2fa" class="auth-2fa__activar" hidden>
+                  <p class="auth-2fa__titulo">Tu cuenta de administrador necesita verificacion en dos pasos</p>
+                  <ol class="auth-2fa__pasos">
+                    <li>Instala en tu telefono Google Authenticator, Microsoft Authenticator o Authy.</li>
+                    <li>Agrega una cuenta nueva y escribi esta clave (o abri el enlace desde el telefono):</li>
+                  </ol>
+                  <code id="secreto-2fa" class="auth-2fa__secreto"></code>
+                  <a id="enlace-2fa" class="auth-2fa__enlace" href="#">Abrir en la app autenticadora</a>
+                  <p class="auth-2fa__nota">Guarda la clave en un lugar seguro. Sin el telefono no vas a poder entrar.</p>
+                </div>
+                <p id="texto-codigo-2fa" class="auth-2fa__nota">
+                  Escribi el codigo de 6 digitos que muestra tu app autenticadora.
+                </p>
+                <div class="auth-field regla-diseno-025">
+                  <label for="codigo-2fa">Codigo de verificacion</label>
+                  <div class="auth-input-shell auth-input-shell--credential">
+                    <i data-lucide="shield-check" class="icon icon-sm regla-diseno-006"></i>
+                    <input
+                      id="codigo-2fa"
+                      type="text"
+                      inputmode="numeric"
+                      autocomplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      maxlength="6"
+                      placeholder="123456"
+                      required
+                    />
+                  </div>
+                </div>
+                <button class="auth-submit regla-diseno-070" type="submit">
+                  <span>Verificar e ingresar</span>
+                  <i data-lucide="shield-check" class="icon icon-sm regla-diseno-006"></i>
+                </button>
+                <button id="volver-login" class="auth-2fa__volver" type="button">Volver a la contrasena</button>
+              </form>
+
+              <p class="auth-alt-action regla-diseno-101">
+                <span data-clave="no_tenes_cuenta">¿No tenés cuenta?</span>
+                <a href="register.html" data-clave="registrate">Registrate</a>
+              </p>
+              <p class="auth-alt-action regla-diseno-101"><a href="recuperar.html" data-clave="olvidaste_contrasena">¿Olvidaste tu contraseña?</a></p>
+            </article>
+          </div>
+        </section>
+      </section>
+      <footer class="auth-footer regla-diseno-072">
+        <div class="auth-footer__inner regla-diseno-073">
+          <div>
+            <strong data-clave="sgrsi">SGRSI</strong>
+            <p>2026 SGRSI - ITI CEPT. Todos los derechos reservados.</p>
+          </div>
+          <nav aria-label="Enlaces institucionales" data-clave-aria-label="enlaces_institucionales">
+            <a href="index.html" data-clave="portal_iti">Portal ITI</a>
+            <a href="index.html#soporte" data-clave="soporte">Soporte</a>
+            <a href="login.html" data-clave="login">Login</a>
+            <a href="register.html" data-clave="register">Register</a>
+          </nav>
+        </div>
+      </footer>
+    </main>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="../js/router.js?v=5.0.0"></script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </body>
+</html>

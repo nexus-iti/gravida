@@ -1,0 +1,10 @@
+<?php
+declare(strict_types=1);
+use Nexus\Features\Prestamo\Application\PrestamoService;use Nexus\Shared\Domain\ValueObject\Cedula;use Nexus\Features\Prestamo\Infrastructure\PdoPrestamoRepository;
+require_once __DIR__.'/common.php';exigirMetodo(['GET','POST','PUT','PATCH','DELETE']);$sesionActual=autorizarEndpoint('prestamos');$servicio=new PrestamoService(new PdoPrestamoRepository($pdo));
+ejecutar(function()use($servicio,$sesionActual):void{
+    $metodo=$_SERVER['REQUEST_METHOD'];$usuario=new Cedula((string)$sesionActual['cedula']);$gestiona=in_array($sesionActual['rol'],['Tecnico_Asistente','Administrador'],true);
+    if($metodo==='GET')responder($servicio->listar($usuario,$gestiona));$d=cuerpoJson();
+    if($metodo==='POST'){$entrada=$d['recursos']??null;if(!is_array($entrada))$entrada=[['idEquipo'=>$d['idEquipo']??null,'nombre'=>$d['recurso']??'','cantidad'=>1]];$recursos=[];foreach($entrada as $r)$recursos[]=is_array($r)?['idEquipo'=>$r['idEquipo']??null,'nombre'=>texto($r['nombre']??'',230),'cantidad'=>$r['cantidad']??null]:$r;$salida=$servicio->crear(['fecha'=>fecha($d['fecha']??'','fecha'),'recursos'=>$recursos,'categoria'=>texto($d['categoria']??'',60),'jornada'=>texto($d['jornada']??'',30),'ubicacion'=>texto($d['ubicacion']??'',100),'detalle'=>texto($d['detalle']??'',65535)],$usuario);responder($salida,201);}
+    $id=entero($d['id']??null,'id');if($metodo==='DELETE'){$servicio->baja($id,$usuario);responder(['ok'=>true]);}$accion=texto($d['accion']??'',30);if($accion==='comentar')$servicio->comentar($id,texto($d['comentario']??'',65535),$usuario);else $servicio->cambiarEstado($id,texto($d['estado']??'',30),$usuario,texto($d['comentario']??'',65535));responder(['ok'=>true]);
+});

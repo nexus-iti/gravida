@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);use Nexus\Features\Administracion\Application\AdministracionService;use Nexus\Shared\Domain\ValueObject\Cedula;use Nexus\Features\Administracion\Infrastructure\PdoAdministracionRepository;
+require_once __DIR__.'/common.php';exigirMetodo(['GET','PUT','PATCH']);$sesion=autorizarEndpoint('configuracion');$s=new AdministracionService(new PdoAdministracionRepository($pdo));ejecutar(function()use($s,$sesion):void{if($_SERVER['REQUEST_METHOD']==='GET')responder($s->configuracion());$d=cuerpoJson();$s->guardarConfiguracion(texto($d['clave']??'',60),texto($d['valor']??'',255),new Cedula((string)$sesion['cedula']));responder(['ok'=>true]);});

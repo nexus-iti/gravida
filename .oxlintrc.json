@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn"
+  },
+  "env": {
+    "browser": true,
+    "builtin": true
+  },
+  "rules": {
+    // El proyecto usa scripts clásicos: las funciones se comparten entre
+    // archivos, por lo que no-unused-vars genera falsos positivos.
+    "no-unused-vars": "off",
+    // Helpers de UI que se mantienen cerca de su flujo para no exponerlos.
+    "unicorn/consistent-function-scoping": "off"
+  },
+  "ignorePatterns": [
+    "node_modules/**",
+    "graphify-out/**",
+    "js/shared/vendor/**"
+  ]
+}

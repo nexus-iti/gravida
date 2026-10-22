@@ -1,0 +1,3 @@
+<?php
+declare(strict_types=1);use Nexus\Features\Perfil\Application\FotoPerfilService;use Nexus\Shared\Domain\ValueObject\Cedula;use Nexus\Features\Perfil\Infrastructure\PdoFotoPerfilRepository;use Nexus\Features\Perfil\Infrastructure\GdAlmacenImagen;
+require_once __DIR__.'/common.php';exigirMetodo(['POST']);$sesion=autorizarEndpoint('foto_perfil');$s=new FotoPerfilService(new PdoFotoPerfilRepository($pdo),new GdAlmacenImagen(dirname(__DIR__).'/uploads/perfiles'));ejecutar(function()use($s,$sesion):void{$ruta=$s->cambiar(new Cedula((string)$sesion['cedula']),isset($_FILES['foto'])&&is_array($_FILES['foto'])?$_FILES['foto']:null);responder(['ok'=>true,'fotoPerfil'=>$ruta]);});

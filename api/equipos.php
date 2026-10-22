@@ -1,0 +1,8 @@
+<?php
+declare(strict_types=1);
+use Nexus\Features\Inventario\Application\InventarioService;use Nexus\Shared\Domain\ValueObject\Cedula;use Nexus\Features\Inventario\Infrastructure\PdoInventarioRepository;
+require_once __DIR__.'/common.php';exigirMetodo(['GET','POST','PUT','PATCH','DELETE']);$usuario=autorizarEndpoint('equipos');$servicio=new InventarioService(new PdoInventarioRepository($pdo));
+ejecutar(function()use($servicio,$usuario):void{$m=$_SERVER['REQUEST_METHOD'];if($m==='GET')responder($servicio->equipos());$autor=new Cedula((string)$usuario['cedula']);$d=cuerpoJson();
+    if($m==='POST'){$cantidad=filter_var($d['cantidad']??1,FILTER_VALIDATE_INT);$id=$servicio->altaEquipo(['nombre'=>texto($d['nombre']??'',100),'tipo'=>texto($d['tipo']??'Otro',60),'observaciones'=>texto($d['observaciones']??'',65535),'marca'=>texto($d['marca']??'',60),'cantidad'=>$cantidad===false?0:(int)$cantidad,'seccionId'=>entero($d['seccionId']??null,'seccionId'),'estado'=>texto($d['estado']??'Activo',20)],$autor);responder(['ok'=>true,'id'=>(string)$id],201);}
+    $id=entero($d['id']??null,'id');if(in_array($m,['PUT','PATCH'],true)){if(texto($d['accion']??'',30)==='editar'){$servicio->editarEquipo($id,['nombre'=>texto($d['nombre']??'',100),'tipo'=>texto($d['tipo']??'',60),'marca'=>texto($d['marca']??'',60),'observaciones'=>texto($d['observaciones']??'',65535),'estado'=>texto($d['estado']??'',30),'seccionId'=>entero($d['seccionId']??null,'seccionId')],$autor);responder(['ok'=>true]);}responder($servicio->trasladarEquipo($id,entero($d['seccionId']??null,'seccionId'),$autor));}responder($servicio->bajaEquipo($id,$autor));
+});

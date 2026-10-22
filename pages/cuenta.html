@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cuenta | Portal de Gestion TI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/global.css" />
+</head>
+  <body class="account-redesign" data-section="cuenta" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main regla-diseno-001">
+      <section class="account-role-callout">
+        <div><strong>¿Necesitás otro rol?</strong><span>Enviá una solicitud para que un administrador la revise.</span></div>
+        <a class="boton boton--primary" href="solicitar-rol.html">Solicitar cambio de rol</a>
+      </section>
+      <div id="cabecera-de-pagina"></div>
+      <section class="profile-layout account-profile-layout regla-diseno-007">
+        <aside id="perfil-resumen"></aside>
+        <section class="panel account-form-panel regla-diseno-032">
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010" data-clave="datos_de_tu_perfil">Datos de tu perfil</h2>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <div id="mensaje-cuenta" aria-live="polite" aria-atomic="true"></div>
+            <form id="form-cuenta" class="auth-form regla-diseno-033">
+              <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-descripcion" data-clave="descripcion_bio">DESCRIPCION</label>
+                <textarea
+                  class="textarea-input regla-diseno-026"
+                  id="cuenta-descripcion"
+                  placeholder="Describe tu perfil institucional..."
+                 data-clave-placeholder="describe_perfil"></textarea>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-nombre" data-clave="nombre_completo">Nombre completo</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-nombre"
+                    type="text"
+                    required
+                  />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-correo" data-clave="correo">Correo</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-correo"
+                    type="email"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-rol" data-clave="rol">Rol</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-rol"
+                    type="text"
+                    readonly
+                  />
+                </div>
+              </div>
+              <div class="field-grid regla-diseno-024">
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-area" data-clave="area">Area</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-area"
+                    type="text"
+                    placeholder="Ej. Gestion tecnologica"
+                  data-clave-placeholder="ej_gestion_tecnologica" />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="cuenta-foto" data-clave="foto_perfil">Foto de perfil</label>
+                  <input
+                    class="text-input regla-diseno-026"
+                    id="cuenta-foto"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                  />
+                </div>
+              </div>
+              <div class="form-actions regla-diseno-035">
+                <button
+                  class="boton boton--primary regla-diseno-005"
+                  type="submit"
+                 data-clave="guardar_cambios">
+                  Guardar cambios
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+      </section>
+      <!-- F-08 (3ra entrega): herramientas contra el phishing y el robo de cuentas -->
+      <section class="panel account-security-panel regla-diseno-032" id="panel-seguridad">
+        <div class="panel__header account-security-header regla-diseno-009">
+          <span class="account-security-icon" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+          <div>
+            <h2 class="panel__title regla-diseno-010" data-clave="seguridad_cuenta">Seguridad de la cuenta</h2>
+            <p class="seguridad-nota" data-clave="seguridad_cuenta_descripcion">
+              Actualiza tu contrasena para mantener protegida tu cuenta.
+            </p>
+          </div>
+        </div>
+        <div class="panel__body regla-diseno-012">
+          <div id="mensaje-seguridad" aria-live="polite" aria-atomic="true"></div>
+          <div class="seguridad-grid seguridad-grid--password-only">
+            <div id="bloque-2fa" hidden></div>
+            <div id="tabla-actividad" hidden></div>
+            <article class="seguridad-bloque seguridad-bloque--password">
+              <div class="seguridad-bloque__cabecera">
+                <div>
+                  <h3 class="seguridad-bloque__titulo" data-clave="cambiar_contrasena">Cambiar contrasena</h3>
+                  <p class="seguridad-nota" data-clave="cambiar_contrasena_descripcion">Usa al menos 8 caracteres y evita reutilizar una contrasena anterior.</p>
+                </div>
+              </div>
+              <form id="form-contrasena" class="seguridad-form">
+                <div class="input-stack regla-diseno-025">
+                  <label for="contrasena-actual" data-clave="contrasena_actual">Contrasena actual</label>
+                  <input class="text-input regla-diseno-026" id="contrasena-actual" type="password" autocomplete="current-password" required />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="contrasena-nueva" data-clave="contrasena_nueva">Contrasena nueva</label>
+                  <input class="text-input regla-diseno-026" id="contrasena-nueva" type="password" autocomplete="new-password" minlength="8" required />
+                </div>
+                <div class="input-stack regla-diseno-025">
+                  <label for="contrasena-repetir" data-clave="repetir_contrasena_nueva">Repeti la contrasena nueva</label>
+                  <input class="text-input regla-diseno-026" id="contrasena-repetir" type="password" autocomplete="new-password" minlength="8" required />
+                </div>
+                <button class="boton boton--primary boton--sm" type="submit" data-clave="cambiar_contrasena">Cambiar contrasena</button>
+              </form>
+            </article>
+            <div id="bloque-admin-2fa" hidden></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+    <script src="../js/router.js?v=5.0.0"></script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  </body>
+</html>

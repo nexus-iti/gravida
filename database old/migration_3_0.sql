@@ -1,0 +1,4 @@
+-- NEXUS 3.0 no requiere cambios estructurales adicionales.
+-- Deben haberse aplicado previamente database.sql y migration_2_0.sql.
+-- Las contraseñas legacy se migran individualmente a password_hash()
+-- después del primer inicio de sesión válido en la versión 3.0.

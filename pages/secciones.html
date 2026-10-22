@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="es" data-tema="claro" data-idioma="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secciones | Inventario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/global.css?v=baja-seccion-modal-2" />
+</head>
+  <body data-section="inventario" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main>
+      <div id="cabecera-de-pagina"></div>
+      <div id="mensaje-secciones" aria-live="polite" aria-atomic="true"></div>
+      <div id="lista-de-secciones" class="list regla-diseno-037"></div>
+      <div id="contenedor-modal"></div>
+    </main>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="../js/router.js?v=5.0.0"></script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script>
+      
+      if (protegerRuta()) {
+        
+        mostrarEn(
+          'cabecera-superior',
+          crearCabeceraCompleta([
+            { etiqueta: 'Home', enlace: 'home.html' },
+            { etiqueta: 'Inventario', enlace: 'inventario.html' },
+            { etiqueta: 'Secciones' },
+          ]),
+        );
+        
+        const accionesDelHeader =
+          crearCajaDeBusqueda('Buscar seccion...', 'input-buscar-seccion') +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-seccion">' +
+          crearIcono('plus', 'icon-sm') +
+          '<span>Agregar seccion</span></button>';
+        mostrarEn(
+          'cabecera-de-pagina',
+          crearCabeceraDePagina({
+            titulo: 'Secciones del inventario',
+            acciones: accionesDelHeader,
+          }),
+        );
+        const cuerpoModalSeccion =
+          '<div class="input-stack regla-diseno-025">' +
+          '<label for="nueva-seccion-nombre">Nombre de la seccion</label>' +
+          '<input class="text-input regla-diseno-026" id="nueva-seccion-nombre" type="text" placeholder="Ej. Laboratorio 6" data-clave-placeholder="ej_laboratorio" />' +
+          '</div>';
+        const pieModalSeccion =
+          '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-save-seccion>Guardar seccion</button>';
+        mostrarEn(
+          'contenedor-modal',
+          crearModal({
+            id: 'modal-seccion',
+            titulo: 'Agregar seccion',
+            icono: 'building-2',
+            cuerpo: cuerpoModalSeccion,
+            pieDeModal: pieModalSeccion,
+          }) +
+            crearModalBajaSeccionInventario('modal-baja-seccion'),
+        );
+        function mostrarMensajeSecciones(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-secciones', texto, tipo);
+        }
+        
+        async function renderSecciones() {
+          const seccionesInventario = await obtenerSeccionesInventario();
+          let htmlDeFilas = '';
+          if (seccionesInventario.length === 0) {
+            htmlDeFilas = crearEstadoVacio({
+              icono: 'building-2',
+              titulo: 'No hay secciones cargadas',
+              descripcion: 'Agrega una seccion para poder asignar equipos al inventario.',
+            });
+          } else {
+            for (let i = 0; i < seccionesInventario.length; i++) {
+              htmlDeFilas += crearFilaDeSeccion(seccionesInventario[i], { permitirBaja: true });
+            }
+          }
+          mostrarEn('lista-de-secciones', htmlDeFilas);
+          activarBuscador('input-buscar-seccion', '#lista-de-secciones .list-row');
+          dibujarIconos();
+        }
+
+        async function guardarSeccionDesdeModal() {
+          const inputNombre = document.getElementById('nueva-seccion-nombre');
+          try {
+            const resultado = await guardarNuevaSeccionInventario({ nombre: inputNombre.value });
+            mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (!resultado.ok) {
+              return;
+            }
+            inputNombre.value = '';
+            cerrarModal('modal-seccion');
+            await renderSecciones();
+          } catch (error) {
+            mostrarMensajeSecciones(error.message, 'error');
+          }
+        }
+
+        async function eliminarSeccionDesdeBoton(seccionId, seccionDestinoId) {
+          if (!seccionId) {
+            return;
+          }
+          try {
+            const resultado = await eliminarSeccionInventario(seccionId, seccionDestinoId);
+            mostrarMensajeSecciones(resultado.mensaje, resultado.ok ? 'success' : 'error');
+            if (resultado.ok) {
+              cerrarModal('modal-baja-seccion');
+              limpiarModalBajaSeccionInventario('modal-baja-seccion');
+              await renderSecciones();
+            }
+          } catch (error) {
+            mostrarMensajeSecciones(error.message, 'error');
+          }
+        }
+
+        document.addEventListener('click', async function (evento) {
+          const botonGuardar = evento.target.closest('[data-save-seccion]');
+          if (botonGuardar) {
+            guardarSeccionDesdeModal();
+            return;
+          }
+          const botonConfirmarBaja = evento.target.closest('[data-confirm-delete-seccion]');
+          if (botonConfirmarBaja) {
+            const seccionBaja = obtenerSeccionBajaSeleccionada('modal-baja-seccion');
+            eliminarSeccionDesdeBoton(seccionBaja.id, seccionBaja.destinoId);
+            return;
+          }
+          const botonBaja = evento.target.closest('[data-open-delete-seccion]');
+          if (!botonBaja) {
+            return;
+          }
+          evento.preventDefault();
+          evento.stopImmediatePropagation();
+          try {
+            await abrirModalBajaSeccionInventario(
+              'modal-baja-seccion',
+              botonBaja.getAttribute('data-open-delete-seccion'),
+              botonBaja.getAttribute('data-seccion-nombre'),
+            );
+          } catch (error) {
+            mostrarMensajeSecciones(error.message, 'error');
+          }
+        });
+
+        document.addEventListener('change', function (evento) {
+          const selectDestino = evento.target.closest('[data-baja-seccion-destino]');
+          if (!selectDestino) {
+            return;
+          }
+          const modal = selectDestino.closest('[data-modal]');
+          const botonConfirmar = modal ? modal.querySelector('[data-confirm-delete-seccion]') : null;
+          if (botonConfirmar) {
+            botonConfirmar.disabled =
+              Number(modal.dataset.equiposSeccion || 0) > 0 && !selectDestino.value;
+          }
+        });
+        
+        renderSecciones();
+      }
+    </script>
+  </body>
+</html>
+
+
+

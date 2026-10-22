@@ -1,0 +1,5 @@
+<?php
+declare(strict_types=1);
+use Nexus\Features\Inventario\Application\InventarioService;use Nexus\Shared\Domain\ValueObject\Cedula;use Nexus\Features\Inventario\Infrastructure\PdoInventarioRepository;
+require_once __DIR__.'/common.php';exigirMetodo(['GET','POST','PUT','PATCH','DELETE']);$usuario=autorizarEndpoint('ubicaciones');$servicio=new InventarioService(new PdoInventarioRepository($pdo));
+ejecutar(function()use($servicio,$usuario):void{$m=$_SERVER['REQUEST_METHOD'];if($m==='GET')responder($servicio->ubicaciones());$autor=new Cedula((string)$usuario['cedula']);$d=cuerpoJson();if($m==='POST'){$id=$servicio->altaUbicacion(texto($d['nombre']??'',100),$autor);responder(['ok'=>true,'id'=>(string)$id],201);}$id=entero($d['id']??null,'id');if(in_array($m,['PUT','PATCH'],true)){$servicio->renombrarUbicacion($id,texto($d['nombre']??'',100),$autor);responder(['ok'=>true]);}$destino=texto($d['seccionDestinoId']??'',15);responder($servicio->bajaUbicacion($id,$destino===''?null:entero($destino,'seccionDestinoId'),$autor));});

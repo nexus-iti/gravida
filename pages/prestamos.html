@@ -101,6 +101,7 @@
             <div class="filter-panel regla-diseno-033">
               <div id="filtros-prestamos" class="field-grid filter-panel__body regla-diseno-024"></div>
             </div>
+            <div id="mensaje-prestamos" aria-live="polite" aria-atomic="true"></div>
             <div id="lista-prestamos" class="activity-stack regla-diseno-033"></div>
           </div>
         </article>
@@ -317,6 +318,9 @@
                     acciones += '<label class="input-stack"><span>' + escaparHtml(t('Comentario asociado')) + '</span><textarea class="textarea-input" data-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '" placeholder="' + escaparAtributo(t('Escribi un comentario sobre el prestamo')) + '"></textarea></label><button class="boton boton--outline boton--sm" data-guardar-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '">' + escaparHtml(t('Guardar comentario')) + '</button>';
                   }
                 }
+                if (prestamos[i].estado === 'Pendiente' || prestamos[i].estado === 'Aprobado') {
+                  acciones += '<button class="boton boton--outline boton--sm" type="button" data-editar-prestamo="' + escaparHtml(prestamos[i].id) + '">' + escaparHtml(t('Editar')) + '</button>';
+                }
                 acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-prestamo="' + escaparHtml(prestamos[i].id) + '">' + escaparHtml(t('Dar de baja')) + '</button>';
               }
               html += crearTarjetaDePrestamo(prestamos[i], acciones);
@@ -326,6 +330,38 @@
         }
         
         document.addEventListener('click', async function (evento) {
+          const botonEditar = evento.target.closest('[data-editar-prestamo]');
+          if (botonEditar && puedeGestionar) {
+            const id = botonEditar.getAttribute('data-editar-prestamo');
+            const prestamo = (await obtenerPrestamosVisibles()).find(function (registro) {
+              return String(registro.id) === String(id);
+            });
+            if (!prestamo) {
+              return;
+            }
+            const lugares = await obtenerLugaresDisponibles();
+            const datos = await pedirDatosEnDialogo({
+              titulo: 'Editar préstamo',
+              cuerpo:
+                '<div class="input-stack"><label for="editar-prestamo-fecha">Fecha</label><input class="text-input" id="editar-prestamo-fecha" name="fecha" type="date" required value="' + escaparHtml(prestamo.fecha || '') + '" /></div>' +
+                '<div class="input-stack"><label for="editar-prestamo-jornada">Jornada</label><select class="select-input" id="editar-prestamo-jornada" name="jornada" required>' +
+                crearOpcionesFormulario(['Mañana', 'Tarde', 'Noche'], prestamo.jornada, 'Elegir jornada') + '</select></div>' +
+                '<div class="input-stack"><label for="editar-prestamo-ubicacion">Lugar</label><select class="select-input" id="editar-prestamo-ubicacion" name="ubicacion" required>' +
+                crearOpcionesFormulario(lugares, prestamo.ubicacion, 'Elige un lugar') + '</select></div>' +
+                '<div class="input-stack"><label for="editar-prestamo-detalle">Detalle</label><textarea class="textarea-input" id="editar-prestamo-detalle" name="detalle" rows="4">' + escaparHtml(prestamo.detalle || '') + '</textarea></div>',
+            });
+            if (!datos) {
+              return;
+            }
+            try {
+              await modificarPrestamo(id, datos);
+              mostrarMensajeFormulario('mensaje-prestamos', 'Préstamo actualizado.', 'success');
+              await renderFiltrosPrestamos();
+              await renderListaPrestamos();
+              dibujarIconos();
+            } catch (error) { manejarErrorCliente(error, function (texto, tipo) { mostrarMensajeFormulario('mensaje-prestamos', texto, tipo); }); }
+            return;
+          }
           const botonComentario = evento.target.closest('[data-guardar-comentario-prestamo]');
           if (botonComentario && puedeGestionar) {
             const id = botonComentario.getAttribute('data-guardar-comentario-prestamo');

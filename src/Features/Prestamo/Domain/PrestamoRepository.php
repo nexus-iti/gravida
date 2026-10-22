@@ -9,5 +9,7 @@ interface PrestamoRepository
     public function crear(array $datos,Cedula $usuario):array;
     public function baja(int $id,Cedula $responsable):bool;
     public function comentar(int $id,string $comentario,Cedula $responsable):bool;
+    public function estadoActivo(int $id):?array;
+    public function modificar(int $id,array $datos):void;
     public function cambiarEstado(int $id,string $estado,Cedula $responsable,string $observacion=''):bool;
 }

@@ -24,6 +24,6 @@ Casos de prueba marcados como fallidos (`ttttest.docx`). Un PR por grupo, apilad
 
 ## Solicitudes
 
-- [ ] CT-07 Modificar solicitud de servicio (técnicos y administradores).
-- [ ] CT-11 Modificar solicitud de préstamo (técnicos y administradores).
+- [x] CT-07 Modificar solicitud de servicio (técnicos y administradores): botón Editar en solicitudes pendientes o en proceso (tipo, fecha deseada, salón, detalle). `PATCH api/servicios.php` con `accion: modificar`. Además `api/servicios.php` ahora exige rol técnico o administrador para cambiar estado, dar de baja o modificar (antes lo hacía cualquier usuario autenticado).
+- [x] CT-11 Modificar solicitud de préstamo (técnicos y administradores): botón Editar en préstamos pendientes o aprobados (fecha, jornada, lugar, detalle) con la misma regla de fechas de la creación (hoy hasta los días máximos configurados) cuando la fecha cambia. `PATCH api/prestamos.php` con `accion: modificar`. El equipo y la cantidad no se editan, porque cambian la disponibilidad.
 - [ ] CT-44 Rechazar solicitud de cuenta.

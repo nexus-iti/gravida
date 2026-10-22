@@ -1556,6 +1556,20 @@ Object.assign(traduccionesPortal.es, {
   va_a_pasar_a_la_seccion_tickets_borrados: 'Va a pasar a la sección Tickets borrados.',
   si_confirmar: 'Sí, confirmar',
   ej_samsung: 'Ej. Samsung',
+  editar_solicitud_de_servicio: 'Editar solicitud de servicio',
+  editar_prestamo: 'Editar préstamo',
+  solicitud_actualizada: 'Solicitud actualizada.',
+  prestamo_actualizado: 'Préstamo actualizado.',
+  solo_se_puede_modificar_una_solicitud_pendiente_o_en_pr:
+    'Solo se puede modificar una solicitud pendiente o en proceso.',
+  solo_se_puede_modificar_un_prestamo_pendiente_o_aprobad:
+    'Solo se puede modificar un préstamo pendiente o aprobado.',
+  el_tipo_de_servicio_es_obligatorio: 'El tipo de servicio es obligatorio.',
+  el_titulo_es_obligatorio: 'El título es obligatorio.',
+  el_lugar_es_obligatorio: 'El lugar es obligatorio.',
+  el_detalle_es_obligatorio: 'El detalle es obligatorio.',
+  la_fecha_de_inicio_no_puede_ser_posterior_al_plazo:
+    'La fecha de inicio no puede ser posterior al plazo.',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -2117,6 +2131,20 @@ Object.assign(traduccionesPortal.en, {
   va_a_pasar_a_la_seccion_tickets_borrados: 'It will move to the Deleted tickets section.',
   si_confirmar: 'Yes, confirm',
   ej_samsung: 'E.g. Samsung',
+  editar_solicitud_de_servicio: 'Edit service request',
+  editar_prestamo: 'Edit loan',
+  solicitud_actualizada: 'Request updated.',
+  prestamo_actualizado: 'Loan updated.',
+  solo_se_puede_modificar_una_solicitud_pendiente_o_en_pr:
+    'Only a pending or in-progress request can be modified.',
+  solo_se_puede_modificar_un_prestamo_pendiente_o_aprobad:
+    'Only a pending or approved loan can be modified.',
+  el_tipo_de_servicio_es_obligatorio: 'The service type is required.',
+  el_titulo_es_obligatorio: 'The title is required.',
+  el_lugar_es_obligatorio: 'The place is required.',
+  el_detalle_es_obligatorio: 'The details are required.',
+  la_fecha_de_inicio_no_puede_ser_posterior_al_plazo:
+    'The start date cannot be after the deadline.',
 });
 
 window.traducciones = traduccionesPortal;

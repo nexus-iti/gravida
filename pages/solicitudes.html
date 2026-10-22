@@ -78,7 +78,8 @@
           <div class="filter-panel regla-diseno-033">
             <div id="filtros-solicitudes" class="field-grid filter-panel__body regla-diseno-024"></div>
           </div>
-          <div id="lista-solicitudes" class="activity-stack regla-diseno-033"></div>
+          <div id="mensaje-solicitudes" aria-live="polite" aria-atomic="true"></div>
+            <div id="lista-solicitudes" class="activity-stack regla-diseno-033"></div>
         </div>
       </section>
     </main>
@@ -281,6 +282,9 @@
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(solicitudes[i], opcionesEstadoSolicitud);
+                if (solicitudes[i].estado === 'Pendiente' || solicitudes[i].estado === 'En proceso') {
+                  acciones += '<button class="boton boton--outline boton--sm" type="button" data-editar-solicitud="' + escaparHtml(solicitudes[i].id) + '">Editar</button>';
+                }
                 acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-solicitud="' + escaparHtml(solicitudes[i].id) + '">Dar de baja</button>';
               }
               html += crearTarjetaDeSolicitud(solicitudes[i], acciones);
@@ -292,6 +296,41 @@
         selectTipo.addEventListener('change', actualizarTituloPanel);
         
         document.addEventListener('click', async function (evento) {
+          const botonEditar = evento.target.closest('[data-editar-solicitud]');
+          if (botonEditar && puedeGestionar) {
+            const id = botonEditar.getAttribute('data-editar-solicitud');
+            const solicitud = (await obtenerSolicitudesVisibles()).find(function (registro) {
+              return String(registro.id) === String(id);
+            });
+            if (!solicitud) {
+              return;
+            }
+            const tipos = (await solicitarApi('api/catalogos.php?tipo=servicio_disponible')).map(function (tipo) {
+              return tipo.nombre;
+            });
+            const lugares = await obtenerLugaresDisponibles();
+            const datos = await pedirDatosEnDialogo({
+              titulo: 'Editar solicitud de servicio',
+              cuerpo:
+                '<div class="input-stack"><label for="editar-solicitud-tipo">Tipo de servicio</label><select class="select-input" id="editar-solicitud-tipo" name="tipo" required>' +
+                crearOpcionesFormulario(tipos, solicitud.tipo, 'Elegir tipo') + '</select></div>' +
+                '<div class="input-stack"><label for="editar-solicitud-fecha">Fecha deseada</label><input class="text-input" id="editar-solicitud-fecha" name="fechaDeseada" type="date" required value="' + escaparHtml(solicitud.fechaDeseada || '') + '" /></div>' +
+                '<div class="input-stack"><label for="editar-solicitud-lugar">Salón</label><select class="select-input" id="editar-solicitud-lugar" name="lugar" required>' +
+                crearOpcionesFormulario(lugares, solicitud.lugar, 'Elige un lugar') + '</select></div>' +
+                '<div class="input-stack"><label for="editar-solicitud-detalle">Que hay que preparar</label><textarea class="textarea-input" id="editar-solicitud-detalle" name="detalle" rows="4" required>' + escaparHtml(solicitud.detalle || '') + '</textarea></div>',
+            });
+            if (!datos) {
+              return;
+            }
+            try {
+              await modificarSolicitudServicio(id, Object.assign({ titulo: solicitud.titulo || datos.tipo }, datos));
+              mostrarMensajeFormulario('mensaje-solicitudes', 'Solicitud actualizada.', 'success');
+              await renderFiltrosSolicitudes();
+              await renderLista();
+              dibujarIconos();
+            } catch (error) { manejarErrorCliente(error, function (texto, tipo) { mostrarMensajeFormulario('mensaje-solicitudes', texto, tipo); }); }
+            return;
+          }
           const botonBaja = evento.target.closest('[data-baja-solicitud]');
           if (botonBaja && puedeGestionar) {
             await darDeBajaOperacion('api/servicios.php', botonBaja.getAttribute('data-baja-solicitud'));

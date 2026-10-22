@@ -234,6 +234,35 @@ async function guardarDiagnosticoTicket(idTicket, diagnostico, solucion) {
   });
 }
 
+async function modificarPrestamo(idPrestamo, datos) {
+  return solicitarApi('api/prestamos.php', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      accion: 'modificar',
+      id: idPrestamo,
+      fecha: datos.fecha,
+      jornada: datos.jornada,
+      ubicacion: datos.ubicacion,
+      detalle: datos.detalle,
+    }),
+  });
+}
+
+async function modificarSolicitudServicio(idSolicitud, datos) {
+  return solicitarApi('api/servicios.php', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      accion: 'modificar',
+      id: idSolicitud,
+      tipo: datos.tipo,
+      titulo: datos.titulo,
+      fechaDeseada: datos.fechaDeseada,
+      lugar: datos.lugar,
+      detalle: datos.detalle,
+    }),
+  });
+}
+
 async function guardarComentarioPrestamo(idPrestamo, comentario) {
   return solicitarApi('api/prestamos.php', {
     method: 'PATCH',

@@ -604,6 +604,106 @@ function confirmarAccion(opciones) {
   });
 }
 
+/*
+ * Muestra un formulario en un diálogo modal. Devuelve una promesa con los
+ * valores { nombreCampo: valor } al guardar, o null si se cancela.
+ * opciones: { titulo, cuerpo (HTML con campos name=...), confirmar?, icono? }
+ */
+function pedirDatosEnDialogo(opciones) {
+  return new Promise(function (resolver) {
+    const id = 'modal-dialogo-formulario';
+    const previo = document.getElementById(id);
+    if (previo) {
+      previo.remove();
+    }
+    const contenedor = document.createElement('div');
+    contenedor.innerHTML = crearModal({
+      id: id,
+      titulo: escaparHtml(t(opciones.titulo)),
+      icono: opciones.icono || 'pencil',
+      cuerpo:
+        '<form class="auth-form" data-dialogo-formulario novalidate>' + opciones.cuerpo + '</form>',
+      pieDeModal:
+        '<button class="boton boton--outline" type="button" data-dialogo-cancelar>' +
+        escaparHtml(t('Cancelar')) +
+        '</button><button class="boton boton--primary" type="button" data-dialogo-guardar>' +
+        escaparHtml(t(opciones.confirmar || 'Guardar cambios')) +
+        '</button>',
+    });
+    const modal = contenedor.firstElementChild;
+    document.body.appendChild(modal);
+    const formulario = modal.querySelector('[data-dialogo-formulario]');
+    const alPresionarTecla = function (evento) {
+      if (evento.key === 'Escape') {
+        cerrar(null);
+      }
+    };
+    const cerrar = function (valores) {
+      document.removeEventListener('keydown', alPresionarTecla);
+      cerrarModal(id);
+      modal.remove();
+      resolver(valores);
+    };
+    const guardar = function () {
+      if (!formulario.reportValidity()) {
+        return;
+      }
+      const valores = {};
+      new FormData(formulario).forEach(function (valor, nombre) {
+        valores[nombre] = String(valor).trim();
+      });
+      cerrar(valores);
+    };
+    document.addEventListener('keydown', alPresionarTecla);
+    formulario.addEventListener('submit', function (evento) {
+      evento.preventDefault();
+      guardar();
+    });
+    modal.querySelector('[data-dialogo-guardar]').addEventListener('click', guardar);
+    modal.querySelector('[data-dialogo-cancelar]').addEventListener('click', function () {
+      cerrar(null);
+    });
+    modal.querySelector('[data-modal-close]').addEventListener('click', function () {
+      cerrar(null);
+    });
+    inicializarSelectsPersonalizados(modal);
+    dibujarIconos();
+    abrirModal(id);
+    const primerCampo = formulario.querySelector('input, select, textarea');
+    if (primerCampo) {
+      primerCampo.focus();
+    }
+  });
+}
+
+/* <option> para un select de un formulario, marcando el valor actual. */
+function crearOpcionesFormulario(valores, actual, textoVacio) {
+  let html = textoVacio ? '<option value="">' + escaparHtml(t(textoVacio)) + '</option>' : '';
+  let incluido = false;
+  for (let i = 0; i < valores.length; i++) {
+    const seleccionado = String(valores[i]) === String(actual);
+    incluido = incluido || seleccionado;
+    html +=
+      '<option value="' +
+      escaparHtml(valores[i]) +
+      '"' +
+      (seleccionado ? ' selected' : '') +
+      '>' +
+      escaparHtml(t(valores[i])) +
+      '</option>';
+  }
+  if (actual && !incluido) {
+    html =
+      '<option value="' +
+      escaparHtml(actual) +
+      '" selected>' +
+      escaparHtml(actual) +
+      '</option>' +
+      html;
+  }
+  return html;
+}
+
 function crearCabeceraCompleta(migas) {
   return crearBarraDeNavegacion() + crearMigasDePan(migas);
 }

@@ -11,7 +11,6 @@ config.local.php
 .env
 .env.*
 containers/.env
-containers/front
 seguridad/almacen
 uploads/perfiles/*
 !uploads/perfiles/.htaccess

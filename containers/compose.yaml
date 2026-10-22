@@ -11,6 +11,9 @@ services:
   db:
     image: docker.io/library/mariadb:11.4
     restart: unless-stopped
+    # El codigo consulta tablas en mayusculas (USUARIO, EQUIPO...) y database.sql las crea
+    # en minusculas. En Linux MariaDB distingue mayusculas por defecto; XAMPP en Windows no.
+    command: ["--lower-case-table-names=1"]
     environment:
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?definir en containers/.env}
       MARIADB_DATABASE: nexus

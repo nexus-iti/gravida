@@ -7,6 +7,9 @@ use Nexus\Shared\Domain\ValueObject\Cedula;
 interface IncidenciaRepository
 {
     public function listar(Cedula $usuario, bool $puedeGestionar): array;
+    public function listarBajas(): array;
+    public function responsableValido(Cedula $cedula): bool;
+    public function asignar(int $id, Cedula $responsable): void;
     public function crear(array $datos, Cedula $creador): int;
     public function existe(int $id): bool;
     public function usuarioExiste(Cedula $cedula): bool;

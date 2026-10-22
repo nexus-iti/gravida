@@ -319,7 +319,14 @@ function crearTarjetaDeTicket(ticket, accionesHtml) {
   const comentario = ticket.comentarioResolucion
     ? `<p class="activity-card__desc"><strong>Comentario:</strong> ${obtenerTextoSeguro(ticket.comentarioResolucion)}</p>`
     : '';
-  return ` <article class="activity-card regla-diseno-137"> <header class="activity-card__header regla-diseno-138"> <div> <h3 class="activity-card__title regla-diseno-139">${obtenerTextoSeguro(ticket.asunto)}</h3> <p class="activity-card__meta regla-diseno-041">${obtenerTextoSeguro(ticket.categoria)}</p> </div> ${crearInsigniaDeEstado(ticket.estado)} </header> <p class="activity-card__desc regla-diseno-140">${obtenerTextoSeguro(ticket.mensaje)}</p> ${comentario} <div class="activity-card__info-grid regla-diseno-141"> <span><strong>Ubicacion:</strong> ${obtenerTextoSeguro(ticket.ubicacion)}</span> <span><strong>Solicitante:</strong> ${obtenerTextoSeguro(ticket.solicitante)}</span> ${gestion} </div> ${acciones} <footer class="activity-card__footer regla-diseno-142"> <span class="mono">${obtenerTextoSeguro(ticket.id)}</span> <span>${obtenerFechaSegura(ticket.creadoEn)}</span> </footer> </article> `;
+  const diagnostico =
+    (ticket.diagnostico
+      ? `<p class="activity-card__desc"><strong>Diagnóstico:</strong> ${obtenerTextoSeguro(ticket.diagnostico)}</p>`
+      : '') +
+    (ticket.solucion
+      ? `<p class="activity-card__desc"><strong>Solución:</strong> ${obtenerTextoSeguro(ticket.solucion)}</p>`
+      : '');
+  return ` <article class="activity-card regla-diseno-137"> <header class="activity-card__header regla-diseno-138"> <div> <h3 class="activity-card__title regla-diseno-139">${obtenerTextoSeguro(ticket.asunto)}</h3> <p class="activity-card__meta regla-diseno-041">${obtenerTextoSeguro(ticket.categoria)}</p> </div> ${crearInsigniaDeEstado(ticket.estado)} </header> <p class="activity-card__desc regla-diseno-140">${obtenerTextoSeguro(ticket.mensaje)}</p> ${comentario}${diagnostico} <div class="activity-card__info-grid regla-diseno-141"> <span><strong>Ubicacion:</strong> ${obtenerTextoSeguro(ticket.ubicacion)}</span> <span><strong>Solicitante:</strong> ${obtenerTextoSeguro(ticket.solicitante)}</span> ${gestion} </div> ${acciones} <footer class="activity-card__footer regla-diseno-142"> <span class="mono">${obtenerTextoSeguro(ticket.id)}</span> <span>${obtenerFechaSegura(ticket.creadoEn)}</span> </footer> </article> `;
 }
 
 function crearTarjetaDeSolicitud(solicitud, accionesHtml) {
@@ -536,6 +543,65 @@ function crearModal(opciones) {
   }
   const claseDialogo = opciones.claseDialogo ? ' ' + opciones.claseDialogo : '';
   return ` <div class="dialogo-overlay regla-diseno-018" id="${opciones.id}" style="display:none" data-modal> <div class="dialogo regla-diseno-159${claseDialogo}"> <header class="dialogo__header regla-diseno-020"> <h3 class="dialogo__title regla-diseno-021"> ${crearIcono(nombreIcono, 'icon-md')} <span>${opciones.titulo}</span> </h3> <button class="dialogo__close regla-diseno-022" data-modal-close>${crearIcono('x', 'icon-md')}</button> </header> <div class="dialogo__body regla-diseno-023">${opciones.cuerpo}</div> <footer class="dialogo__footer regla-diseno-027">${opciones.pieDeModal}</footer> </div> </div> `;
+}
+
+/*
+ * Pide confirmación en un diálogo modal. Devuelve una promesa con true si la
+ * persona confirma y false si cancela, cierra o pulsa Escape.
+ * opciones: { titulo, mensaje, detalle?, confirmar?, icono? }
+ */
+function confirmarAccion(opciones) {
+  return new Promise(function (resolver) {
+    const id = 'modal-confirmar-accion';
+    const previo = document.getElementById(id);
+    if (previo) {
+      previo.remove();
+    }
+    const detalle = opciones.detalle
+      ? '<p class="dialogo__confirm-text">' + escaparHtml(t(opciones.detalle)) + '</p>'
+      : '';
+    const contenedor = document.createElement('div');
+    contenedor.innerHTML = crearModal({
+      id: id,
+      titulo: escaparHtml(t(opciones.titulo)),
+      icono: opciones.icono || 'triangle-alert',
+      claseDialogo: 'dialogo--confirmacion-baja',
+      cuerpo:
+        '<p class="dialogo__confirm-title">' + escaparHtml(t(opciones.mensaje)) + '</p>' + detalle,
+      pieDeModal:
+        '<button class="boton boton--outline" type="button" data-confirmar-no>' +
+        escaparHtml(t('No, cancelar')) +
+        '</button><button class="boton boton--outline-danger" type="button" data-confirmar-si>' +
+        escaparHtml(t(opciones.confirmar || 'Sí, confirmar')) +
+        '</button>',
+    });
+    const modal = contenedor.firstElementChild;
+    document.body.appendChild(modal);
+    const alPresionarTecla = function (evento) {
+      if (evento.key === 'Escape') {
+        cerrar(false);
+      }
+    };
+    const cerrar = function (respuesta) {
+      document.removeEventListener('keydown', alPresionarTecla);
+      cerrarModal(id);
+      modal.remove();
+      resolver(respuesta);
+    };
+    document.addEventListener('keydown', alPresionarTecla);
+    modal.querySelector('[data-confirmar-si]').addEventListener('click', function () {
+      cerrar(true);
+    });
+    modal.querySelector('[data-confirmar-no]').addEventListener('click', function () {
+      cerrar(false);
+    });
+    modal.querySelector('[data-modal-close]').addEventListener('click', function () {
+      cerrar(false);
+    });
+    dibujarIconos();
+    abrirModal(id);
+    modal.querySelector('[data-confirmar-no]').focus();
+  });
 }
 
 function crearCabeceraCompleta(migas) {

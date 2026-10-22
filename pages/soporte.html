@@ -80,7 +80,21 @@
             <div class="filter-panel regla-diseno-033">
               <div id="filtros-soporte" class="field-grid filter-panel__body regla-diseno-024"></div>
             </div>
+            <div id="mensaje-soporte" aria-live="polite" aria-atomic="true"></div>
             <div id="lista-soporte" class="activity-stack regla-diseno-033"></div>
+          </div>
+        </article>
+        <article class="panel regla-diseno-032" id="panel-tickets-borrados" hidden>
+          <div class="panel__header regla-diseno-009">
+            <div>
+              <h2 class="panel__title regla-diseno-010">
+                Tickets borrados <span class="etiqueta" id="contador-tickets-borrados">0</span>
+              </h2>
+              <p class="panel__subtitle">Tickets dados de baja. Quedan registrados y ya no aparecen en la bandeja.</p>
+            </div>
+          </div>
+          <div class="panel__body regla-diseno-012">
+            <div id="lista-tickets-borrados" class="activity-stack regla-diseno-033"></div>
           </div>
         </article>
       </section>
@@ -250,6 +264,61 @@
           ];
         }
         
+        let responsablesSoporte = [];
+
+        function mostrarMensajeSoporte(texto, tipo) {
+          mostrarMensajeFormulario('mensaje-soporte', texto, tipo);
+        }
+
+        function opcionesResponsablesSoporte(seleccionado) {
+          let html = '<option value="">Elegir persona</option>';
+          for (let i = 0; i < responsablesSoporte.length; i++) {
+            const responsable = responsablesSoporte[i];
+            html +=
+              '<option value="' + escaparHtml(responsable.id) + '"' +
+              (String(responsable.id) === String(seleccionado) ? ' selected' : '') + '>' +
+              escaparHtml(responsable.nombreCompleto) + '</option>';
+          }
+          return html;
+        }
+
+        function crearGestionTicket(ticket) {
+          const id = escaparHtml(ticket.id);
+          return (
+            '<div class="ticket-gestion">' +
+            '<label class="input-stack"><span>Asignar a</span><select class="select-input" data-asignar-ticket-select="' + id + '">' +
+            opcionesResponsablesSoporte(ticket.tecnicoId) + '</select></label>' +
+            '<button class="boton boton--outline boton--sm" type="button" data-asignar-ticket="' + id + '">Asignar</button>' +
+            '</div>' +
+            '<details class="ticket-diagnostico"><summary>Diagnóstico</summary>' +
+            '<div class="ticket-diagnostico__form">' +
+            '<label class="input-stack"><span>Diagnóstico</span><textarea class="textarea-input" data-diagnostico-ticket="' + id + '">' + escaparHtml(ticket.diagnostico || '') + '</textarea></label>' +
+            '<label class="input-stack"><span>Solución</span><textarea class="textarea-input" data-solucion-ticket="' + id + '">' + escaparHtml(ticket.solucion || '') + '</textarea></label>' +
+            '<button class="boton boton--primary boton--sm" type="button" data-guardar-diagnostico-ticket="' + id + '">Guardar diagnóstico</button>' +
+            '</div></details>'
+          );
+        }
+
+        async function renderTicketsBorrados() {
+          if (!puedeGestionar) {
+            return;
+          }
+          const borrados = await obtenerTicketsDadosDeBaja();
+          document.getElementById('panel-tickets-borrados').hidden = false;
+          document.getElementById('contador-tickets-borrados').textContent = String(borrados.length);
+          let html = '';
+          if (borrados.length === 0) {
+            html = '<div class="empty-inline regla-diseno-043">Todavía no hay tickets borrados.</div>';
+          }
+          for (let i = 0; i < borrados.length; i++) {
+            html += crearTarjetaDeTicket(
+              borrados[i],
+              '<span class="etiqueta">Dado de baja el ' + obtenerFechaSegura(borrados[i].fechaCierre) + '</span>',
+            );
+          }
+          mostrarEn('lista-tickets-borrados', html);
+        }
+
         async function renderLista() {
           const tickets = filtrarRegistrosPorCampos(
             await obtenerTicketsVisibles(),
@@ -267,7 +336,8 @@
                 if ((tickets[i].estado === 'Resuelto' || tickets[i].estado === 'Denegado') && !tickets[i].comentarioResolucion) {
                   acciones += '<div class="resolution-comment"><label class="input-stack"><span>Comentario de cierre</span><textarea class="textarea-input" data-comentario-ticket="' + escaparHtml(tickets[i].id) + '" placeholder="Deja una aclaracion final para este ticket"></textarea></label><button class="boton boton--primary boton--sm" data-guardar-comentario-ticket="' + escaparHtml(tickets[i].id) + '">Guardar comentario</button></div>';
                 }
-                acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-ticket="' + escaparHtml(tickets[i].id) + '">Dar de baja</button>';
+                acciones += crearGestionTicket(tickets[i]);
+                acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-ticket="' + escaparHtml(tickets[i].id) + '" data-baja-titulo="' + escaparHtml(tickets[i].asunto) + '">Dar de baja</button>';
               }
               html += crearTarjetaDeTicket(tickets[i], acciones);
             }
@@ -287,10 +357,59 @@
             } catch (error) { botonComentario.disabled = false; manejarErrorCliente(error); }
             return;
           }
+          const botonAsignar = evento.target.closest('[data-asignar-ticket]');
+          if (botonAsignar && puedeGestionar) {
+            const id = botonAsignar.getAttribute('data-asignar-ticket');
+            const selector = document.querySelector('[data-asignar-ticket-select="' + CSS.escape(id) + '"]');
+            if (!selector || !selector.value) {
+              mostrarMensajeSoporte('Elegí a quién asignar el ticket.', 'error');
+              return;
+            }
+            try {
+              await asignarTicket(id, selector.value);
+              mostrarMensajeSoporte('Ticket asignado.', 'success');
+              await renderFiltrosSoporte();
+              await renderLista();
+              dibujarIconos();
+            } catch (error) { manejarErrorCliente(error, mostrarMensajeSoporte); }
+            return;
+          }
+          const botonDiagnostico = evento.target.closest('[data-guardar-diagnostico-ticket]');
+          if (botonDiagnostico && puedeGestionar) {
+            const id = botonDiagnostico.getAttribute('data-guardar-diagnostico-ticket');
+            const diagnostico = document.querySelector('[data-diagnostico-ticket="' + CSS.escape(id) + '"]');
+            const solucion = document.querySelector('[data-solucion-ticket="' + CSS.escape(id) + '"]');
+            try {
+              await guardarDiagnosticoTicket(id, diagnostico.value.trim(), solucion.value.trim());
+              mostrarMensajeSoporte('Diagnóstico actualizado.', 'success');
+              await renderLista();
+              dibujarIconos();
+            } catch (error) { manejarErrorCliente(error, mostrarMensajeSoporte); }
+            return;
+          }
           const botonBaja = evento.target.closest('[data-baja-ticket]');
           if (botonBaja && puedeGestionar) {
-            await darDeBajaOperacion('api/incidencias.php', botonBaja.getAttribute('data-baja-ticket'));
-            await renderLista(); return;
+            const titulo = botonBaja.getAttribute('data-baja-titulo') || '';
+            const confirmado = await confirmarAccion({
+              titulo: 'Dar de baja ticket',
+              mensaje: titulo
+                ? '¿Seguro que querés dar de baja el ticket "' + titulo + '"?'
+                : '¿Seguro que querés dar de baja este ticket?',
+              detalle: 'Va a pasar a la sección Tickets borrados.',
+              confirmar: 'Sí, dar de baja',
+              icono: 'trash-2',
+            });
+            if (!confirmado) {
+              return;
+            }
+            try {
+              await darDeBajaOperacion('api/incidencias.php', botonBaja.getAttribute('data-baja-ticket'));
+              await renderFiltrosSoporte();
+              await renderLista();
+              await renderTicketsBorrados();
+              dibujarIconos();
+            } catch (error) { manejarErrorCliente(error, mostrarMensajeSoporte); }
+            return;
           }
           const botonGestion = evento.target.closest('[data-update-ticket]');
           if (!botonGestion || !puedeGestionar) {
@@ -338,8 +457,13 @@
 
         renderCategorias();
         await renderLugares();
+        if (puedeGestionar) {
+          await obtenerResponsablesTareaRegistrados();
+          responsablesSoporte = obtenerResponsablesTareaDelPlantel();
+        }
         await renderFiltrosSoporte();
         await renderLista();
+        await renderTicketsBorrados();
         dibujarIconos();
       }
       })();

@@ -19,8 +19,8 @@ Casos de prueba marcados como fallidos (`ttttest.docx`). Un PR por grupo, apilad
 
 ## Tareas
 
-- [ ] CT-17 Alta de tarea: la fecha "Empieza" y el plazo no coinciden con lo ingresado.
-- [ ] CT-18 Modificar tarea: mismo problema al editar.
+- [x] CT-17 Alta de tarea: la tabla `tareas` solo guardaba `plazo_tarea`, por lo que "Empieza" se igualaba a "Termina". Nueva columna `fecha_inicio_tarea` (en `database.sql` y en `migraciones/2026-10-22-tareas-fecha-inicio.sql` para bases existentes); el sistema sigue funcionando si la migración aún no se corrió, sin guardar el inicio. Se valida que el inicio no sea posterior al plazo.
+- [x] CT-18 Modificar tarea: mismo origen; el inicio se guarda al editar. Verificado 24→27/10 y 26→29/10.
 
 ## Solicitudes
 

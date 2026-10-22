@@ -1,0 +1,17 @@
+FROM docker.io/library/php:8.3-fpm-alpine
+
+# pdo_mysql para la API. Argon2id (password_hash) ya viene compilado en la imagen oficial.
+RUN docker-php-ext-install pdo_mysql
+
+WORKDIR /var/www/html
+
+# Codigo de la app (sin lo excluido en .dockerignore). php-fpm escucha en 9000 y solo
+# lo alcanza el front por la red interna.
+COPY . /var/www/html/
+COPY containers/back/config.container.php /var/www/html/config.php
+
+RUN mkdir -p seguridad/almacen uploads/perfiles \
+ && chown -R www-data:www-data seguridad/almacen uploads \
+ && printf 'upload_max_filesize=3M\npost_max_size=3M\nexpose_php=Off\n' > /usr/local/etc/php/conf.d/nexus.ini
+
+EXPOSE 9000

@@ -525,6 +525,9 @@ function segEsHash(string $valor): bool {
 }
 
 function segValidarContrasenaNueva(string $contrasena): void {
+    if (\Nexus\Shared\Security\PasswordCharset::contieneEnie($contrasena)) {
+        segFalla(\Nexus\Shared\Security\PasswordCharset::MENSAJE, 400);
+    }
     $largo = function_exists('mb_strlen') ? mb_strlen($contrasena, 'UTF-8') : strlen($contrasena);
     if ($largo < 8 || $largo > 128
         || !preg_match('/[A-Z]/', $contrasena) || !preg_match('/[a-z]/', $contrasena) || !preg_match('/\d/', $contrasena)) {

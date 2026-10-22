@@ -1,0 +1,58 @@
+name: CI
+
+# Checks de cada PR y de cada push a dev/main. No publica nada: el deploy vive en deploy.yml.
+on:
+  pull_request:
+  push:
+    branches: [dev, main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Formato, lint y sintaxis PHP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Instalar PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Instalar dependencias
+        run: bun install --frozen-lockfile
+
+      - name: Verificar formato
+        run: bun run format:check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Sintaxis PHP
+        run: |
+          fallos=0
+          while IFS= read -r archivo; do
+            php -n -l "$archivo" > /dev/null || fallos=1
+          done < <(git ls-files '*.php')
+          exit $fallos
+
+      # Valida el compose y las variables sin construir nada: atrapa un yaml roto o una
+      # variable sin default antes de que el deploy se coma el error en el servidor.
+      - name: Validar compose del stack
+        env:
+          DB_ROOT_PASSWORD: solo-validacion
+          DB_PASSWORD: solo-validacion
+        run: docker compose -f containers/compose.yaml config --quiet

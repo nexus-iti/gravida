@@ -1570,6 +1570,14 @@ Object.assign(traduccionesPortal.es, {
   el_detalle_es_obligatorio: 'El detalle es obligatorio.',
   la_fecha_de_inicio_no_puede_ser_posterior_al_plazo:
     'La fecha de inicio no puede ser posterior al plazo.',
+  solicitudes_de_cuenta: 'Solicitudes de cuenta',
+  registros_nuevos_pendientes_de_aprobacion: 'Registros nuevos pendientes de aprobación.',
+  rechazar: 'Rechazar',
+  rechazar_solicitud_de_cuenta: 'Rechazar solicitud de cuenta',
+  seguro_que_queres_rechazar_esta_solicitud: '¿Seguro que querés rechazar esta solicitud?',
+  la_cuenta_queda_sin_habilitar_y_la_persona_no_podra_ing:
+    'La cuenta queda sin habilitar y la persona no podrá ingresar.',
+  si_rechazar: 'Sí, rechazar',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -2145,6 +2153,14 @@ Object.assign(traduccionesPortal.en, {
   el_detalle_es_obligatorio: 'The details are required.',
   la_fecha_de_inicio_no_puede_ser_posterior_al_plazo:
     'The start date cannot be after the deadline.',
+  solicitudes_de_cuenta: 'Account requests',
+  registros_nuevos_pendientes_de_aprobacion: 'New registrations pending approval.',
+  rechazar: 'Reject',
+  rechazar_solicitud_de_cuenta: 'Reject account request',
+  seguro_que_queres_rechazar_esta_solicitud: 'Are you sure you want to reject this request?',
+  la_cuenta_queda_sin_habilitar_y_la_persona_no_podra_ing:
+    'The account stays disabled and the person will not be able to sign in.',
+  si_rechazar: 'Yes, reject',
 });
 
 window.traducciones = traduccionesPortal;
@@ -2243,4 +2259,8 @@ window.plantillasTraduccion = [
     'Are you sure you want to remove the ticket "{0}"?',
   ],
   ['Dado de baja el {0}', 'Removed on {0}'],
+  [
+    '¿Seguro que querés rechazar la solicitud de "{0}"?',
+    'Are you sure you want to reject the request from "{0}"?',
+  ],
 ];

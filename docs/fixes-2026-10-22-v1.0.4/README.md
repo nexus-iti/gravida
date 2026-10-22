@@ -26,4 +26,5 @@ Un PR por issue, apilados en orden de dependencia.
 
 ## Inventario
 
-- [ ] [#8](https://github.com/nexus-iti/gravida/issues/8) Selección de items al crear préstamo/item.
+- [x] [#8](https://github.com/nexus-iti/gravida/issues/8) Selección de items al crear préstamo/item.
+  Nuevo `features/operaciones/selector-recursos.js`: agrupa por tipo, selección individual, por grupo y de todos los disponibles, búsqueda, características desplegables y enlace al detalle; la selección y el filtro se guardan en sessionStorage y se restauran al volver. Cambio de API compatible: cada recurso puede traer su `categoria` (antes un préstamo tenía una sola); si no viene se usa la del préstamo o la del equipo.

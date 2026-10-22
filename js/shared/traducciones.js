@@ -1527,6 +1527,17 @@ Object.assign(traduccionesPortal.es, {
   desactivada_si_alguien_consigue_tu_contrasena:
     'Desactivada. Si alguien consigue tu contraseña con un correo falso, puede entrar.',
   hoy: 'hoy',
+  todas_las_categorias: 'Todas las categorías',
+  filtrar_por_categoria: 'Filtrar por categoría',
+  cargando_equipos_disponibles: 'Cargando equipos disponibles...',
+  caracteristicas: 'Características',
+  buscar_equipo_por_nombre_marca_o_seccion: 'Buscar equipo por nombre, marca o sección',
+  seleccionar_todos_los_disponibles: 'Seleccionar todos los disponibles',
+  limpiar_seleccion: 'Limpiar selección',
+  ningun_equipo_coincide_con_la_busqueda: 'Ningún equipo coincide con la búsqueda.',
+  no_hay_equipos_disponibles_2: 'No hay equipos disponibles.',
+  disponibles_2: 'disponibles',
+  marca: 'Marca',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -2059,6 +2070,17 @@ Object.assign(traduccionesPortal.en, {
   desactivada_si_alguien_consigue_tu_contrasena:
     'Disabled. If someone obtains your password with a fake email, they can sign in.',
   hoy: 'today',
+  todas_las_categorias: 'All categories',
+  filtrar_por_categoria: 'Filter by category',
+  cargando_equipos_disponibles: 'Loading available equipment...',
+  caracteristicas: 'Features',
+  buscar_equipo_por_nombre_marca_o_seccion: 'Search equipment by name, brand or section',
+  seleccionar_todos_los_disponibles: 'Select all available',
+  limpiar_seleccion: 'Clear selection',
+  ningun_equipo_coincide_con_la_busqueda: 'No equipment matches the search.',
+  no_hay_equipos_disponibles_2: 'No equipment available.',
+  disponibles_2: 'available',
+  marca: 'Brand',
 });
 
 window.traducciones = traduccionesPortal;
@@ -2150,4 +2172,6 @@ window.plantillasTraduccion = [
     'Demasiados intentos fallidos. Intentá de nuevo en {0} minuto(s).',
     'Too many failed attempts. Try again in {0} minute(s).',
   ],
+  ['Seleccionados: {0} · Unidades: {1}', 'Selected: {0} · Units: {1}'],
+  ['Seleccionar todo el grupo: {0}', 'Select the whole group: {0}'],
 ];

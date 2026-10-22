@@ -84,7 +84,11 @@
     // Operaciones
     prestamos: {
       base: 'completa',
-      modulos: ['features/inventario/inventario.js', 'features/operaciones/operaciones.js'],
+      modulos: [
+        'features/inventario/inventario.js',
+        'features/operaciones/operaciones.js',
+        'features/operaciones/selector-recursos.js',
+      ],
     },
     solicitudes: {
       base: 'completa',

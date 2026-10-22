@@ -67,15 +67,16 @@ mysql_admin() { MYSQL_PWD="$DB_ADMIN_PASSWORD" mysql -h "$DB_HOST" -P "$DB_PORT"
 
 health() {
   local url="$1" code i
+  HEALTH_CODE=""
   for i in 1 2 3 4 5 6 7 8 9 10; do
     code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$url" || true)"
     # GET /login.php: PHP cargo config.php y llego a la DB si la respuesta no es 5xx.
     if [ -n "$code" ] && [ "$code" -ge 200 ] 2>/dev/null && [ "$code" -lt 500 ]; then
-      ok "health $url -> HTTP $code"; return 0
+      HEALTH_CODE="$code"; ok "health $url -> HTTP $code"; return 0
     fi
     sleep 2
   done
-  warn "health $url -> HTTP ${code:-sin respuesta}"; return 1
+  HEALTH_CODE="${code:-000}"; warn "health $url -> HTTP $HEALTH_CODE"; return 1
 }
 
 podman_ok() {
@@ -185,6 +186,12 @@ setup_db() {
   [[ "$DB_PASSWORD$DB_USER$DB_NAME" =~ ^[A-Za-z0-9._@%+=-]+$ ]] \
     || die "DB_NAME/DB_USER/DB_PASSWORD solo admiten letras, numeros y . _ @ % + = -"
 
+  # Antes de crear nada: con lower_case_table_names=0 el esquema no sirve (ver docs/DEPLOY.md).
+  local lc=""
+  if [ -n "$DB_ADMIN_USER" ]; then lc="$(mysql_admin -N -e 'SELECT @@lower_case_table_names' 2>/dev/null || true)"
+  else lc="$(mysql_app -N -e 'SELECT @@lower_case_table_names' 2>/dev/null || true)"; fi
+  [ "$lc" != "0" ] || die "lower_case_table_names=0: el codigo pide USUARIO/EQUIPO en mayuscula y database.sql las crea en minuscula. El admin debe poner lower_case_table_names=1 en [mysqld] y reiniciar MariaDB (docs/DEPLOY.md)."
+
   if ! mysql_app -e 'SELECT 1' "$DB_NAME" >/dev/null 2>&1; then
     [ -n "$DB_ADMIN_USER" ] || die "El usuario $DB_USER no entra a $DB_NAME y no hay DB_ADMIN_USER para crearlo"
     log "Creando base y usuario de la app"
@@ -194,10 +201,8 @@ setup_db() {
       GRANT ALL ON \`$DB_NAME\`.* TO '$DB_USER'@'localhost', '$DB_USER'@'127.0.0.1'; FLUSH PRIVILEGES;"
   fi
 
-  local lc; lc="$(mysql_app -N -e 'SELECT @@lower_case_table_names' 2>/dev/null || echo '')"
   local tablas; tablas="$(mysql_app -N -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='$DB_NAME'")"
   if [ "$tablas" = "0" ]; then
-    [ "$lc" = "0" ] && die "lower_case_table_names=0: importar database.sql dejaria tablas en minuscula y el codigo las pide en mayuscula. Ver 'check'."
     log "DB vacia: importando database.sql"
     # El dump trae CREATE DATABASE/USE nexus; se descartan para cargarlo en $DB_NAME.
     git -C "$SRC" show "$SHA:database.sql" | sed -e '/^CREATE DATABASE IF NOT EXISTS /d' -e '/^USE /d' | mysql_app "$DB_NAME"
@@ -215,15 +220,16 @@ deploy_native() {
   git -C "$SRC" archive "$SHA" | tar -x -C "$rel" "${ex[@]}"
 
   # Estado que sobrevive a los deploys: fotos, limites/sesiones/logs, credenciales.
-  [ -d "$SHARED/uploads" ] || cp -a "$rel/uploads" "$SHARED/uploads"
+  local primera=0; [ -d "$SHARED/uploads" ] || { primera=1; cp -a "$rel/uploads" "$SHARED/uploads"; }
   rm -rf "$rel/uploads" "$rel/seguridad/almacen"
   ln -s "$SHARED/uploads" "$rel/uploads"
   ln -s "$SHARED/almacen" "$rel/seguridad/almacen"
   write_config "$SHARED/config.php"
   ln -s "$SHARED/config.php" "$rel/config.php"
   # El servidor web escribe en estas dos carpetas: grupo web + setgid.
-  chgrp -R "$WEB_GROUP" "$SHARED/uploads" "$SHARED/almacen" 2>/dev/null \
-    && chmod -R g+rwX "$SHARED/uploads" "$SHARED/almacen" && chmod g+s "$SHARED/uploads" "$SHARED/almacen" \
+  # Lo que crea el servidor web dentro (sesiones/, limites/) ya es suyo: solo se recorre lo sembrado por el deploy.
+  { { [ "$primera" = 0 ] || { chgrp -R "$WEB_GROUP" "$SHARED/uploads" && chmod -R g+rwX "$SHARED/uploads"; }; } \
+    && chgrp "$WEB_GROUP" "$SHARED/uploads" "$SHARED/almacen" && chmod g+rwxs "$SHARED/uploads" "$SHARED/almacen"; } 2>/dev/null \
     || warn "no se pudo dar $WEB_GROUP a uploads/ y almacen/ (usuario fuera del grupo)"
   find "$rel" -type d ! -type l -exec chmod 755 {} + 2>/dev/null || true
 
@@ -239,6 +245,10 @@ deploy_native() {
   [ -z "$RELOAD_CMD" ] || { log "Recarga: $RELOAD_CMD"; bash -c "$RELOAD_CMD" || warn "la recarga fallo"; }
 
   if ! health "${NEXUS_HEALTH_URL:-http://127.0.0.1/login.php}"; then
+    if [ -z "$prev" ] && [ "$HEALTH_CODE" = "000" ]; then
+      warn "primer deploy y el servidor web no responde: apuntar su DocumentRoot a $CURRENT, arrancarlo y correr 'deploy.sh status'/check"
+      log "Release $(basename "$rel") activa en $CURRENT (sin health check)"; return 0
+    fi
     if [ -n "$prev" ] && [ -d "$prev" ]; then
       warn "health fallo: volviendo a $(basename "$prev")"
       ln -sfn "$prev" "$CURRENT.tmp" && mv -T "$CURRENT.tmp" "$CURRENT"

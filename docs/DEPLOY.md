@@ -18,8 +18,20 @@ por SSH.
    Podman rootless se instala solo con root; sin admin no se puede. `native` es lo recomendado: el
    proyecto esta pensado para Apache + PHP + MariaDB.
 3. **MariaDB (solo native)**: el codigo consulta tablas en mayuscula (`USUARIO`) y `database.sql`
-   las crea en minuscula, asi que el servidor necesita `lower_case_table_names=1` en `[mysqld]`
-   **antes de crear la base**. `check` lo verifica y el deploy se niega a importar si vale 0.
+   las crea en minuscula. Ubuntu trae `lower_case_table_names=0`, con lo que la app falla. Es un ajuste
+   del servidor de base de datos: lo tiene que hacer quien tenga root en la UTU (el usuario de deploy no
+   puede). Una vez, **antes de crear la base**:
+
+   ```bash
+   printf '[mysqld]\nlower_case_table_names=1\n' | sudo tee /etc/mysql/mariadb.conf.d/99-nexus.cnf
+   sudo systemctl restart mariadb
+   mariadb -e 'SELECT @@lower_case_table_names'   # debe dar 1
+   ```
+
+   Probado en un MariaDB 11.8 recien instalado (sin otras bases). Si el MariaDB de la UTU ya aloja
+   otras aplicaciones con tablas de nombres mixtos, el cambio las afecta: coordinarlo, o usar el modo
+   podman (MariaDB propio en container). `check` lo verifica y el deploy se niega a crear o importar
+   nada mientras valga 0.
 4. **Apache (solo native)**: DocumentRoot apuntando a `current`:
 
    ```apache
@@ -71,7 +83,12 @@ esquema solo se aplican al inicializar el volumen `db-data`. No hay rollback aut
 
 ## Verificado
 
-- `check`, `deploy`, segundo deploy, `status` y `rollback` en Ubuntu (WSL) con un servidor estatico
-  como health. `deploy.ps1` probado con `bash -s` por stdin.
-- **Sin verificar**: importacion contra MariaDB real, Apache real y el modo podman (esos
-  binarios no estan en la maquina de desarrollo). Probar primero con `-DryRun` y `-Command check`.
+Ubuntu 26.04 (WSL) con MariaDB 11.8, Apache 2.4 + mod_php (PHP 8.5), usuario sin root:
+
+- `lower_case_table_names=0`: `check` marca `[falta]` y `deploy` aborta sin crear la base.
+- Con `=1`: crea base y usuario, importa `database.sql` (27 tablas), `USUARIO` en mayuscula resuelve,
+  `GET /login.php` da 200 con la DB conectada y `config.php`, `seguridad/` y `database.sql` dan 403.
+- Redeploy sin tocar la DB, `rollback` manual y rollback automatico cuando falla el health (exit 1,
+  `current` vuelve a la release anterior).
+- `deploy.ps1` probado con `bash -s` por stdin.
+- **Sin verificar**: modo podman, nginx, y MariaDB 10.x (la version de la UTU puede ser otra).

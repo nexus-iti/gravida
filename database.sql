@@ -789,6 +789,7 @@ CREATE TABLE `tareas` (
   `estado_tarea` enum('Pendiente','En curso','En revision','Completada') NOT NULL DEFAULT 'Pendiente',
   `color_tarea` char(7) DEFAULT NULL,
   `fecha_agregada` date NOT NULL,
+  `fecha_inicio_tarea` date DEFAULT NULL,
   PRIMARY KEY (`id_tarea`),
   KEY `idx_tareas_tablero` (`estado_tarea`,`plazo_tarea`,`id_tarea`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -800,7 +801,7 @@ CREATE TABLE `tareas` (
 
 LOCK TABLES `tareas` WRITE;
 /*!40000 ALTER TABLE `tareas` DISABLE KEYS */;
-INSERT INTO `tareas` VALUES (1,'Responder Tickets','Atender tickets pendientes','2026-10-26','Otro','Media','Pendiente','#00a7b9','2026-10-19');
+INSERT INTO `tareas` VALUES (1,'Responder Tickets','Atender tickets pendientes','2026-10-26','Otro','Media','Pendiente','#00a7b9','2026-10-19','2026-10-19');
 /*!40000 ALTER TABLE `tareas` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -164,7 +164,7 @@
           }
           const usuarioId = botonEliminar.getAttribute('data-delete-parcela');
           const confirmar = window.confirm(
-            'Seguro que queres quitar esta persona de la planilla T.A.?',
+            t('Seguro que queres quitar esta persona de la planilla T.A.?'),
           );
           if (!confirmar) {
             return;

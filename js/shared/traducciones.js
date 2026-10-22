@@ -993,4 +993,1161 @@ Object.assign(traduccionesPortal.en, {
   registro_reactivado: 'Record enabled again.',
 });
 
+Object.assign(traduccionesPortal.es, {
+  tablero_del_equipo_tecnico: 'Tablero del equipo técnico',
+  organiza_y_asigna_las_tareas_internas: 'Organiza y asigna las tareas internas.',
+  sin_tareas_por_ahora: 'Sin tareas por ahora',
+  reportes_y_recuperacion_de_acceso: 'Reportes y recuperación de acceso',
+  revisa_cada_solicitud_antes_de_tomar_una_decision:
+    'Revisa cada solicitud antes de tomar una decisión.',
+  administracion: 'Administración',
+  reportes_publicos_pendientes: 'Reportes públicos pendientes',
+  sin_reportes_pendientes: 'Sin reportes pendientes.',
+  recuperaciones_de_contrasena_pendientes: 'Recuperaciones de contraseña pendientes',
+  sin_solicitudes_pendientes: 'Sin solicitudes pendientes.',
+  recuperaciones_resueltas_y_cerradas: 'Recuperaciones resueltas y cerradas',
+  reportes_publicos_resueltos_y_cerrados: 'Reportes públicos resueltos y cerrados',
+  solicitud_cerrada: 'Solicitud cerrada.',
+  reporte_cerrado: 'Reporte cerrado.',
+  reporte_resuelto: 'Reporte resuelto.',
+  al_resolver_se_genera_una_contrasena_temporal_y_se_cier:
+    'Al resolver se genera una contraseña temporal y se cierran las sesiones anteriores.',
+  bandeja_tecnica_de_incidencias_y_accesos: 'Bandeja técnica de incidencias y accesos',
+  no_hay_responsables_activos: 'No hay responsables activos',
+  seguro_que_queres_eliminar_esta_tarea: '¿Seguro que querés eliminar esta tarea?',
+  responsable_sin_asignar: 'Responsable sin asignar',
+  no_encontramos_esa_tarea: 'No encontramos esa tarea.',
+  nueva_tarea: 'Nueva tarea',
+  tu_perfil_no_tiene_permiso_para_crear_tareas: 'Tu perfil no tiene permiso para crear tareas.',
+  tarea_creada_ya_aparece_en_el_tablero_y_en_el_calendari:
+    'Tarea creada. Ya aparece en el tablero y en el calendario.',
+  tu_perfil_no_tiene_permiso_para_modificar_tareas:
+    'Tu perfil no tiene permiso para modificar tareas.',
+  tarea_actualizada_los_cambios_ya_quedaron_guardados:
+    'Tarea actualizada. Los cambios ya quedaron guardados.',
+  tu_perfil_no_tiene_permiso_para_eliminar_tareas:
+    'Tu perfil no tiene permiso para eliminar tareas.',
+  tarea_eliminada_ya_no_aparece_en_el_calendario:
+    'Tarea eliminada. Ya no aparece en el calendario.',
+  area_sin_definir: 'Área sin definir',
+  entrada: 'Entrada',
+  salida: 'Salida',
+  tareas_de_la_jornada: 'Tareas de la jornada',
+  agregar_tarea_desde_kanban: 'Agregar tarea desde kanban',
+  elegir_una_tarea_pendiente_del_kanban: 'Elegir una tarea pendiente del kanban',
+  actualizado: 'Actualizado',
+  eliminar: 'Eliminar',
+  solo_lectura: 'Solo lectura',
+  seguro_que_queres_quitar_esta_persona_de_la_planilla_t:
+    '¿Seguro que querés quitar esta persona de la planilla T.A.?',
+  tu_perfil_no_tiene_permiso_para_modificar_esta_persona:
+    'Tu perfil no tiene permiso para modificar esta persona en la planilla.',
+  planilla_actualizada_los_cambios_ya_estan_visibles_para:
+    'Planilla actualizada. Los cambios ya están visibles para el equipo.',
+  solo_un_usuario_administrativo_puede_quitar_personas_de:
+    'Solo un usuario administrativo puede quitar personas de la planilla.',
+  solo_se_pueden_quitar_usuarios_tecnicos_de_esta_planill:
+    'Solo se pueden quitar usuarios técnicos de esta planilla.',
+  persona_quitada_de_la_planilla_t_a: 'Persona quitada de la planilla T.A.',
+  tu_perfil_no_tiene_permiso_para_modificar_tareas_del_pl:
+    'Tu perfil no tiene permiso para modificar tareas del plantel.',
+  necesitas_otro_rol: '¿Necesitás otro rol?',
+  envia_una_solicitud_para_que_un_administrador_la_revise:
+    'Enviá una solicitud para que un administrador la revise.',
+  solicitar_cambio_de_rol: 'Solicitar cambio de rol',
+  solicitud_enviada: 'Solicitud enviada.',
+  activada_para_entrar_se_pide_tu_contrasena_y_el_codigo:
+    'Activada. Para entrar se pide tu contraseña y el código del teléfono.',
+  es_obligatoria_para_los_administradores_si_perdes_el_te:
+    'Es obligatoria para los administradores. Si perdés el teléfono, pedile a otro administrador que la restablezca.',
+  evento: 'Evento',
+  direccion_ip: 'Dirección IP',
+  navegador: 'Navegador',
+  ingreso_correcto: 'Ingreso correcto',
+  contrasena_incorrecta: 'Contraseña incorrecta',
+  cuenta_bloqueada_por_intentos: 'Cuenta bloqueada por intentos',
+  codigo_de_verificacion_incorrecto: 'Código de verificación incorrecto',
+  verificacion_en_dos_pasos_activada: 'Verificación en dos pasos activada',
+  verificacion_en_dos_pasos_desactivada: 'Verificación en dos pasos desactivada',
+  verificacion_en_dos_pasos_restablecida: 'Verificación en dos pasos restablecida',
+  se_cerraron_todas_las_sesiones: 'Se cerraron todas las sesiones',
+  contrasena_cambiada: 'Contraseña cambiada',
+  cierre_de_sesion: 'Cierre de sesión',
+  este_es_tu_primer_ingreso_registrado: 'Este es tu primer ingreso registrado.',
+  si_no_fuiste_vos: 'Si no fuiste vos,',
+  cambia_tu_contrasena_y_cerra_las_demas_sesiones:
+    'cambiá tu contraseña y cerrá las demás sesiones',
+  cerrar_aviso: 'Cerrar aviso',
+  tu_contrasena_actual: 'Tu contraseña actual',
+  activar_verificacion_en_dos_pasos: 'Activar verificación en dos pasos',
+  instala_google_authenticator_microsoft_authenticator_o:
+    'Instalá Google Authenticator, Microsoft Authenticator o Authy en tu teléfono.',
+  agrega_una_cuenta_con_esta_clave_o_abri_el_enlace_desde:
+    'Agregá una cuenta con esta clave (o abrí el enlace desde el teléfono):',
+  abrir_en_la_app_autenticadora: 'Abrir en la app autenticadora',
+  codigo_de_6_digitos_que_muestra_la_app: 'Código de 6 dígitos que muestra la app',
+  confirmar_y_activar: 'Confirmar y activar',
+  verificacion_en_dos_pasos_activada_desde_ahora_se_pide:
+    'Verificación en dos pasos activada. Desde ahora se pide el código al entrar.',
+  codigo_actual_de_la_app: 'Código actual de la app',
+  verificacion_en_dos_pasos_desactivada_2: 'Verificación en dos pasos desactivada.',
+  todavia_no_hay_actividad_registrada: 'Todavía no hay actividad registrada.',
+  la_contrasena_nueva_y_su_repeticion_no_coinciden:
+    'La contraseña nueva y su repetición no coinciden.',
+  contrasena_cambiada_se_cerraron_todas_tus_otras_sesione:
+    'Contraseña cambiada. Se cerraron todas tus otras sesiones.',
+  se_cerraran_todas_tus_sesiones_en_otros_navegadores_y_d:
+    'Se cerrarán todas tus sesiones en otros navegadores y dispositivos. Esta sesión sigue abierta. ¿Continuar?',
+  listo_se_cerraron_todas_tus_otras_sesiones: 'Listo: se cerraron todas tus otras sesiones.',
+  verificacion_restablecida_en_su_proximo_ingreso_debera:
+    'Verificación restablecida. En su próximo ingreso deberá configurarla de nuevo.',
+  foto_de_perfil_actualizada: 'Foto de perfil actualizada.',
+  perfil_actualizado_tus_nuevos_datos_ya_estan_visibles_e:
+    'Perfil actualizado. Tus nuevos datos ya están visibles en la cuenta.',
+  las_contrasenas_no_coinciden: 'Las contraseñas no coinciden.',
+  definir_una_nueva_contrasena: 'Definir una nueva contraseña',
+  la_contrasena_temporal_debe_reemplazarse_antes_de_conti:
+    'La contraseña temporal debe reemplazarse antes de continuar.',
+  cambiar_contrasena_sgrsi: 'Cambiar contraseña | SGRSI',
+  tu_cuenta_de_administrador_necesita_verificacion_en_dos:
+    'Tu cuenta de administrador necesita verificación en dos pasos',
+  instala_en_tu_telefono_google_authenticator_microsoft_a:
+    'Instalá en tu teléfono Google Authenticator, Microsoft Authenticator o Authy.',
+  agrega_una_cuenta_nueva_y_escribi_esta_clave_o_abri_el:
+    'Agregá una cuenta nueva y escribí esta clave (o abrí el enlace desde el teléfono):',
+  guarda_la_clave_en_un_lugar_seguro_sin_el_telefono_no_v:
+    'Guardá la clave en un lugar seguro. Sin el teléfono no vas a poder entrar.',
+  escribi_el_codigo_de_6_digitos_que_muestra_tu_app_auten:
+    'Escribí el código de 6 dígitos que muestra tu app autenticadora.',
+  codigo_de_verificacion: 'Código de verificación',
+  verificar_e_ingresar: 'Verificar e ingresar',
+  volver_a_la_contrasena: 'Volver a la contraseña',
+  el_codigo_tiene_6_numeros: 'El código tiene 6 números.',
+  sesion_iniciada: 'Sesión iniciada.',
+  no_encontramos_los_datos_de_la_cuenta: 'No encontramos los datos de la cuenta.',
+  completa_cedula_nombre_completo_correo_contrasena_y_rol:
+    'Completá cédula, nombre completo, correo, contraseña y rol para continuar.',
+  la_cedula_debe_tener_exactamente_8_numeros: 'La cédula debe tener exactamente 8 números.',
+  solicitud_enviada_un_administrador_revisara_tu_registro:
+    'Solicitud enviada. Un administrador revisará tu registro antes de habilitar el acceso.',
+  cuenta_creada_ya_podes_ingresar_al_portal: 'Cuenta creada. Ya podés ingresar al portal.',
+  cuenta_creada_te_estamos_llevando_al_home: 'Cuenta creada. Te estamos llevando al home...',
+  reporte_enviado_el_equipo_tecnico_lo_revisara_y_dara_se:
+    'Reporte enviado. El equipo técnico lo revisará y dará seguimiento.',
+  revisa_los_campos_marcados_antes_de_continuar: 'Revisá los campos marcados antes de continuar.',
+  no_se_pudo_completar_la_accion_intenta_nuevamente:
+    'No se pudo completar la acción. Intentá nuevamente.',
+  la_contrasena_necesita_al_menos_7_caracteres_una_mayusc:
+    'La contraseña necesita al menos 7 caracteres, una mayúscula, una minúscula y un número.',
+  solo_un_usuario_administrativo_puede_aprobar_registros:
+    'Solo un usuario administrativo puede aprobar registros.',
+  registro_aprobado_la_persona_ya_puede_iniciar_sesion:
+    'Registro aprobado. La persona ya puede iniciar sesión.',
+  solo_un_usuario_administrativo_puede_rechazar_registros:
+    'Solo un usuario administrativo puede rechazar registros.',
+  solicitud_de_registro_rechazada: 'Solicitud de registro rechazada.',
+  sin_sesion: 'Sin sesión',
+  administracion_sgrsi: 'Administración | SGRSI',
+  panel_de_control: 'Panel de control',
+  gestiona_accesos_reglas_y_catalogos_desde_un_solo_lugar:
+    'Gestioná accesos, reglas y catálogos desde un solo lugar.',
+  volver_al_inicio: 'Volver al inicio',
+  reglas: 'Reglas',
+  configuracion_general: 'Configuración general',
+  dias_maximos_de_prestamo: 'Días máximos de préstamo',
+  permitir_registro_de_cuentas: 'Permitir registro de cuentas',
+  guardar_configuracion: 'Guardar configuración',
+  permisos: 'Permisos',
+  solicitudes_de_cambio_de_rol: 'Solicitudes de cambio de rol',
+  personas: 'Personas',
+  cuentas_de_usuario: 'Cuentas de usuario',
+  habilita_cuentas_nuevas_o_desactiva_accesos_sin_elimina:
+    'Habilitá cuentas nuevas o desactivá accesos sin eliminar su historial.',
+  activa: 'Activa',
+  inactiva: 'Inactiva',
+  deshabilitar: 'Deshabilitar',
+  habilitar_cuenta: 'Habilitar cuenta',
+  solicitudes: 'Solicitudes',
+  servicios_disponibles: 'Servicios disponibles',
+  agregar_servicio: 'Agregar servicio',
+  activo: 'Activo',
+  editar: 'Editar',
+  catalogo_compartido: 'Catálogo compartido',
+  categorias_tecnologicas: 'Categorías tecnológicas',
+  se_utilizan_tanto_en_equipos_como_en_prestamos: 'Se utilizan tanto en equipos como en préstamos.',
+  agregar_categoria: 'Agregar categoría',
+  sin_registros: 'Sin registros.',
+  sin_cuentas: 'Sin cuentas.',
+  solicitud_revisada: 'Solicitud revisada.',
+  no_podes_deshabilitar_tu_propia_cuenta: 'No podés deshabilitar tu propia cuenta.',
+  estado_de_cuenta_actualizado: 'Estado de cuenta actualizado.',
+  configuracion_guardada: 'Configuración guardada.',
+  rol_solicitado: 'Rol solicitado',
+  tecnico_asistente: 'Técnico asistente',
+  tecnico_asistente_2: 'Técnico/Asistente',
+  administrador: 'Administrador',
+  motivo: 'Motivo',
+  volver_a_mi_cuenta: 'Volver a mi cuenta',
+  solicitar_cambio_de_rol_sgrsi: 'Solicitar cambio de rol | SGRSI',
+  secciones_del_inventario: 'Secciones del inventario',
+  entra_a_cada_espacio_para_revisar_los_equipos_que_tiene:
+    'Entrá a cada espacio para revisar los equipos que tiene asignados.',
+  historial_de_cambios: 'Historial de cambios',
+  revisa_movimientos_altas_bajas_y_cambios_recientes_del:
+    'Revisá movimientos, altas, bajas y cambios recientes del inventario.',
+  consulta_donde_esta_cada_equipo_que_cambios_tuvo_y_que:
+    'Consultá dónde está cada equipo, qué cambios tuvo y qué respaldo visual existe por sección.',
+  agregar_seccion: 'Agregar sección',
+  nombre_de_la_seccion: 'Nombre de la sección',
+  guardar_seccion: 'Guardar sección',
+  eliminar_seccion: 'Eliminar sección',
+  confirmar_eliminacion_de_la_seccion: 'Confirmar eliminación de la sección',
+  se_quitara_del_inventario: 'Se quitará del inventario.',
+  trasladar_equipos_a: 'Trasladar equipos a',
+  no_cancelar: 'No, cancelar',
+  si_eliminar: 'Sí, eliminar',
+  elegir_seccion_destino: 'Elegir sección destino',
+  no_hay_otra_seccion_disponible: 'No hay otra sección disponible',
+  de_verdad_queres_eliminar_esta_seccion: '¿De verdad querés eliminar esta sección?',
+  la_seccion_no_tiene_equipos_activos_se_quitara_del_inve:
+    'La sección no tiene equipos activos. Se quitará del inventario.',
+  tu_perfil_no_tiene_permiso_para_crear_secciones:
+    'Tu perfil no tiene permiso para crear secciones.',
+  escribi_un_nombre_para_la_seccion: 'Escribí un nombre para la sección.',
+  ya_existe_una_seccion_con_ese_nombre: 'Ya existe una sección con ese nombre.',
+  seccion_creada_ya_aparece_en_inventario: 'Sección creada. Ya aparece en inventario.',
+  tu_perfil_no_tiene_permiso_para_dar_de_baja_secciones:
+    'Tu perfil no tiene permiso para dar de baja secciones.',
+  no_encontramos_esa_seccion: 'No encontramos esa sección.',
+  elegi_una_seccion_destino_para_trasladar_los_equipos_an:
+    'Elegí una sección destino para trasladar los equipos antes de eliminar.',
+  seccion_eliminada_no_tenia_equipos_activos_asociados:
+    'Sección eliminada. No tenía equipos activos asociados.',
+  tu_perfil_no_tiene_permiso_para_dar_de_alta_equipos:
+    'Tu perfil no tiene permiso para dar de alta equipos.',
+  elegi_un_tipo_de_equipo_valido: 'Elegí un tipo de equipo válido.',
+  elegi_una_seccion_valida: 'Elegí una sección válida.',
+  equipo_dado_de_alta_ya_aparece_en_la_seccion: 'Equipo dado de alta. Ya aparece en la sección.',
+  confirmar_baja_del_equipo: 'Confirmar baja del equipo',
+  se_quitara_del_inventario_y_quedara_registrado_en_histo:
+    'Se quitará del inventario y quedará registrado en historial de cambios.',
+  si_dar_de_baja: 'Sí, dar de baja',
+  confirmas_que_queres_dar_de_baja_este_equipo: '¿Confirmás que querés dar de baja este equipo?',
+  tu_perfil_no_tiene_permiso_para_dar_de_baja_equipos:
+    'Tu perfil no tiene permiso para dar de baja equipos.',
+  no_encontramos_ese_equipo: 'No encontramos ese equipo.',
+  equipo_dado_de_baja_ya_no_aparece_en_inventario:
+    'Equipo dado de baja. Ya no aparece en inventario.',
+  tu_perfil_no_tiene_permiso_para_trasladar_equipos:
+    'Tu perfil no tiene permiso para trasladar equipos.',
+  elegi_una_seccion_de_destino_valida: 'Elegí una sección de destino válida.',
+  el_equipo_ya_esta_en_esa_seccion: 'El equipo ya está en esa sección.',
+  trasladar_equipo: 'Trasladar equipo',
+  todos_los_equipos: 'Todos los equipos',
+  selecciona_un_equipo_para_trasladar: 'Selecciona un equipo para trasladar.',
+  seccion_destino: 'Sección destino',
+  elegir_seccion: 'Elegir sección',
+  confirmar_traslado: 'Confirmar traslado',
+  no_encontrado: 'No encontrado',
+  equipo_no_encontrado: 'Equipo no encontrado',
+  puede_haber_sido_dado_de_baja_o_no_existir_en_el_invent:
+    'Puede haber sido dado de baja o no existir en el inventario.',
+  volver_a_equipos: 'Volver a equipos',
+  no_hay_categorias_activas: 'No hay categorías activas',
+  sin_movimientos_registrados_todavia: 'Sin movimientos registrados todavía.',
+  editar_equipo: 'Editar equipo',
+  sin_observaciones_cargadas: 'Sin observaciones cargadas.',
+  historial_reciente: 'Historial reciente',
+  renombrar_seccion: 'Renombrar sección',
+  agregar_equipo: 'Agregar equipo',
+  nombre_del_equipo: 'Nombre del equipo',
+  tipo_de_equipo: 'Tipo de equipo',
+  observaciones: 'Observaciones',
+  dar_de_alta: 'Dar de alta',
+  sin_secciones: 'Sin secciones',
+  no_hay_secciones_disponibles: 'No hay secciones disponibles',
+  crea_una_seccion_para_poder_cargar_equipos: 'Creá una sección para poder cargar equipos.',
+  no_hay_equipos_en_esta_seccion: 'No hay equipos en esta sección',
+  usa_agregar_equipo_para_dar_de_alta_televisores_all_in:
+    'Usá Agregar equipo para dar de alta televisores, all in one, torres, periféricos o monitores.',
+  nuevo_nombre_de_la_seccion: 'Nuevo nombre de la sección',
+  agrega_una_seccion_para_poder_asignar_equipos_al_invent:
+    'Agregá una sección para poder asignar equipos al inventario.',
+  da_de_alta_equipos_desde_una_seccion_del_inventario_par:
+    'Da de alta equipos desde una sección del inventario para verlos acá.',
+  actualizado_hoy: 'Actualizado hoy',
+  tipo_de_cambio: 'Tipo de cambio',
+  autor: 'Autor',
+  todos: 'Todos',
+  todas: 'Todas',
+  creado_por: 'Creado por',
+  hora: 'Hora',
+  alta_de_equipo: 'Alta de equipo',
+  alta_de_seccion: 'Alta de sección',
+  baja_de_equipo: 'Baja de equipo',
+  baja_de_seccion: 'Baja de sección',
+  traslado_de_equipo: 'Traslado de equipo',
+  modificacion_de_seccion: 'Modificación de sección',
+  imagenes_de_secciones: 'Imágenes de secciones',
+  no_hay_respaldos_visuales_cargados: 'No hay respaldos visuales cargados',
+  cuando_se_agreguen_imagenes_de_secciones_van_a_aparecer:
+    'Cuando se agreguen imágenes de secciones, van a aparecer en esta galería.',
+  estados_vacios: 'Estados vacíos',
+  agrega_la_primera_seccion_para_empezar_a_ordenar_el_inv:
+    'Agregá la primera sección para empezar a ordenar el inventario de la institución.',
+  no_se_encontraron_equipos: 'No se encontraron equipos',
+  no_encontramos_equipos_con_ese_criterio_proba_con_otro:
+    'No encontramos equipos con ese criterio. Probá con otro filtro o término de búsqueda.',
+  limpiar_filtros: 'Limpiar filtros',
+  no_hay_imagenes_para_esa_consulta: 'No hay imágenes para esa consulta',
+  no_encontramos_respaldos_visuales_para_esa_fecha_y_hora:
+    'No encontramos respaldos visuales para esa fecha y hora. Probá con otra combinación.',
+  no_hay_cambios_registrados: 'No hay cambios registrados',
+  cuando_haya_movimientos_altas_o_cambios_en_el_inventari:
+    'Cuando haya movimientos, altas o cambios en el inventario, van a aparecer acá.',
+  las_altas_y_bajas_de_secciones_o_equipos_van_a_aparecer:
+    'Las altas y bajas de secciones o equipos van a aparecer acá.',
+  envia_pedidos_y_segui_aca_mismo_si_fueron_aprobados_sig:
+    'Enviá pedidos y seguí acá mismo si fueron aprobados, siguen pendientes o fueron denegados.',
+  bandeja_tecnica_de_prestamos: 'Bandeja técnica de préstamos',
+  aca_llegan_los_pedidos_para_que_el_equipo_tecnico_los_r:
+    'Acá llegan los pedidos para que el equipo técnico los revise y les dé respuesta.',
+  gestion_de_prestamos: 'Gestión de préstamos',
+  desde_aca_podes_crear_pedidos_y_revisar_los_prestamos_q:
+    'Desde acá podés crear pedidos y revisar los préstamos que llegan al sistema.',
+  elegi_al_menos_un_recurso_e_indica_la_cantidad: 'Elegí al menos un recurso e indicá la cantidad.',
+  revisa_las_cantidades_cada_recurso_seleccionado_necesit:
+    'Revisá las cantidades: cada recurso seleccionado necesita un número válido.',
+  la_cantidad_solicitada_debe_corresponder_a_un_equipo_di:
+    'La cantidad solicitada debe corresponder a un equipo disponible.',
+  necesitas_iniciar_sesion_para_solicitar_un_prestamo:
+    'Necesitás iniciar sesión para solicitar un préstamo.',
+  cada_recurso_seleccionado_debe_pertenecer_a_un_equipo_v:
+    'Cada recurso seleccionado debe pertenecer a un equipo válido del inventario.',
+  selecciona_al_menos_un_equipo_del_inventario_para_solic:
+    'Seleccioná al menos un equipo del inventario para solicitarlo.',
+  necesitas_iniciar_sesion_para_crear_un_ticket: 'Necesitás iniciar sesión para crear un ticket.',
+  necesitas_iniciar_sesion_para_crear_una_solicitud:
+    'Necesitás iniciar sesión para crear una solicitud.',
+  envia_solicitudes_y_mira_aca_mismo_como_avanza_cada_pre:
+    'Enviá solicitudes y mirá acá mismo cómo avanza cada preparación.',
+  bandeja_tecnica_de_solicitudes: 'Bandeja técnica de solicitudes',
+  aca_llegan_los_pedidos_de_preparacion_para_revisarlos_y:
+    'Acá llegan los pedidos de preparación para revisarlos y actualizar su estado.',
+  gestion_de_solicitudes: 'Gestión de solicitudes',
+  desde_aca_podes_crear_solicitudes_y_revisar_el_estado_d:
+    'Desde acá podés crear solicitudes y revisar el estado de las que llegan al portal.',
+  bandeja_tecnica_de_soporte: 'Bandeja técnica de soporte',
+  aca_llegan_los_tickets_para_priorizarlos_responderlos_y:
+    'Acá llegan los tickets para priorizarlos, responderlos y cerrarlos cuando queden resueltos.',
+  gestion_de_soporte: 'Gestión de soporte',
+  desde_aca_podes_crear_consultas_y_revisar_el_avance_de:
+    'Desde acá podés crear consultas y revisar el avance de los tickets del portal.',
+  comentario_de_cierre: 'Comentario de cierre',
+  deja_una_aclaracion_final_para_este_ticket: 'Dejá una aclaración final para este ticket',
+  solicitado: 'Solicitado',
+  gestionado_por: 'Gestionado por',
+  completar: 'Completar',
+  resolver: 'Resolver',
+  redes: 'Redes',
+  recuperacion_de_contrasena: 'Recuperación de contraseña',
+  instalacion_de_software_en_los_equipos: 'Instalación de software en los equipos',
+  preparacion_de_salones: 'Preparación de salones',
+  solicitud_de_material_didactico_para_usar_en_clase:
+    'Solicitud de material didáctico para usar en clase',
+  rol_sin_asignar: 'Rol sin asignar',
+  para_docentes_y_personal_administrativo: 'Para docentes y personal administrativo.',
+  para_el_equipo_del_iti: 'Para el equipo del ITI.',
+  para_el_coordinador_de_los_tecnicos: 'Para el coordinador de los técnicos.',
+  otorga_prestamos_resuelve_incidencias_y_brinda_soporte:
+    'Otorga préstamos, resuelve incidencias y brinda soporte.',
+  docente_que_usa_el_sgrsi_para_pedir_prestamos_solicitar:
+    'Docente que usa el SGRSI para pedir préstamos, solicitar servicios y reportar incidencias técnicas.',
+  encuentra_secciones_equipos_historial_de_cambios_y_back:
+    'Encuentra secciones, equipos, historial de cambios y backups de respaldo.',
+  pide_pcs_perifericos_o_monitores_indicando_fecha_lugar:
+    'Pide PCs, periféricos o monitores indicando fecha, lugar y motivo de uso.',
+  cuenta_que_esta_pasando_y_envia_el_caso_al_equipo_tecni:
+    'Cuenta qué está pasando y envía el caso al equipo técnico para darle seguimiento.',
+  coordina_software_salones_y_materiales_para_que_la_clas:
+    'Coordina software, salones y materiales para que la clase llegue preparada.',
+  mira_horarios_tareas_del_dia_y_disponibilidad_del_plant:
+    'Mira horarios, tareas del día y disponibilidad del plantel técnico-administrativo.',
+  mantene_tus_datos_area_y_foto_de_perfil_actualizados:
+    'Mantené tus datos, área y foto de perfil actualizados.',
+  accion_no_reconocida: 'Acción no reconocida.',
+  accion_no_valida: 'Acción no válida.',
+  cada_recurso_debe_tener_un_equipo_y_una_cantidad_valido:
+    'Cada recurso debe tener un equipo y una cantidad válidos.',
+  cada_recurso_debe_tener_un_nombre_y_una_cantidad_valida:
+    'Cada recurso debe tener un nombre y una cantidad válida.',
+  catalogo_no_valido: 'Catálogo no válido.',
+  cedula_correo_y_contrasena_son_obligatorios: 'Cédula, correo y contraseña son obligatorios.',
+  color_de_tarea_no_valido: 'Color de tarea no válido.',
+  completa_todos_los_datos_del_reporte: 'Completá todos los datos del reporte.',
+  conexion_no_segura_http_solo_esta_permitido_dentro_de_l:
+    'Conexión no segura: HTTP solo está permitido dentro de la red LAN privada.',
+  configuracion_no_permitida: 'Configuración no permitida.',
+  debe_enviar_un_archivo_de_foto: 'Debe enviar un archivo de foto.',
+  debes_indicar_al_menos_un_equipo_para_el_prestamo:
+    'Debés indicar al menos un equipo para el préstamo.',
+  demasiadas_solicitudes_espera_unos_segundos_y_volve_a_i:
+    'Demasiadas solicitudes. Esperá unos segundos y volvé a intentar.',
+  demasiados_codigos_incorrectos_volve_a_escribir_tu_cont:
+    'Demasiados códigos incorrectos. Volvé a escribir tu contraseña.',
+  el_archivo_enviado_no_es_una_imagen_valida: 'El archivo enviado no es una imagen válida.',
+  el_asunto_y_el_mensaje_son_obligatorios: 'El asunto y el mensaje son obligatorios.',
+  el_cierre_solo_admite_los_estados_resuelto_o_cerrado:
+    'El cierre solo admite los estados Resuelto o Cerrado.',
+  el_codigo_de_verificacion_no_es_correcto: 'El código de verificación no es correcto.',
+  el_codigo_no_coincide_revisa_que_el_reloj_del_telefono:
+    'El código no coincide. Revisá que el reloj del teléfono esté en hora.',
+  el_codigo_no_es_correcto_o_ya_fue_usado_espera_el_sigui:
+    'El código no es correcto o ya fue usado. Esperá el siguiente e intentá de nuevo.',
+  el_comentario_no_puede_quedar_vacio: 'El comentario no puede quedar vacío.',
+  el_correo_no_es_valido: 'El correo no es válido.',
+  el_equipo_seleccionado_no_esta_disponible: 'El equipo seleccionado no está disponible.',
+  el_equipo_seleccionado_no_pertenece_a_la_categoria_eleg:
+    'El equipo seleccionado no pertenece a la categoría elegida.',
+  el_equipo_ya_no_esta_habilitado_para_aprobar_el_prestam:
+    'El equipo ya no está habilitado para aprobar el préstamo.',
+  el_estado_del_equipo_no_es_valido: 'El estado del equipo no es válido.',
+  el_nombre_de_la_ubicacion_es_obligatorio: 'El nombre de la ubicación es obligatorio.',
+  el_nombre_es_obligatorio: 'El nombre es obligatorio.',
+  el_plazo_de_la_tarea_es_obligatorio: 'El plazo de la tarea es obligatorio.',
+  el_plazo_debe_usar_el_formato_yyyy_mm_dd: 'El plazo debe usar el formato YYYY-MM-DD.',
+  el_registro_de_nuevas_cuentas_esta_temporalmente_deshab:
+    'El registro de nuevas cuentas está temporalmente deshabilitado.',
+  el_registro_esta_cerrado_temporalmente_intenta_mas_tard:
+    'El registro está cerrado temporalmente. Intentá más tarde.',
+  el_responsable_debe_ser_un_usuario_activo_con_rol_tecni:
+    'El responsable debe ser un usuario activo con rol técnico o administrador.',
+  el_servidor_no_admite_fotos_webp_usa_una_imagen_jpg_o_p:
+    'El servidor no admite fotos WebP. Usá una imagen JPG o PNG.',
+  el_tiempo_para_ingresar_el_codigo_vencio_volve_a_escrib:
+    'El tiempo para ingresar el código venció. Volvé a escribir tu contraseña.',
+  el_titulo_de_la_tarea_es_obligatorio: 'El título de la tarea es obligatorio.',
+  esa_contrasena_es_demasiado_comun_elegi_otra: 'Esa contraseña es demasiado común. Elegí otra.',
+  estado_de_incidencia_no_valido: 'Estado de incidencia no válido.',
+  estado_de_prestamo_no_valido: 'Estado de préstamo no válido.',
+  estado_de_revision_no_valido: 'Estado de revisión no válido.',
+  estado_de_servicio_no_valido: 'Estado de servicio no válido.',
+  estado_de_tarea_no_valido: 'Estado de tarea no válido.',
+  estado_no_valido: 'Estado no válido.',
+  indica_la_cedula_de_otro_usuario: 'Indicá la cédula de otro usuario.',
+  ingresa_tu_correo_o_cedula_y_tu_contrasena: 'Ingresá tu correo o cédula y tu contraseña.',
+  la_activacion_vencio_empeza_de_nuevo: 'La activación venció. Empezá de nuevo.',
+  la_base_de_datos_no_esta_actualizada_importa_database_s:
+    'La base de datos no está actualizada. Importá database.sql.',
+  la_cantidad_del_equipo_debe_ser_un_entero_positivo:
+    'La cantidad del equipo debe ser un entero positivo.',
+  la_categoria_de_la_tarea_es_obligatoria: 'La categoría de la tarea es obligatoria.',
+  la_categoria_y_la_ubicacion_son_obligatorias: 'La categoría y la ubicación son obligatorias.',
+  la_cedula_es_obligatoria: 'La cédula es obligatoria.',
+  la_cedula_no_es_valida: 'La cédula no es válida.',
+  la_contrasena_actual_no_es_correcta: 'La contraseña actual no es correcta.',
+  la_contrasena_necesita_entre_8_y_128_caracteres_una_may:
+    'La contraseña necesita entre 8 y 128 caracteres, una mayúscula, una minúscula y un número.',
+  la_contrasena_debe_tener_al_menos_7_caracteres: 'La contraseña debe tener al menos 7 caracteres.',
+  la_descripcion_de_la_tarea_es_obligatoria: 'La descripción de la tarea es obligatoria.',
+  la_fecha_deseada_es_obligatoria: 'La fecha deseada es obligatoria.',
+  la_fecha_deseada_no_puede_ser_anterior_a_hoy: 'La fecha deseada no puede ser anterior a hoy.',
+  la_foto_no_puede_superar_2_mb: 'La foto no puede superar 2 MB.',
+  la_nueva_contrasena_tiene_que_ser_distinta_de_la_actual:
+    'La nueva contraseña tiene que ser distinta de la actual.',
+  la_operacion_viola_una_restriccion_de_datos_relacionada:
+    'La operación viola una restricción de datos relacionada.',
+  la_seccion_destino_debe_ser_distinta_a_la_seccion_elimi:
+    'La sección destino debe ser distinta a la sección eliminada.',
+  la_sesion_de_seguridad_expiro_recarga_la_pagina:
+    'La sesión de seguridad expiró. Recargá la página.',
+  la_solicitud_es_demasiado_grande: 'La solicitud es demasiado grande.',
+  la_solicitud_ya_no_esta_pendiente: 'La solicitud ya no está pendiente.',
+  los_dias_deben_estar_entre_1_y_365: 'Los días deben estar entre 1 y 365.',
+  necesitas_iniciar_sesion: 'Necesitás iniciar sesión.',
+  no_existe_el_equipo_activo_indicado: 'No existe el equipo activo indicado.',
+  no_existe_el_equipo_indicado: 'No existe el equipo indicado.',
+  no_existe_el_prestamo_activo_indicado: 'No existe el préstamo activo indicado.',
+  no_existe_el_registro_activo_indicado: 'No existe el registro activo indicado.',
+  no_existe_el_registro_indicado_o_no_hubo_cambios:
+    'No existe el registro indicado o no hubo cambios.',
+  no_existe_el_reporte_o_no_hubo_cambios: 'No existe el reporte o no hubo cambios.',
+  no_existe_el_servicio_indicado: 'No existe el servicio indicado.',
+  no_existe_el_tecnico_responsable_indicado: 'No existe el técnico responsable indicado.',
+  no_existe_el_usuario_activo: 'No existe el usuario activo.',
+  no_existe_el_usuario_indicado: 'No existe el usuario indicado.',
+  no_existe_el_usuario_solicitante_indicado: 'No existe el usuario solicitante indicado.',
+  no_existe_la_cuenta_activa_indicada: 'No existe la cuenta activa indicada.',
+  no_existe_la_incidencia_indicada: 'No existe la incidencia indicada.',
+  no_existe_la_seccion_activa_indicada: 'No existe la sección activa indicada.',
+  no_existe_la_seccion_activa_o_no_hubo_cambios: 'No existe la sección activa o no hubo cambios.',
+  no_existe_la_seccion_indicada: 'No existe la sección indicada.',
+  no_existe_la_solicitud_activa_indicada: 'No existe la solicitud activa indicada.',
+  no_existe_la_tarea_indicada: 'No existe la tarea indicada.',
+  no_existe_la_ubicacion_indicada: 'No existe la ubicación indicada.',
+  no_existe_una_seccion_destino_activa_para_trasladar_los:
+    'No existe una sección destino activa para trasladar los equipos.',
+  no_existe_una_solicitud_pendiente_con_ese_identificador:
+    'No existe una solicitud pendiente con ese identificador.',
+  no_existe_una_solicitud_pendiente: 'No existe una solicitud pendiente.',
+  no_hay_stock_suficiente_para_aprobar_el_prestamo:
+    'No hay stock suficiente para aprobar el préstamo.',
+  no_hay_suficientes_equipos_disponibles_para_la_cantidad:
+    'No hay suficientes equipos disponibles para la cantidad solicitada.',
+  no_podes_cambiar_la_contrasena_de_otro_usuario: 'No podés cambiar la contraseña de otro usuario.',
+  no_podes_consultar_el_perfil_de_otro_usuario: 'No podés consultar el perfil de otro usuario.',
+  no_podes_modificar_el_perfil_de_otro_usuario: 'No podés modificar el perfil de otro usuario.',
+  no_se_pudo_guardar_la_foto_en_el_servidor: 'No se pudo guardar la foto en el servidor.',
+  no_se_pudo_preparar_el_directorio_de_fotos: 'No se pudo preparar el directorio de fotos.',
+  no_se_pudo_procesar_la_foto_proba_con_otra_imagen_jpg_o:
+    'No se pudo procesar la foto. Probá con otra imagen JPG o PNG.',
+  no_se_pudo_recibir_el_archivo_de_foto: 'No se pudo recibir el archivo de foto.',
+  no_tenes_permisos_para_consultar_responsables: 'No tenés permisos para consultar responsables.',
+  no_tenes_permisos_para_gestionar_incidencias: 'No tenés permisos para gestionar incidencias.',
+  nombre_y_categoria_son_obligatorios: 'Nombre y categoría son obligatorios.',
+  origen_de_la_solicitud_no_permitido: 'Origen de la solicitud no permitido.',
+  para_los_administradores_la_verificacion_en_dos_pasos_e:
+    'Para los administradores la verificación en dos pasos es obligatoria.',
+  prioridad_de_tarea_no_valida: 'Prioridad de tarea no válida.',
+  servicio_temporalmente_no_disponible_intenta_de_nuevo_e:
+    'Servicio temporalmente no disponible. Intentá de nuevo en un minuto.',
+  solo_podes_modificar_tu_propia_planilla: 'Solo podés modificar tu propia planilla.',
+  solo_se_permiten_imagenes_jpg_png_o_webp: 'Solo se permiten imágenes JPG, PNG o WebP.',
+  solo_se_puede_agregar_un_comentario_una_vez_y_luego_de:
+    'Solo se puede agregar un comentario una vez y luego de atender el préstamo.',
+  solo_se_puede_comentar_una_incidencia_resuelta_o_cerrad:
+    'Solo se puede comentar una incidencia resuelta o cerrada.',
+  tu_conexion_quedo_bloqueada_temporalmente_por_exceso_de:
+    'Tu conexión quedó bloqueada temporalmente por exceso de solicitudes.',
+  tu_rol_no_tiene_permiso_para_esta_accion: 'Tu rol no tiene permiso para esta acción.',
+  valor_de_registro_no_valido: 'Valor de registro no válido.',
+  ya_existe_una_solicitud_pendiente: 'Ya existe una solicitud pendiente.',
+  falta_ejecutar_seguridad_migracion_sql_en_la_base_de_da:
+    'Falta ejecutar seguridad/migracion.sql en la base de datos (columnas de la 3ra entrega).',
+  desactivada_si_alguien_consigue_tu_contrasena:
+    'Desactivada. Si alguien consigue tu contraseña con un correo falso, puede entrar.',
+  hoy: 'hoy',
+});
+
+Object.assign(traduccionesPortal.en, {
+  tablero_del_equipo_tecnico: 'Technical team board',
+  organiza_y_asigna_las_tareas_internas: 'Organize and assign internal tasks.',
+  sin_tareas_por_ahora: 'No tasks for now',
+  reportes_y_recuperacion_de_acceso: 'Reports and access recovery',
+  revisa_cada_solicitud_antes_de_tomar_una_decision:
+    'Review each request before making a decision.',
+  administracion: 'Administration',
+  reportes_publicos_pendientes: 'Pending public reports',
+  sin_reportes_pendientes: 'No pending reports.',
+  recuperaciones_de_contrasena_pendientes: 'Pending password recoveries',
+  sin_solicitudes_pendientes: 'No pending requests.',
+  recuperaciones_resueltas_y_cerradas: 'Resolved and closed recoveries',
+  reportes_publicos_resueltos_y_cerrados: 'Resolved and closed public reports',
+  solicitud_cerrada: 'Request closed.',
+  reporte_cerrado: 'Report closed.',
+  reporte_resuelto: 'Report resolved.',
+  al_resolver_se_genera_una_contrasena_temporal_y_se_cier:
+    'Resolving generates a temporary password and closes the previous sessions.',
+  bandeja_tecnica_de_incidencias_y_accesos: 'Technical inbox for incidents and access',
+  no_hay_responsables_activos: 'There are no active assignees',
+  seguro_que_queres_eliminar_esta_tarea: 'Are you sure you want to delete this task?',
+  responsable_sin_asignar: 'Unassigned',
+  no_encontramos_esa_tarea: 'We could not find that task.',
+  nueva_tarea: 'New task',
+  tu_perfil_no_tiene_permiso_para_crear_tareas: 'Your profile is not allowed to create tasks.',
+  tarea_creada_ya_aparece_en_el_tablero_y_en_el_calendari:
+    'Task created. It now appears on the board and the calendar.',
+  tu_perfil_no_tiene_permiso_para_modificar_tareas: 'Your profile is not allowed to modify tasks.',
+  tarea_actualizada_los_cambios_ya_quedaron_guardados: 'Task updated. Your changes were saved.',
+  tu_perfil_no_tiene_permiso_para_eliminar_tareas: 'Your profile is not allowed to delete tasks.',
+  tarea_eliminada_ya_no_aparece_en_el_calendario:
+    'Task deleted. It no longer appears on the calendar.',
+  area_sin_definir: 'Area not defined',
+  entrada: 'Check-in',
+  salida: 'Check-out',
+  tareas_de_la_jornada: 'Tasks for the day',
+  agregar_tarea_desde_kanban: 'Add task from kanban',
+  elegir_una_tarea_pendiente_del_kanban: 'Choose a pending task from the kanban',
+  actualizado: 'Updated',
+  eliminar: 'Delete',
+  solo_lectura: 'Read only',
+  seguro_que_queres_quitar_esta_persona_de_la_planilla_t:
+    'Are you sure you want to remove this person from the T.A. sheet?',
+  tu_perfil_no_tiene_permiso_para_modificar_esta_persona:
+    'Your profile is not allowed to modify this person on the sheet.',
+  planilla_actualizada_los_cambios_ya_estan_visibles_para:
+    'Sheet updated. The changes are now visible to the team.',
+  solo_un_usuario_administrativo_puede_quitar_personas_de:
+    'Only an administrative user can remove people from the sheet.',
+  solo_se_pueden_quitar_usuarios_tecnicos_de_esta_planill:
+    'Only technical users can be removed from this sheet.',
+  persona_quitada_de_la_planilla_t_a: 'Person removed from the T.A. sheet.',
+  tu_perfil_no_tiene_permiso_para_modificar_tareas_del_pl:
+    'Your profile is not allowed to modify staff tasks.',
+  necesitas_otro_rol: 'Need a different role?',
+  envia_una_solicitud_para_que_un_administrador_la_revise:
+    'Send a request for an administrator to review.',
+  solicitar_cambio_de_rol: 'Request a role change',
+  solicitud_enviada: 'Request sent.',
+  activada_para_entrar_se_pide_tu_contrasena_y_el_codigo:
+    'Enabled. Signing in requires your password and the code from your phone.',
+  es_obligatoria_para_los_administradores_si_perdes_el_te:
+    'It is mandatory for administrators. If you lose your phone, ask another administrator to reset it.',
+  evento: 'Event',
+  direccion_ip: 'IP address',
+  navegador: 'Browser',
+  ingreso_correcto: 'Successful sign-in',
+  contrasena_incorrecta: 'Incorrect password',
+  cuenta_bloqueada_por_intentos: 'Account locked after failed attempts',
+  codigo_de_verificacion_incorrecto: 'Incorrect verification code',
+  verificacion_en_dos_pasos_activada: 'Two-step verification enabled',
+  verificacion_en_dos_pasos_desactivada: 'Two-step verification disabled',
+  verificacion_en_dos_pasos_restablecida: 'Two-step verification reset',
+  se_cerraron_todas_las_sesiones: 'All sessions were closed',
+  contrasena_cambiada: 'Password changed',
+  cierre_de_sesion: 'Sign-out',
+  este_es_tu_primer_ingreso_registrado: 'This is your first recorded sign-in.',
+  si_no_fuiste_vos: "If it wasn't you,",
+  cambia_tu_contrasena_y_cerra_las_demas_sesiones:
+    'change your password and sign out of your other sessions',
+  cerrar_aviso: 'Dismiss notice',
+  tu_contrasena_actual: 'Your current password',
+  activar_verificacion_en_dos_pasos: 'Enable two-step verification',
+  instala_google_authenticator_microsoft_authenticator_o:
+    'Install Google Authenticator, Microsoft Authenticator or Authy on your phone.',
+  agrega_una_cuenta_con_esta_clave_o_abri_el_enlace_desde:
+    'Add an account with this key (or open the link from your phone):',
+  abrir_en_la_app_autenticadora: 'Open in the authenticator app',
+  codigo_de_6_digitos_que_muestra_la_app: '6-digit code shown by the app',
+  confirmar_y_activar: 'Confirm and enable',
+  verificacion_en_dos_pasos_activada_desde_ahora_se_pide:
+    'Two-step verification enabled. From now on the code is requested when you sign in.',
+  codigo_actual_de_la_app: 'Current code from the app',
+  verificacion_en_dos_pasos_desactivada_2: 'Two-step verification disabled.',
+  todavia_no_hay_actividad_registrada: 'No activity recorded yet.',
+  la_contrasena_nueva_y_su_repeticion_no_coinciden:
+    'The new password and its confirmation do not match.',
+  contrasena_cambiada_se_cerraron_todas_tus_otras_sesione:
+    'Password changed. All your other sessions were closed.',
+  se_cerraran_todas_tus_sesiones_en_otros_navegadores_y_d:
+    'All your sessions in other browsers and devices will be closed. This session stays open. Continue?',
+  listo_se_cerraron_todas_tus_otras_sesiones: 'Done: all your other sessions were closed.',
+  verificacion_restablecida_en_su_proximo_ingreso_debera:
+    'Verification reset. At their next sign-in they will need to set it up again.',
+  foto_de_perfil_actualizada: 'Profile photo updated.',
+  perfil_actualizado_tus_nuevos_datos_ya_estan_visibles_e:
+    'Profile updated. Your new details are now visible on your account.',
+  las_contrasenas_no_coinciden: 'The passwords do not match.',
+  definir_una_nueva_contrasena: 'Set a new password',
+  la_contrasena_temporal_debe_reemplazarse_antes_de_conti:
+    'The temporary password must be replaced before continuing.',
+  cambiar_contrasena_sgrsi: 'Change password | SGRSI',
+  tu_cuenta_de_administrador_necesita_verificacion_en_dos:
+    'Your administrator account needs two-step verification',
+  instala_en_tu_telefono_google_authenticator_microsoft_a:
+    'Install Google Authenticator, Microsoft Authenticator or Authy on your phone.',
+  agrega_una_cuenta_nueva_y_escribi_esta_clave_o_abri_el:
+    'Add a new account and enter this key (or open the link from your phone):',
+  guarda_la_clave_en_un_lugar_seguro_sin_el_telefono_no_v:
+    'Keep the key somewhere safe. Without the phone you will not be able to sign in.',
+  escribi_el_codigo_de_6_digitos_que_muestra_tu_app_auten:
+    'Enter the 6-digit code shown by your authenticator app.',
+  codigo_de_verificacion: 'Verification code',
+  verificar_e_ingresar: 'Verify and sign in',
+  volver_a_la_contrasena: 'Back to password',
+  el_codigo_tiene_6_numeros: 'The code has 6 digits.',
+  sesion_iniciada: 'Signed in.',
+  no_encontramos_los_datos_de_la_cuenta: 'We could not find the account data.',
+  completa_cedula_nombre_completo_correo_contrasena_y_rol:
+    'Fill in ID number, full name, email, password and role to continue.',
+  la_cedula_debe_tener_exactamente_8_numeros: 'The ID number must have exactly 8 digits.',
+  solicitud_enviada_un_administrador_revisara_tu_registro:
+    'Request sent. An administrator will review your registration before enabling access.',
+  cuenta_creada_ya_podes_ingresar_al_portal: 'Account created. You can now sign in to the portal.',
+  cuenta_creada_te_estamos_llevando_al_home: 'Account created. Taking you to the home page...',
+  reporte_enviado_el_equipo_tecnico_lo_revisara_y_dara_se:
+    'Report sent. The technical team will review it and follow up.',
+  revisa_los_campos_marcados_antes_de_continuar: 'Review the highlighted fields before continuing.',
+  no_se_pudo_completar_la_accion_intenta_nuevamente:
+    'The action could not be completed. Please try again.',
+  la_contrasena_necesita_al_menos_7_caracteres_una_mayusc:
+    'The password needs at least 7 characters, an uppercase letter, a lowercase letter and a number.',
+  solo_un_usuario_administrativo_puede_aprobar_registros:
+    'Only an administrative user can approve registrations.',
+  registro_aprobado_la_persona_ya_puede_iniciar_sesion:
+    'Registration approved. The person can now sign in.',
+  solo_un_usuario_administrativo_puede_rechazar_registros:
+    'Only an administrative user can reject registrations.',
+  solicitud_de_registro_rechazada: 'Registration request rejected.',
+  sin_sesion: 'No session',
+  administracion_sgrsi: 'Administration | SGRSI',
+  panel_de_control: 'Control panel',
+  gestiona_accesos_reglas_y_catalogos_desde_un_solo_lugar:
+    'Manage access, rules and catalogs from one place.',
+  volver_al_inicio: 'Back to home',
+  reglas: 'Rules',
+  configuracion_general: 'General settings',
+  dias_maximos_de_prestamo: 'Maximum loan days',
+  permitir_registro_de_cuentas: 'Allow account registration',
+  guardar_configuracion: 'Save settings',
+  permisos: 'Permissions',
+  solicitudes_de_cambio_de_rol: 'Role change requests',
+  personas: 'People',
+  cuentas_de_usuario: 'User accounts',
+  habilita_cuentas_nuevas_o_desactiva_accesos_sin_elimina:
+    'Enable new accounts or deactivate access without deleting their history.',
+  activa: 'Active',
+  inactiva: 'Inactive',
+  deshabilitar: 'Disable',
+  habilitar_cuenta: 'Enable account',
+  solicitudes: 'Requests',
+  servicios_disponibles: 'Available services',
+  agregar_servicio: 'Add service',
+  activo: 'Active',
+  editar: 'Edit',
+  catalogo_compartido: 'Shared catalog',
+  categorias_tecnologicas: 'Technology categories',
+  se_utilizan_tanto_en_equipos_como_en_prestamos: 'Used for both equipment and loans.',
+  agregar_categoria: 'Add category',
+  sin_registros: 'No records.',
+  sin_cuentas: 'No accounts.',
+  solicitud_revisada: 'Request reviewed.',
+  no_podes_deshabilitar_tu_propia_cuenta: 'You cannot disable your own account.',
+  estado_de_cuenta_actualizado: 'Account status updated.',
+  configuracion_guardada: 'Settings saved.',
+  rol_solicitado: 'Requested role',
+  tecnico_asistente: 'Assistant technician',
+  tecnico_asistente_2: 'Technician/Assistant',
+  administrador: 'Administrator',
+  motivo: 'Reason',
+  volver_a_mi_cuenta: 'Back to my account',
+  solicitar_cambio_de_rol_sgrsi: 'Request a role change | SGRSI',
+  secciones_del_inventario: 'Inventory sections',
+  entra_a_cada_espacio_para_revisar_los_equipos_que_tiene:
+    'Open each space to review the equipment assigned to it.',
+  historial_de_cambios: 'Change history',
+  revisa_movimientos_altas_bajas_y_cambios_recientes_del:
+    'Review recent movements, additions, removals and changes in the inventory.',
+  consulta_donde_esta_cada_equipo_que_cambios_tuvo_y_que:
+    'See where each piece of equipment is, what changes it has had and what visual backup exists per section.',
+  agregar_seccion: 'Add section',
+  nombre_de_la_seccion: 'Section name',
+  guardar_seccion: 'Save section',
+  eliminar_seccion: 'Delete section',
+  confirmar_eliminacion_de_la_seccion: 'Confirm section deletion',
+  se_quitara_del_inventario: 'It will be removed from the inventory.',
+  trasladar_equipos_a: 'Move equipment to',
+  no_cancelar: 'No, cancel',
+  si_eliminar: 'Yes, delete',
+  elegir_seccion_destino: 'Choose destination section',
+  no_hay_otra_seccion_disponible: 'No other section available',
+  de_verdad_queres_eliminar_esta_seccion: 'Do you really want to delete this section?',
+  la_seccion_no_tiene_equipos_activos_se_quitara_del_inve:
+    'The section has no active equipment. It will be removed from the inventory.',
+  tu_perfil_no_tiene_permiso_para_crear_secciones:
+    'Your profile is not allowed to create sections.',
+  escribi_un_nombre_para_la_seccion: 'Enter a name for the section.',
+  ya_existe_una_seccion_con_ese_nombre: 'A section with that name already exists.',
+  seccion_creada_ya_aparece_en_inventario: 'Section created. It now appears in the inventory.',
+  tu_perfil_no_tiene_permiso_para_dar_de_baja_secciones:
+    'Your profile is not allowed to remove sections.',
+  no_encontramos_esa_seccion: 'We could not find that section.',
+  elegi_una_seccion_destino_para_trasladar_los_equipos_an:
+    'Choose a destination section to move the equipment to before deleting.',
+  seccion_eliminada_no_tenia_equipos_activos_asociados:
+    'Section deleted. It had no active equipment.',
+  tu_perfil_no_tiene_permiso_para_dar_de_alta_equipos:
+    'Your profile is not allowed to register equipment.',
+  elegi_un_tipo_de_equipo_valido: 'Choose a valid equipment type.',
+  elegi_una_seccion_valida: 'Choose a valid section.',
+  equipo_dado_de_alta_ya_aparece_en_la_seccion:
+    'Equipment registered. It now appears in the section.',
+  confirmar_baja_del_equipo: 'Confirm equipment removal',
+  se_quitara_del_inventario_y_quedara_registrado_en_histo:
+    'It will be removed from the inventory and recorded in the change history.',
+  si_dar_de_baja: 'Yes, remove',
+  confirmas_que_queres_dar_de_baja_este_equipo: 'Do you confirm you want to remove this equipment?',
+  tu_perfil_no_tiene_permiso_para_dar_de_baja_equipos:
+    'Your profile is not allowed to remove equipment.',
+  no_encontramos_ese_equipo: 'We could not find that equipment.',
+  equipo_dado_de_baja_ya_no_aparece_en_inventario:
+    'Equipment removed. It no longer appears in the inventory.',
+  tu_perfil_no_tiene_permiso_para_trasladar_equipos:
+    'Your profile is not allowed to move equipment.',
+  elegi_una_seccion_de_destino_valida: 'Choose a valid destination section.',
+  el_equipo_ya_esta_en_esa_seccion: 'The equipment is already in that section.',
+  trasladar_equipo: 'Move equipment',
+  todos_los_equipos: 'All equipment',
+  selecciona_un_equipo_para_trasladar: 'Select equipment to move.',
+  seccion_destino: 'Destination section',
+  elegir_seccion: 'Choose section',
+  confirmar_traslado: 'Confirm move',
+  no_encontrado: 'Not found',
+  equipo_no_encontrado: 'Equipment not found',
+  puede_haber_sido_dado_de_baja_o_no_existir_en_el_invent:
+    'It may have been removed or may not exist in the inventory.',
+  volver_a_equipos: 'Back to equipment',
+  no_hay_categorias_activas: 'No active categories',
+  sin_movimientos_registrados_todavia: 'No movements recorded yet.',
+  editar_equipo: 'Edit equipment',
+  sin_observaciones_cargadas: 'No notes added.',
+  historial_reciente: 'Recent history',
+  renombrar_seccion: 'Rename section',
+  agregar_equipo: 'Add equipment',
+  nombre_del_equipo: 'Equipment name',
+  tipo_de_equipo: 'Equipment type',
+  observaciones: 'Notes',
+  dar_de_alta: 'Register',
+  sin_secciones: 'No sections',
+  no_hay_secciones_disponibles: 'No sections available',
+  crea_una_seccion_para_poder_cargar_equipos: 'Create a section to be able to add equipment.',
+  no_hay_equipos_en_esta_seccion: 'No equipment in this section',
+  usa_agregar_equipo_para_dar_de_alta_televisores_all_in:
+    'Use Add equipment to register TVs, all-in-ones, towers, peripherals or monitors.',
+  nuevo_nombre_de_la_seccion: 'New section name',
+  agrega_una_seccion_para_poder_asignar_equipos_al_invent:
+    'Add a section to be able to assign equipment to the inventory.',
+  da_de_alta_equipos_desde_una_seccion_del_inventario_par:
+    'Register equipment from an inventory section to see it here.',
+  actualizado_hoy: 'Updated today',
+  tipo_de_cambio: 'Change type',
+  autor: 'Author',
+  todos: 'All',
+  todas: 'All',
+  creado_por: 'Created by',
+  hora: 'Time',
+  alta_de_equipo: 'Equipment registration',
+  alta_de_seccion: 'Section registration',
+  baja_de_equipo: 'Equipment removal',
+  baja_de_seccion: 'Section removal',
+  traslado_de_equipo: 'Equipment move',
+  modificacion_de_seccion: 'Section modification',
+  imagenes_de_secciones: 'Section images',
+  no_hay_respaldos_visuales_cargados: 'No visual backups uploaded',
+  cuando_se_agreguen_imagenes_de_secciones_van_a_aparecer:
+    'When section images are added, they will appear in this gallery.',
+  estados_vacios: 'Empty states',
+  agrega_la_primera_seccion_para_empezar_a_ordenar_el_inv:
+    "Add the first section to start organizing the institution's inventory.",
+  no_se_encontraron_equipos: 'No equipment found',
+  no_encontramos_equipos_con_ese_criterio_proba_con_otro:
+    'We could not find equipment matching that criteria. Try another filter or search term.',
+  limpiar_filtros: 'Clear filters',
+  no_hay_imagenes_para_esa_consulta: 'No images for that query',
+  no_encontramos_respaldos_visuales_para_esa_fecha_y_hora:
+    'We could not find visual backups for that date and time. Try another combination.',
+  no_hay_cambios_registrados: 'No changes recorded',
+  cuando_haya_movimientos_altas_o_cambios_en_el_inventari:
+    'When there are movements, additions or changes in the inventory, they will appear here.',
+  las_altas_y_bajas_de_secciones_o_equipos_van_a_aparecer:
+    'Additions and removals of sections or equipment will appear here.',
+  envia_pedidos_y_segui_aca_mismo_si_fueron_aprobados_sig:
+    'Send requests and track here whether they were approved, are still pending or were denied.',
+  bandeja_tecnica_de_prestamos: 'Technical loan inbox',
+  aca_llegan_los_pedidos_para_que_el_equipo_tecnico_los_r:
+    'Requests arrive here for the technical team to review and respond to.',
+  gestion_de_prestamos: 'Loan management',
+  desde_aca_podes_crear_pedidos_y_revisar_los_prestamos_q:
+    'From here you can create requests and review the loans that reach the system.',
+  elegi_al_menos_un_recurso_e_indica_la_cantidad:
+    'Choose at least one resource and enter the quantity.',
+  revisa_las_cantidades_cada_recurso_seleccionado_necesit:
+    'Check the quantities: each selected resource needs a valid number.',
+  la_cantidad_solicitada_debe_corresponder_a_un_equipo_di:
+    'The requested quantity must match available equipment.',
+  necesitas_iniciar_sesion_para_solicitar_un_prestamo: 'You need to sign in to request a loan.',
+  cada_recurso_seleccionado_debe_pertenecer_a_un_equipo_v:
+    'Each selected resource must belong to a valid inventory item.',
+  selecciona_al_menos_un_equipo_del_inventario_para_solic:
+    'Select at least one inventory item to request it.',
+  necesitas_iniciar_sesion_para_crear_un_ticket: 'You need to sign in to create a ticket.',
+  necesitas_iniciar_sesion_para_crear_una_solicitud: 'You need to sign in to create a request.',
+  envia_solicitudes_y_mira_aca_mismo_como_avanza_cada_pre:
+    'Send requests and follow here how each preparation is progressing.',
+  bandeja_tecnica_de_solicitudes: 'Technical request inbox',
+  aca_llegan_los_pedidos_de_preparacion_para_revisarlos_y:
+    'Preparation requests arrive here to be reviewed and have their status updated.',
+  gestion_de_solicitudes: 'Request management',
+  desde_aca_podes_crear_solicitudes_y_revisar_el_estado_d:
+    'From here you can create requests and review the status of those that reach the portal.',
+  bandeja_tecnica_de_soporte: 'Technical support inbox',
+  aca_llegan_los_tickets_para_priorizarlos_responderlos_y:
+    'Tickets arrive here to be prioritized, answered and closed once resolved.',
+  gestion_de_soporte: 'Support management',
+  desde_aca_podes_crear_consultas_y_revisar_el_avance_de:
+    'From here you can create queries and review the progress of portal tickets.',
+  comentario_de_cierre: 'Closing comment',
+  deja_una_aclaracion_final_para_este_ticket: 'Leave a final note for this ticket',
+  solicitado: 'Requested',
+  gestionado_por: 'Handled by',
+  completar: 'Complete',
+  resolver: 'Resolve',
+  redes: 'Networking',
+  recuperacion_de_contrasena: 'Password recovery',
+  instalacion_de_software_en_los_equipos: 'Software installation on equipment',
+  preparacion_de_salones: 'Classroom preparation',
+  solicitud_de_material_didactico_para_usar_en_clase:
+    'Request for teaching materials to use in class',
+  rol_sin_asignar: 'No role assigned',
+  para_docentes_y_personal_administrativo: 'For teachers and administrative staff.',
+  para_el_equipo_del_iti: 'For the ITI team.',
+  para_el_coordinador_de_los_tecnicos: 'For the technicians’ coordinator.',
+  otorga_prestamos_resuelve_incidencias_y_brinda_soporte:
+    'Grants loans, resolves incidents and provides support.',
+  docente_que_usa_el_sgrsi_para_pedir_prestamos_solicitar:
+    'Teacher who uses SGRSI to request loans, request services and report technical incidents.',
+  encuentra_secciones_equipos_historial_de_cambios_y_back:
+    'Find sections, equipment, change history and backup images.',
+  pide_pcs_perifericos_o_monitores_indicando_fecha_lugar:
+    'Request PCs, peripherals or monitors stating the date, place and reason for use.',
+  cuenta_que_esta_pasando_y_envia_el_caso_al_equipo_tecni:
+    'Tell us what is happening and send the case to the technical team for follow-up.',
+  coordina_software_salones_y_materiales_para_que_la_clas:
+    'Coordinate software, classrooms and materials so the class is ready.',
+  mira_horarios_tareas_del_dia_y_disponibilidad_del_plant:
+    'See schedules, daily tasks and availability of the technical-administrative staff.',
+  mantene_tus_datos_area_y_foto_de_perfil_actualizados:
+    'Keep your details, area and profile photo up to date.',
+  accion_no_reconocida: 'Action not recognized.',
+  accion_no_valida: 'Invalid action.',
+  cada_recurso_debe_tener_un_equipo_y_una_cantidad_valido:
+    'Each resource must have valid equipment and quantity.',
+  cada_recurso_debe_tener_un_nombre_y_una_cantidad_valida:
+    'Each resource must have a name and a valid quantity.',
+  catalogo_no_valido: 'Invalid catalog.',
+  cedula_correo_y_contrasena_son_obligatorios: 'ID number, email and password are required.',
+  color_de_tarea_no_valido: 'Invalid task color.',
+  completa_todos_los_datos_del_reporte: 'Fill in all the report details.',
+  conexion_no_segura_http_solo_esta_permitido_dentro_de_l:
+    'Insecure connection: HTTP is only allowed inside the private LAN.',
+  configuracion_no_permitida: 'Setting not allowed.',
+  debe_enviar_un_archivo_de_foto: 'You must send a photo file.',
+  debes_indicar_al_menos_un_equipo_para_el_prestamo:
+    'You must specify at least one item for the loan.',
+  demasiadas_solicitudes_espera_unos_segundos_y_volve_a_i:
+    'Too many requests. Wait a few seconds and try again.',
+  demasiados_codigos_incorrectos_volve_a_escribir_tu_cont:
+    'Too many incorrect codes. Enter your password again.',
+  el_archivo_enviado_no_es_una_imagen_valida: 'The file sent is not a valid image.',
+  el_asunto_y_el_mensaje_son_obligatorios: 'The subject and the message are required.',
+  el_cierre_solo_admite_los_estados_resuelto_o_cerrado:
+    'Closing only accepts the Resolved or Closed statuses.',
+  el_codigo_de_verificacion_no_es_correcto: 'The verification code is not correct.',
+  el_codigo_no_coincide_revisa_que_el_reloj_del_telefono:
+    'The code does not match. Check that your phone clock is correct.',
+  el_codigo_no_es_correcto_o_ya_fue_usado_espera_el_sigui:
+    'The code is not correct or was already used. Wait for the next one and try again.',
+  el_comentario_no_puede_quedar_vacio: 'The comment cannot be empty.',
+  el_correo_no_es_valido: 'The email is not valid.',
+  el_equipo_seleccionado_no_esta_disponible: 'The selected equipment is not available.',
+  el_equipo_seleccionado_no_pertenece_a_la_categoria_eleg:
+    'The selected equipment does not belong to the chosen category.',
+  el_equipo_ya_no_esta_habilitado_para_aprobar_el_prestam:
+    'The equipment is no longer enabled to approve the loan.',
+  el_estado_del_equipo_no_es_valido: 'The equipment status is not valid.',
+  el_nombre_de_la_ubicacion_es_obligatorio: 'The location name is required.',
+  el_nombre_es_obligatorio: 'The name is required.',
+  el_plazo_de_la_tarea_es_obligatorio: 'The task deadline is required.',
+  el_plazo_debe_usar_el_formato_yyyy_mm_dd: 'The deadline must use the YYYY-MM-DD format.',
+  el_registro_de_nuevas_cuentas_esta_temporalmente_deshab:
+    'Registration of new accounts is temporarily disabled.',
+  el_registro_esta_cerrado_temporalmente_intenta_mas_tard:
+    'Registration is temporarily closed. Try again later.',
+  el_responsable_debe_ser_un_usuario_activo_con_rol_tecni:
+    'The assignee must be an active user with technician or administrator role.',
+  el_servidor_no_admite_fotos_webp_usa_una_imagen_jpg_o_p:
+    'The server does not support WebP photos. Use a JPG or PNG image.',
+  el_tiempo_para_ingresar_el_codigo_vencio_volve_a_escrib:
+    'Time to enter the code expired. Enter your password again.',
+  el_titulo_de_la_tarea_es_obligatorio: 'The task title is required.',
+  esa_contrasena_es_demasiado_comun_elegi_otra: 'That password is too common. Choose another one.',
+  estado_de_incidencia_no_valido: 'Invalid incident status.',
+  estado_de_prestamo_no_valido: 'Invalid loan status.',
+  estado_de_revision_no_valido: 'Invalid review status.',
+  estado_de_servicio_no_valido: 'Invalid service status.',
+  estado_de_tarea_no_valido: 'Invalid task status.',
+  estado_no_valido: 'Invalid status.',
+  indica_la_cedula_de_otro_usuario: "Enter another user's ID number.",
+  ingresa_tu_correo_o_cedula_y_tu_contrasena: 'Enter your email or ID number and your password.',
+  la_activacion_vencio_empeza_de_nuevo: 'The activation expired. Start again.',
+  la_base_de_datos_no_esta_actualizada_importa_database_s:
+    'The database is out of date. Import database.sql.',
+  la_cantidad_del_equipo_debe_ser_un_entero_positivo:
+    'The equipment quantity must be a positive integer.',
+  la_categoria_de_la_tarea_es_obligatoria: 'The task category is required.',
+  la_categoria_y_la_ubicacion_son_obligatorias: 'The category and location are required.',
+  la_cedula_es_obligatoria: 'The ID number is required.',
+  la_cedula_no_es_valida: 'The ID number is not valid.',
+  la_contrasena_actual_no_es_correcta: 'The current password is not correct.',
+  la_contrasena_necesita_entre_8_y_128_caracteres_una_may:
+    'The password needs between 8 and 128 characters, an uppercase letter, a lowercase letter and a number.',
+  la_contrasena_debe_tener_al_menos_7_caracteres: 'The password must have at least 7 characters.',
+  la_descripcion_de_la_tarea_es_obligatoria: 'The task description is required.',
+  la_fecha_deseada_es_obligatoria: 'The desired date is required.',
+  la_fecha_deseada_no_puede_ser_anterior_a_hoy: 'The desired date cannot be earlier than today.',
+  la_foto_no_puede_superar_2_mb: 'The photo cannot exceed 2 MB.',
+  la_nueva_contrasena_tiene_que_ser_distinta_de_la_actual:
+    'The new password must be different from the current one.',
+  la_operacion_viola_una_restriccion_de_datos_relacionada:
+    'The operation violates a related data constraint.',
+  la_seccion_destino_debe_ser_distinta_a_la_seccion_elimi:
+    'The destination section must be different from the deleted section.',
+  la_sesion_de_seguridad_expiro_recarga_la_pagina: 'The security session expired. Reload the page.',
+  la_solicitud_es_demasiado_grande: 'The request is too large.',
+  la_solicitud_ya_no_esta_pendiente: 'The request is no longer pending.',
+  los_dias_deben_estar_entre_1_y_365: 'Days must be between 1 and 365.',
+  necesitas_iniciar_sesion: 'You need to sign in.',
+  no_existe_el_equipo_activo_indicado: 'The specified active equipment does not exist.',
+  no_existe_el_equipo_indicado: 'The specified equipment does not exist.',
+  no_existe_el_prestamo_activo_indicado: 'The specified active loan does not exist.',
+  no_existe_el_registro_activo_indicado: 'The specified active record does not exist.',
+  no_existe_el_registro_indicado_o_no_hubo_cambios:
+    'The specified record does not exist or nothing changed.',
+  no_existe_el_reporte_o_no_hubo_cambios: 'The report does not exist or nothing changed.',
+  no_existe_el_servicio_indicado: 'The specified service does not exist.',
+  no_existe_el_tecnico_responsable_indicado: 'The specified responsible technician does not exist.',
+  no_existe_el_usuario_activo: 'The active user does not exist.',
+  no_existe_el_usuario_indicado: 'The specified user does not exist.',
+  no_existe_el_usuario_solicitante_indicado: 'The specified requesting user does not exist.',
+  no_existe_la_cuenta_activa_indicada: 'The specified active account does not exist.',
+  no_existe_la_incidencia_indicada: 'The specified incident does not exist.',
+  no_existe_la_seccion_activa_indicada: 'The specified active section does not exist.',
+  no_existe_la_seccion_activa_o_no_hubo_cambios:
+    'The active section does not exist or nothing changed.',
+  no_existe_la_seccion_indicada: 'The specified section does not exist.',
+  no_existe_la_solicitud_activa_indicada: 'The specified active request does not exist.',
+  no_existe_la_tarea_indicada: 'The specified task does not exist.',
+  no_existe_la_ubicacion_indicada: 'The specified location does not exist.',
+  no_existe_una_seccion_destino_activa_para_trasladar_los:
+    'There is no active destination section to move the equipment to.',
+  no_existe_una_solicitud_pendiente_con_ese_identificador:
+    'There is no pending request with that identifier.',
+  no_existe_una_solicitud_pendiente: 'There is no pending request.',
+  no_hay_stock_suficiente_para_aprobar_el_prestamo: 'Not enough stock to approve the loan.',
+  no_hay_suficientes_equipos_disponibles_para_la_cantidad:
+    'There is not enough available equipment for the requested quantity.',
+  no_podes_cambiar_la_contrasena_de_otro_usuario: "You cannot change another user's password.",
+  no_podes_consultar_el_perfil_de_otro_usuario: "You cannot view another user's profile.",
+  no_podes_modificar_el_perfil_de_otro_usuario: "You cannot modify another user's profile.",
+  no_se_pudo_guardar_la_foto_en_el_servidor: 'The photo could not be saved on the server.',
+  no_se_pudo_preparar_el_directorio_de_fotos: 'The photo directory could not be prepared.',
+  no_se_pudo_procesar_la_foto_proba_con_otra_imagen_jpg_o:
+    'The photo could not be processed. Try another JPG or PNG image.',
+  no_se_pudo_recibir_el_archivo_de_foto: 'The photo file could not be received.',
+  no_tenes_permisos_para_consultar_responsables: 'You do not have permission to view assignees.',
+  no_tenes_permisos_para_gestionar_incidencias: 'You do not have permission to manage incidents.',
+  nombre_y_categoria_son_obligatorios: 'Name and category are required.',
+  origen_de_la_solicitud_no_permitido: 'Request origin not allowed.',
+  para_los_administradores_la_verificacion_en_dos_pasos_e:
+    'Two-step verification is mandatory for administrators.',
+  prioridad_de_tarea_no_valida: 'Invalid task priority.',
+  servicio_temporalmente_no_disponible_intenta_de_nuevo_e:
+    'Service temporarily unavailable. Try again in a minute.',
+  solo_podes_modificar_tu_propia_planilla: 'You can only modify your own sheet.',
+  solo_se_permiten_imagenes_jpg_png_o_webp: 'Only JPG, PNG or WebP images are allowed.',
+  solo_se_puede_agregar_un_comentario_una_vez_y_luego_de:
+    'A comment can only be added once and after the loan has been handled.',
+  solo_se_puede_comentar_una_incidencia_resuelta_o_cerrad:
+    'Only a resolved or closed incident can be commented on.',
+  tu_conexion_quedo_bloqueada_temporalmente_por_exceso_de:
+    'Your connection was temporarily blocked due to too many requests.',
+  tu_rol_no_tiene_permiso_para_esta_accion: 'Your role is not allowed to perform this action.',
+  valor_de_registro_no_valido: 'Invalid registration value.',
+  ya_existe_una_solicitud_pendiente: 'There is already a pending request.',
+  falta_ejecutar_seguridad_migracion_sql_en_la_base_de_da:
+    'seguridad/migracion.sql has not been run on the database (3rd delivery columns).',
+  desactivada_si_alguien_consigue_tu_contrasena:
+    'Disabled. If someone obtains your password with a fake email, they can sign in.',
+  hoy: 'today',
+});
+
 window.traducciones = traduccionesPortal;
+
+// Textos con variables ({0}, {1}...) como pares [español, inglés]; los resuelve ui.js.
+window.plantillasTraduccion = [
+  ['Chrome en {0}', 'Chrome on {0}'],
+  ['Firefox en {0}', 'Firefox on {0}'],
+  ['Safari en {0}', 'Safari on {0}'],
+  ['Edge en {0}', 'Edge on {0}'],
+  ['Navegador en {0}', 'Browser on {0}'],
+  [
+    'Tu ingreso anterior fue el {0} desde la dirección {1}.',
+    'Your previous sign-in was on {0} from address {1}.',
+  ],
+  [
+    'Se quitará la verificación en dos pasos de la cédula {0} y se cerrarán sus sesiones. ¿Continuar?',
+    'Two-step verification will be removed for ID number {0} and its sessions will be closed. Continue?',
+  ],
+  ['Actualizado: {0}', 'Updated: {0}'],
+  ['Actualizado el {0}', 'Updated on {0}'],
+  ['Hasta {0}', 'Until {0}'],
+  ['{0} equipos', '{0} items'],
+  ['{0} equipo', '{0} item'],
+  ['Alta de equipo: {0}', 'Equipment registration: {0}'],
+  ['Alta: {0}', 'Registration: {0}'],
+  ['Baja de equipo: {0}', 'Equipment removal: {0}'],
+  ['Baja de sección: {0}', 'Section removal: {0}'],
+  ['Traslado de equipo: {0}', 'Equipment move: {0}'],
+  ['Alta de sección: {0}', 'Section registration: {0}'],
+  ['Modificación de sección: {0}', 'Section modification: {0}'],
+  ['Sistema | {0}', 'System | {0}'],
+  ['Dar de baja {0}', 'Remove {0}'],
+  ['Trasladar {0}', 'Move {0}'],
+  ['Foto de perfil de {0}', 'Profile photo of {0}'],
+  ['Equipo trasladado a {0}.', 'Equipment moved to {0}.'],
+  [
+    'Equipo "{0}" trasladado de "{1}" a "{2}" por eliminación de sección.',
+    'Equipment "{0}" moved from "{1}" to "{2}" due to section deletion.',
+  ],
+  ['Equipo "{0}" trasladado de "{1}" a "{2}".', 'Equipment "{0}" moved from "{1}" to "{2}".'],
+  ['Equipo "{0}" dado de baja desde "{1}".', 'Equipment "{0}" removed from "{1}".'],
+  [
+    'Sección "{0}" dada de baja. {1} equipo trasladado a "{2}".',
+    'Section "{0}" removed. {1} item moved to "{2}".',
+  ],
+  [
+    'Sección "{0}" dada de baja. {1} equipos trasladados a "{2}".',
+    'Section "{0}" removed. {1} items moved to "{2}".',
+  ],
+  ['Sección "{0}" creada.', 'Section "{0}" created.'],
+  ['Sección renombrada a "{0}".', 'Section renamed to "{0}".'],
+  ['Solicitud creada por {0}.', 'Request created by {0}.'],
+  ['Solicitud de recuperación creada por {0}.', 'Recovery request created by {0}.'],
+  ['{0} | Solicitud de préstamo', '{0} | Loan request'],
+  ['Administrador · {0}', 'Administrator · {0}'],
+  ['Técnico/Asistente · {0}', 'Technician/Assistant · {0}'],
+  ['Solicitante · {0}', 'Requester · {0}'],
+  ['Ticket #{0} · {1}', 'Ticket #{0} · {1}'],
+  [
+    '¿De verdad querés eliminar la sección "{0}"?',
+    'Do you really want to delete the section "{0}"?',
+  ],
+  [
+    'Esta sección tiene {0} equipo. Antes de eliminarla, elegí a qué sección trasladarlo.',
+    'This section has {0} item. Before deleting it, choose which section to move it to.',
+  ],
+  [
+    'Esta sección tiene {0} equipos. Antes de eliminarla, elegí a qué sección trasladarlos.',
+    'This section has {0} items. Before deleting it, choose which section to move them to.',
+  ],
+  [
+    'Sección eliminada. Se trasladó {0} equipo a {1}.',
+    'Section deleted. {0} item was moved to {1}.',
+  ],
+  [
+    'Sección eliminada. Se trasladaron {0} equipos a {1}.',
+    'Section deleted. {0} items were moved to {1}.',
+  ],
+  ['¿Confirmás que querés dar de baja "{0}"?', 'Do you confirm you want to remove "{0}"?'],
+  [
+    'La fecha del préstamo debe estar dentro de los próximos {0} días.',
+    'The loan date must be within the next {0} days.',
+  ],
+  ['El campo {0} debe ser un identificador válido.', 'The {0} field must be a valid identifier.'],
+  ['El campo {0} debe tener formato AAAA-MM-DD.', 'The {0} field must use the YYYY-MM-DD format.'],
+  ['El campo {0} debe tener formato HH:MM.', 'The {0} field must use the HH:MM format.'],
+  [
+    'Demasiados intentos fallidos. Intentá de nuevo en {0} minuto(s).',
+    'Too many failed attempts. Try again in {0} minute(s).',
+  ],
+];

@@ -48,7 +48,7 @@ function formatearFechaSeguridad(valor) {
   if (Number.isNaN(fecha.getTime())) {
     return String(valor || '');
   }
-  return fecha.toLocaleString('es-UY', { dateStyle: 'medium', timeStyle: 'short' });
+  return fecha.toLocaleString(obtenerLocaleFechas(), { dateStyle: 'medium', timeStyle: 'short' });
 }
 
 /* Aviso de una sola vez en el inicio con el ingreso anterior. */
@@ -310,7 +310,9 @@ function iniciarPanelSeguridadCuenta() {
     botonCerrarSesiones.addEventListener('click', async function () {
       if (
         !window.confirm(
-          'Se cerraran todas tus sesiones en otros navegadores y dispositivos. Esta sesion sigue abierta. Continuar?',
+          t(
+            'Se cerraran todas tus sesiones en otros navegadores y dispositivos. Esta sesion sigue abierta. Continuar?',
+          ),
         )
       ) {
         return;
@@ -332,9 +334,11 @@ function iniciarPanelSeguridadCuenta() {
       const cedula = document.getElementById('cedula-restablecer').value;
       if (
         !window.confirm(
-          'Se quitara la verificacion en dos pasos de la cedula ' +
-            cedula +
-            ' y se cerraran sus sesiones. Continuar?',
+          t(
+            'Se quitara la verificacion en dos pasos de la cedula ' +
+              cedula +
+              ' y se cerraran sus sesiones. Continuar?',
+          ),
         )
       ) {
         return;

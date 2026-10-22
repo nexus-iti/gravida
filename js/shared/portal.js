@@ -359,7 +359,7 @@ function formatearFechaHumana(valor) {
     return String(valor);
   }
   return fecha
-    .toLocaleString('es-UY', {
+    .toLocaleString(obtenerLocaleFechas(), {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',

@@ -4,7 +4,7 @@ const rolesDisponibles = [
   {
     valor: 'Usuario solicitante',
     etiqueta: 'Usuario solicitante',
-    descripcion: 'Para docentes y ersonal administrativo.',
+    descripcion: 'Para docentes y personal administrativo.',
   },
   {
     valor: 'Usuario tecnico',

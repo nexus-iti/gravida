@@ -19,7 +19,8 @@ Un PR por issue, apilados en orden de dependencia.
 
 ## Interfaz
 
-- [ ] [#4](https://github.com/nexus-iti/gravida/issues/4) Cambio de idioma incompleto.
+- [x] [#4](https://github.com/nexus-iti/gravida/issues/4) Cambio de idioma incompleto.
+  Se auditaron todas las páginas con navegador y el código fuente. Infra en `ui.js`: índice de textos sin tildes, plantillas con variables (`window.plantillasTraduccion`), etiquetas con ":", observador que traduce lo que se inserta con innerHTML, mensajes de formulario y `confirm()` traducidos, fechas según idioma y selects personalizados. `interna` carga `app.js` (administración, clave temporal y solicitar rol no traducían). ~410 textos y 49 plantillas nuevas (UI, mensajes de backend, historial). El contenido cargado por usuarios (nombres, tickets) no se traduce.
 - [ ] [#5](https://github.com/nexus-iti/gravida/issues/5) Modo claro/oscuro.
 
 ## Inventario

@@ -21,10 +21,6 @@ async function obtenerSolicitudesServicio() {
   return solicitarApi('api/servicios.php');
 }
 
-async function obtenerPlanillaTA() {
-  return solicitarApi('api/planilla_ta.php');
-}
-
 async function obtenerPrestamosVisibles() {
   const usuarioActual = obtenerUsuarioActual();
   return filtrarRegistrosVisibles(await obtenerPrestamos(), usuarioActual);

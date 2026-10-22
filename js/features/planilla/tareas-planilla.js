@@ -4,6 +4,10 @@ async function obtenerTareasCalendarioTA() {
   return solicitarApi('api/tareas.php');
 }
 
+async function obtenerPlanillaTA() {
+  return solicitarApi('api/planilla_ta.php');
+}
+
 async function obtenerTareaCalendarioPorId(tareaId) {
   const tareas = await obtenerTareasCalendarioTA();
   for (let i = 0; i < tareas.length; i++) {

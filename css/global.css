@@ -3986,6 +3986,130 @@ p {
   opacity: 0.55;
 }
 
+.loan-selector {
+  display: grid;
+  gap: 14px;
+}
+
+.loan-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.loan-toolbar .text-input {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+.loan-toolbar__summary {
+  margin-left: auto;
+  color: var(--color-texto-secundario);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.loan-group {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.loan-group[hidden],
+.loan-resource-option[hidden],
+.loan-empty[hidden] {
+  display: none;
+}
+
+.loan-group__header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--color-borde-suave);
+}
+
+.loan-group__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-texto-principal);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.loan-group__check input {
+  width: 16px;
+  height: 16px;
+}
+
+.loan-group__count {
+  color: var(--color-texto-secundario);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.loan-resource-option__main {
+  min-width: 0;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.loan-resource-option__meta {
+  color: var(--color-texto-secundario);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.loan-resource-option__details {
+  color: var(--color-texto-secundario);
+  font-size: 12px;
+}
+
+.loan-resource-option__details summary {
+  cursor: pointer;
+  color: var(--color-primario-texto);
+  font-weight: 600;
+}
+
+.loan-resource-option__details dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  margin: 6px 0 0;
+}
+
+.loan-resource-option__details dt {
+  font-weight: 700;
+}
+
+.loan-resource-option__details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.loan-resource-option__link {
+  color: var(--color-primario-texto);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.loan-resource-option--unavailable {
+  opacity: 0.75;
+}
+
+.loan-resource-option:has(input[data-loan-resource]:checked) {
+  border-color: var(--color-primario);
+  background: var(--color-fondo-seleccionado);
+}
+
 .mini-kanban {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

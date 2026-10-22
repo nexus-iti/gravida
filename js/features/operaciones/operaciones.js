@@ -211,6 +211,29 @@ async function guardarComentarioTicket(idTicket, comentario) {
   });
 }
 
+async function obtenerTicketsDadosDeBaja() {
+  return solicitarApi('api/incidencias.php?bajas=1');
+}
+
+async function asignarTicket(idTicket, tecnicoId) {
+  return solicitarApi('api/incidencias.php', {
+    method: 'PATCH',
+    body: JSON.stringify({ accion: 'asignar', id: idTicket, tecnicoId: tecnicoId }),
+  });
+}
+
+async function guardarDiagnosticoTicket(idTicket, diagnostico, solucion) {
+  return solicitarApi('api/incidencias.php', {
+    method: 'PATCH',
+    body: JSON.stringify({
+      accion: 'modificar_diagnostico',
+      id: idTicket,
+      diagnostico: diagnostico,
+      solucion: solucion,
+    }),
+  });
+}
+
 async function guardarComentarioPrestamo(idPrestamo, comentario) {
   return solicitarApi('api/prestamos.php', {
     method: 'PATCH',

@@ -1538,6 +1538,23 @@ Object.assign(traduccionesPortal.es, {
   no_hay_equipos_disponibles_2: 'No hay equipos disponibles.',
   disponibles_2: 'disponibles',
   marca: 'Marca',
+  tickets_borrados: 'Tickets borrados',
+  tickets_dados_de_baja_quedan_registrados_y_ya_no_aparec:
+    'Tickets dados de baja. Quedan registrados y ya no aparecen en la bandeja.',
+  todavia_no_hay_tickets_borrados: 'Todavía no hay tickets borrados.',
+  asignar_a: 'Asignar a',
+  asignar: 'Asignar',
+  elegir_persona: 'Elegir persona',
+  elegi_a_quien_asignar_el_ticket: 'Elegí a quién asignar el ticket.',
+  ticket_asignado: 'Ticket asignado.',
+  diagnostico: 'Diagnóstico',
+  solucion: 'Solución',
+  guardar_diagnostico: 'Guardar diagnóstico',
+  diagnostico_actualizado: 'Diagnóstico actualizado.',
+  dar_de_baja_ticket: 'Dar de baja ticket',
+  seguro_que_queres_dar_de_baja_este_ticket: '¿Seguro que querés dar de baja este ticket?',
+  va_a_pasar_a_la_seccion_tickets_borrados: 'Va a pasar a la sección Tickets borrados.',
+  si_confirmar: 'Sí, confirmar',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -2081,6 +2098,23 @@ Object.assign(traduccionesPortal.en, {
   no_hay_equipos_disponibles_2: 'No equipment available.',
   disponibles_2: 'available',
   marca: 'Brand',
+  tickets_borrados: 'Deleted tickets',
+  tickets_dados_de_baja_quedan_registrados_y_ya_no_aparec:
+    'Tickets that were removed. They stay on record and no longer appear in the inbox.',
+  todavia_no_hay_tickets_borrados: 'There are no deleted tickets yet.',
+  asignar_a: 'Assign to',
+  asignar: 'Assign',
+  elegir_persona: 'Choose a person',
+  elegi_a_quien_asignar_el_ticket: 'Choose who to assign the ticket to.',
+  ticket_asignado: 'Ticket assigned.',
+  diagnostico: 'Diagnosis',
+  solucion: 'Solution',
+  guardar_diagnostico: 'Save diagnosis',
+  diagnostico_actualizado: 'Diagnosis updated.',
+  dar_de_baja_ticket: 'Remove ticket',
+  seguro_que_queres_dar_de_baja_este_ticket: 'Are you sure you want to remove this ticket?',
+  va_a_pasar_a_la_seccion_tickets_borrados: 'It will move to the Deleted tickets section.',
+  si_confirmar: 'Yes, confirm',
 });
 
 window.traducciones = traduccionesPortal;
@@ -2174,4 +2208,9 @@ window.plantillasTraduccion = [
   ],
   ['Seleccionados: {0} · Unidades: {1}', 'Selected: {0} · Units: {1}'],
   ['Seleccionar todo el grupo: {0}', 'Select the whole group: {0}'],
+  [
+    '¿Seguro que querés dar de baja el ticket "{0}"?',
+    'Are you sure you want to remove the ticket "{0}"?',
+  ],
+  ['Dado de baja el {0}', 'Removed on {0}'],
 ];

@@ -1,0 +1,28 @@
+FROM docker.io/library/mariadb:11.4
+
+# Podman rootless y el entrypoint oficial no se llevan bien, por dos motivos:
+#
+# 1. El entrypoint arranca como uid 0 (en el host, el uid del usuario que corre podman) y ahi
+#    mismo hace `exec gosu mysql`: el proceso queda con el uid mysql de la imagen, que en el
+#    host cae en el rango de subuid (166xxx). Ese uid no es el del usuario que corre podman y
+#    crun no lo puede senalar (pidfd_send_signal -> EPERM). Resultado: podman stop, podman rm -f
+#    y podman compose down mueren con "given PID did not die within timeout" y el contenedor
+#    hay que matarlo a mano.
+# 2. Si se saca el demote, el entrypoint sigue chownando el datadir al usuario mysql, y mariadbd
+#    como root no puede escribir ahi (EACCES sobre archivos de un subuid).
+#
+# El parche neutraliza solo la linea del gosu y hace que los chown del datadir apunten a root.
+# El resto del entrypoint queda igual, incluida la inicializacion desde
+# /docker-entrypoint-initdb.d, asi que un `podman compose down -v && up` sigue creando la base
+# desde cero. Con esto mariadbd corre como uid 0 dentro del contenedor (= usuario de podman en
+# el host) y el stop funciona.
+#
+# Si alguna de las lineas no existe (imagen nueva), el build falla en los grep en vez de
+# producir una imagen silenciosamente sin parchear.
+RUN sed -i 's#^\(\s*\)exec gosu mysql "\${BASH_SOURCE\[0\]}" "\$@"#\1: rootless podman: sin demote a mysql#' \
+        /usr/local/bin/docker-entrypoint.sh \
+ && sed -i 's#chown mysql:#chown 0:0#g; s#! -user mysql#! -user root#g' \
+        /usr/local/bin/docker-entrypoint.sh \
+ && grep -q "rootless podman: sin demote a mysql" /usr/local/bin/docker-entrypoint.sh \
+ && grep -q 'chown 0:0' /usr/local/bin/docker-entrypoint.sh \
+ && ! grep -q 'exec gosu mysql' /usr/local/bin/docker-entrypoint.sh

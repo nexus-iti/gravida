@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, dev]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    name: Format, lint y sintaxis PHP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Instalar PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Instalar dependencias
+        run: bun install
+
+      - name: Verificar formato
+        run: bun run format:check
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Sintaxis PHP
+        run: |
+          status=0
+          while IFS= read -r archivo; do
+            php -n -l "$archivo" > /dev/null || status=1
+          done < <(git ls-files '*.php')
+          exit $status

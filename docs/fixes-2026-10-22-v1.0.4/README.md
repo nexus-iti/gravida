@@ -21,7 +21,8 @@ Un PR por issue, apilados en orden de dependencia.
 
 - [x] [#4](https://github.com/nexus-iti/gravida/issues/4) Cambio de idioma incompleto.
   Se auditaron todas las páginas con navegador y el código fuente. Infra en `ui.js`: índice de textos sin tildes, plantillas con variables (`window.plantillasTraduccion`), etiquetas con ":", observador que traduce lo que se inserta con innerHTML, mensajes de formulario y `confirm()` traducidos, fechas según idioma y selects personalizados. `interna` carga `app.js` (administración, clave temporal y solicitar rol no traducían). ~410 textos y 49 plantillas nuevas (UI, mensajes de backend, historial). El contenido cargado por usuarios (nombres, tickets) no se traduce.
-- [ ] [#5](https://github.com/nexus-iti/gravida/issues/5) Modo claro/oscuro.
+- [x] [#5](https://github.com/nexus-iti/gravida/issues/5) Modo claro/oscuro.
+  Causas: `--border-color`, `--text-muted` y `--surface-subtle` se usaban sin estar definidas (Administración, comentarios de cierre y bloques de la cuenta quedaban claros en modo oscuro); el panel de seguridad de la cuenta tenía blancos fijos; las páginas `interna` no cargaban el tema. Contraste revisado con script WCAG AA (4.5:1 texto, 3:1 texto grande) en 15 páginas y ambos temas: 0 fallas. Se ajustaron `--color-texto-desactivado`, texto de botón primario y etiquetas (`warn`, `primary`, `info`, `purple`). La preferencia ya se guardaba en localStorage (`tema`); verificada tras recargar y entre páginas.
 
 ## Inventario
 

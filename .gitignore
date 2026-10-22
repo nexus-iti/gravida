@@ -38,6 +38,16 @@ tmp/
 *~
 
 # ---------------------------------------------------------------------------
+# Estado de ejecucion de seguridad (limites de peticiones, sesiones PHP, logs)
+# Se regenera en runtime; seguridad/bootstrap.php crea las carpetas si faltan.
+# ---------------------------------------------------------------------------
+seguridad/almacen/limites/
+seguridad/almacen/sesiones/
+seguridad/almacen/logs/
+seguridad/almacen/manifiesto.json
+seguridad/almacen/modo-ataque
+
+# ---------------------------------------------------------------------------
 # Respaldos y bases de datos locales
 # database.sql sí se versiona: es el esquema oficial del proyecto.
 # ---------------------------------------------------------------------------

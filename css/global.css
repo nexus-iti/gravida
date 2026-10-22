@@ -923,8 +923,8 @@ p {
 }
 
 .etiqueta--warn {
-  background: #facc15;
-  color: #fff;
+  background: var(--color-aviso-fondo);
+  color: var(--color-aviso-texto);
   font-weight: 700;
 }
 

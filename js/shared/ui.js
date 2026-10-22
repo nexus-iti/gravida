@@ -655,11 +655,12 @@ function iniciarObservadorI18n() {
       }
     }
     if (nodosI18nPendientes.size > 0) {
-      window.requestAnimationFrame(function () {
+      // setTimeout y no requestAnimationFrame: este último se detiene en pestañas ocultas.
+      window.setTimeout(function () {
         if (nodosI18nPendientes.size > 0) {
           procesarNodosI18nPendientes();
         }
-      });
+      }, 0);
     }
   });
   observadorI18n.observe(document.body, { childList: true, subtree: true });

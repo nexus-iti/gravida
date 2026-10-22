@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Nexus\Features\SolicitudRegistro\Application;
+use Nexus\Shared\Security\PasswordCharset;
 use Nexus\Shared\Security\PasswordHasher;
 use Nexus\Features\SolicitudRegistro\Domain\SolicitudRegistroRepository;
 use Nexus\Shared\Domain\ValueObject\Cedula;
@@ -16,6 +17,7 @@ final class SolicitudRegistroService
         if(!$this->repo->registroHabilitado())throw new DomainException('El registro de nuevas cuentas esta temporalmente deshabilitado.',403);
         if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cedula, correo y contrasena son obligatorios.');
         if($d['nombre']==='')throw new DomainException('El nombre es obligatorio.');
+        if(PasswordCharset::contieneEnie($d['contrasena']))throw new DomainException(PasswordCharset::MENSAJE);
         $d['rol']=Rol::desdeCliente($d['rol'])->value();$d['hash']=$this->hasher->hash($d['contrasena']);$id=$this->repo->crearConUsuario($d);
         return ['ok'=>true,'solicitud'=>['id'=>(string)$id,'cedula'=>$d['cedula']->value()]];
     }

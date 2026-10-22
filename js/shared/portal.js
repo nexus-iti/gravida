@@ -75,8 +75,18 @@ function normalizarCedula(valor) {
   return String(valor || '').replace(/\D/g, '');
 }
 
+// Debe coincidir con Nexus\Shared\Security\PasswordCharset (backend).
+const MENSAJE_CONTRASENA_SIN_ENIE = 'La contraseña no puede contener la letra Ñ.';
+
+function contrasenaContieneEnie(contrasena) {
+  return /[Ññ]|[Nn]̃/.test(String(contrasena || ''));
+}
+
 function validarContrasenaSegura(contrasena) {
   const valor = String(contrasena || '');
+  if (contrasenaContieneEnie(valor)) {
+    return { ok: false, mensaje: MENSAJE_CONTRASENA_SIN_ENIE };
+  }
   const tieneLargoMinimo = valor.length >= 7;
   const tieneMayuscula = /[A-Z]/.test(valor);
   const tieneMinuscula = /[a-z]/.test(valor);

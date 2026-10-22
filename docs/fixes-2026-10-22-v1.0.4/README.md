@@ -13,7 +13,9 @@ Un PR por issue, apilados en orden de dependencia.
 
 ## Autenticación
 
-- [ ] [#6](https://github.com/nexus-iti/gravida/issues/6) La Ñ no se puede usar en contraseñas.
+- [x] [#6](https://github.com/nexus-iti/gravida/issues/6) La Ñ no se puede usar en contraseñas.
+  Causa: el mismo texto puede llegar con bytes distintos (Ñ precompuesta U+00D1/U+00F1 vs N/n + U+0303 combinante) y Argon2/bcrypt hashean bytes. Se rechaza en frontend (`validarContrasenaSegura`, página de clave temporal) y backend (`PasswordCharset`: política de cuenta, registro, `UsuarioService`). Las claves ya guardadas con Ñ siguen validando en el login.
+  Pendiente aparte: las demás vocales con tilde/diéresis tienen el mismo riesgo de normalización NFC/NFD.
 
 ## Interfaz
 

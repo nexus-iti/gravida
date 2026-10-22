@@ -807,6 +807,7 @@ Object.assign(traduccionesPortal.es, {
   error_base_datos: 'No se pudo completar la operación en la base de datos.',
   credenciales_incorrectas: 'Correo, cédula o contraseña incorrectos.',
   cuenta_sin_habilitar: 'Tu cuenta todavía no está habilitada. Un administrador debe aprobarla.',
+  contrasena_sin_enie: 'La contraseña no puede contener la letra Ñ.',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -856,6 +857,7 @@ Object.assign(traduccionesPortal.en, {
   error_base_datos: 'The database operation could not be completed.',
   credenciales_incorrectas: 'Incorrect email, ID number or password.',
   cuenta_sin_habilitar: 'Your account is not enabled yet. An administrator must approve it.',
+  contrasena_sin_enie: 'The password cannot contain the letter Ñ.',
 });
 
 Object.assign(traduccionesPortal.es, {

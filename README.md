@@ -53,7 +53,7 @@ Las páginas viven en `pages/` y no repiten la lista de scripts. Cada una
 incluye un único cargador:
 
 ```html
-<script src="../js/router.js?v=5.0.0"></script>
+<script src="../js/router.js?v=<hash>"></script>
 ```
 
 `js/router.js` infiere la ruta desde el nombre del archivo y carga en orden los
@@ -65,6 +65,88 @@ Para agregar una página nueva:
    módulos.
 
 También se aceptan URLs limpias (`/pages/home`), resueltas por `.htaccess`.
+
+## Carga y caché de assets
+
+- **Versionado por contenido.** El `?v=` de `global.css`, `fuentes.css` y
+  `router.js` en cada página es un hash de todo `css/` y `js/`; `router.js` lo
+  propaga a cada módulo que carga. Por eso Apache y nginx sirven CSS/JS
+  versionados con `Cache-Control: immutable` por un año, y el HTML con
+  `no-cache` (revalida y responde 304). **Después de tocar CSS o JS hay que
+  correr `bun run build`**; la CI falla si un `?v=` quedó desactualizado.
+- **Íconos.** `js/shared/vendor/lucide-iconos.min.js` trae solo los íconos que
+  usa el portal (unos 12 KB en lugar de 358 KB). Si aparece uno nuevo sin
+  regenerar, `ui.js` carga el paquete completo en segundo plano y avisa en la
+  consola cuál falta.
+- **Fuentes** (Bricolage Grotesque, Host Grotesk, Space Grotesk) servidas desde
+  `css/fuentes/`, cargadas en diferido. Si fallan, la página sigue con las
+  fuentes del sistema.
+- **Errores de CSS.** Si `global.css` no llega completo (corte de red, 5xx),
+  `router.js` lo reintenta dos veces sin caché y, si sigue fallando, muestra un
+  aviso con "Reintentar" que también se dispara solo al volver la conexión.
+  Lo detecta con la variable centinela `--css-global-completo`, que debe quedar
+  como última regla de `global.css`.
+
+## Movimiento y estados de carga
+
+Las animaciones usan [Motion](https://motion.dev) (`js/shared/vendor/motion-*.min.js`,
+subconjunto de 16 KB) desde `js/shared/movimiento.js`, con la guía de movimiento
+de Apple:
+
+- **Resortes, siempre "smooth"** (bounce 0, el preset `.smooth` de SwiftUI):
+  `suave` (0.5 s percibidos) para lo que aparece y `rapida` (0.3 s) para
+  respuestas a una acción. Nada usa curvas arbitrarias ni duraciones fijas.
+- **Las mismas curvas en CSS.** `bun run movimiento` genera `--curva-suave`,
+  `--curva-rapida` y sus duraciones desde esos resortes, y todas las
+  `transition` del CSS las usan (hover, foco, presión).
+- **Interrumpibles.** Reabrir un diálogo que se estaba cerrando sigue desde el
+  estado actual, sin saltos.
+- **Motivadas.** Se anima la entrada y salida de diálogos, la apertura de menús,
+  la llegada del contenido que reemplaza al esqueleto y el fundido entre páginas
+  (View Transitions). Nada más.
+- **"Reducir movimiento"** del sistema operativo lo apaga todo: los estados
+  cambian al instante. En Windows es *Configuración > Accesibilidad > Efectos
+  visuales > Efectos de animación*.
+
+Estados de carga:
+
+- **Esqueletos.** Un contenedor con `data-esqueleto="filas|tarjetas|kanban"`
+  muestra la forma del contenido mientras está vacío y hay pedidos en curso.
+- **Cargador acordeón** (adaptado de
+  [Loading UI](https://www.loading-ui.com/docs/components/accordion-loader), MIT):
+  `crearCargadorAcordeon()` en JS o el marcado `.cargador-acordeon` en HTML.
+  Aparece en el indicador global (solo si la espera supera 350 ms) y en el
+  botón que envió un formulario mientras espera la respuesta.
+
+## Desarrollo local con Bun
+
+```bash
+copy .env.example .env      # completar la base de datos y, si hace falta, PHP_BIN
+copy config.example.php config.php
+bun install
+bun run dev                 # http://127.0.0.1:8080/pages/
+```
+
+`bun run dev` sirve el portal con los mismos encabezados de caché que producción
+y reenvía los `.php` a un `php -S` interno (se reinicia solo si se cae). En este
+modo:
+
+- **No se pide 2FA en el login.** Solo aplica con el servidor integrado de PHP,
+  `NEXUS_DEV=1` y pedidos desde la propia máquina (el servidor escucha en
+  `127.0.0.1`); en Apache o php-fpm nunca se activa. Cada ingreso así queda
+  registrado como `login_2fa_omitido_dev` en `seguridad_eventos`.
+- **Panel de llamadas a la API** en cada página (botón "API" o `Alt+Shift+A`):
+  método, ruta, estado, duración, datos enviados y recibidos. Contraseñas,
+  códigos y tokens se muestran tapados. La terminal también lista cada llamada.
+
+Otros scripts:
+
+```bash
+bun run build          # íconos + Motion y curvas + formato + versionado (antes de commitear CSS/JS)
+bun run iconos         # solo el subconjunto de íconos
+bun run movimiento     # solo Motion y las curvas de resorte
+bun run assets:check   # lo que corre la CI
+```
 
 ## Calidad de código
 
@@ -91,8 +173,8 @@ fuera para no reescribir el marcado ni el código servidor.
 
 ## CI/CD
 
-Cada push y cada PR corren `.github/workflows/ci.yml`: formato, lint, sintaxis PHP y
-validación del compose. Si algo falla, el merge queda bloqueado.
+Cada push y cada PR corren `.github/workflows/ci.yml`: formato, lint, versionado de
+assets, sintaxis PHP y validación del compose. Si algo falla, el merge queda bloqueado.
 
 Cada push a `dev` deploya el entorno de prueba (`nexus.wefaber.net`) con
 `.github/workflows/deploy.yml` en el runner self-hosted del VPS: build de imágenes
@@ -126,11 +208,16 @@ Detalles y credenciales: `deploy/README.md`.
    La carpeta `database old` conserva las migraciones históricas como referencia.
    No deben ejecutarse después de `database.sql`.
 
-3. Copiar la configuración de ejemplo:
+3. Copiar la configuración de ejemplo y completar `.env` (base de datos):
 
    ```bash
+   copy .env.example .env
    copy config.example.php config.php
    ```
+
+   `config.php` no guarda credenciales: lee `DB_HOST`, `DB_PORT`, `DB_NAME`,
+   `DB_USER` y `DB_PASSWORD` del entorno o de `.env`. Ninguno de los dos se
+   versiona, y el `.htaccess` bloquea su descarga.
 
 4. Iniciar Apache y MySQL.
 

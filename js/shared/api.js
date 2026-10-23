@@ -20,8 +20,24 @@ function rutaNexus(ruta) {
   return BASE_NEXUS + valor.replace(/^\.\//, '');
 }
 
+/* fetch con aviso de inicio y fin a movimiento.js (esqueletos, indicador de
+   carga y botón ocupado). Todo pedido a la API pasa por acá. */
+async function pedirAlServidor(url, configuracion) {
+  const seguir = typeof iniciarCargaDeDatos === 'function';
+  if (seguir) {
+    iniciarCargaDeDatos();
+  }
+  try {
+    return await fetch(url, configuracion);
+  } finally {
+    if (seguir) {
+      terminarCargaDeDatos();
+    }
+  }
+}
+
 async function renovarTokenCsrf() {
-  const respuesta = await fetch(rutaNexus('login.php'), {
+  const respuesta = await pedirAlServidor(rutaNexus('login.php'), {
     cache: 'no-store',
     credentials: 'same-origin',
     headers: { Accept: 'application/json' },
@@ -77,7 +93,7 @@ async function solicitarApi(ruta, opciones, reintentarCsrf = true) {
       configuracion.headers['X-CSRF-Token'] = usuario.csrfToken || (await renovarTokenCsrf());
     }
   }
-  const respuesta = await fetch(rutaNexus(ruta), configuracion);
+  const respuesta = await pedirAlServidor(rutaNexus(ruta), configuracion);
   let datos = null;
   try {
     datos = await respuesta.json();
@@ -118,7 +134,7 @@ async function solicitarLogin(identificador, contrasena, recordarme) {
   datosFormulario.set('identificador', identificador);
   datosFormulario.set('contrasena', contrasena);
   datosFormulario.set('recordarme', recordarme ? '1' : '0');
-  const respuesta = await fetch(rutaNexus('login.php'), {
+  const respuesta = await pedirAlServidor(rutaNexus('login.php'), {
     method: 'POST',
     credentials: 'same-origin',
     headers: { Accept: 'application/json', 'Content-Type': 'application/x-www-form-urlencoded' },

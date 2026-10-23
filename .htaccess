@@ -26,12 +26,25 @@ LimitRequestBody 3145728
     Header always set Referrer-Policy "same-origin"
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=(), payment=()"
     Header always set Cross-Origin-Opener-Policy "same-origin"
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://ui-avatars.com; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://ui-avatars.com; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'"
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on'"
+    # HTML: siempre se revalida (ETag -> 304 sin cuerpo), así un deploy se ve al
+    # instante y las páginas apuntan enseguida a los assets con ?v= nuevo.
+    <FilesMatch "\.html?$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+    # CSS/JS: el ?v= es un hash del contenido (scripts/versionar-assets.mjs), así
+    # que la URL cambia con cada cambio y se puede cachear un año sin revalidar.
+    # Sin ?v= (enlaces viejos o manuales) queda la revalidación corta.
     <FilesMatch "\.(css|js)$">
         Header set Cache-Control "public, max-age=3600, must-revalidate"
+        Header set Cache-Control "public, max-age=31536000, immutable" "expr=%{QUERY_STRING} =~ /(^|&)v=/"
     </FilesMatch>
     <FilesMatch "\.(jpe?g|png|webp|svg|ico|woff2?)$">
-        Header set Cache-Control "public, max-age=604800"
+        Header set Cache-Control "public, max-age=604800, stale-while-revalidate=86400"
     </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
 </IfModule>

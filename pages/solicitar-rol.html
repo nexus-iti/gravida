@@ -1,11 +1,12 @@
 <!doctype html>
-<html lang="es" data-tema="claro">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Solicitar cambio de rol | SGRSI</title>
-    <link rel="stylesheet" href="../css/global.css" />
-  </head>
+<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Solicitar cambio de rol | SGRSI</title>
+<link rel="icon" href="data:," />
+<link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
+<link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+<noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
+<script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
+<link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
+</head>
   <body data-section="cuenta" data-requires-auth="true">
     <div id="cabecera-superior"></div>
     <main class="portal-main role-request">
@@ -54,7 +55,7 @@
         </div>
       </article>
     </main>
-    <script src="../js/router.js?v=5.0.0"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     <script>
       if (!protegerRuta()) throw new Error('Sin sesión');
       const u = obtenerUsuarioActual();

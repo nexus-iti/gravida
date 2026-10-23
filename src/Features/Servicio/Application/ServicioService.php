@@ -32,6 +32,6 @@ final class ServicioService
         $this->repo->modificar($id,$d);
     }
     public function baja(int $id):void{if(!$this->repo->baja($id))throw new DomainException('No existe la solicitud activa indicada.',404);}
-    public function cambiarEstado(int $id,string $e):void{$m=['Pendiente'=>'Pendiente','En proceso'=>'En proceso','Completado'=>'Finalizado','Finalizado'=>'Finalizado','Denegado'=>'Cancelado','Cancelado'=>'Cancelado'];if(!isset($m[$e]))throw new DomainException('Estado de servicio no valido.');if(!$this->repo->cambiarEstado($id,$m[$e]))throw new DomainException('No existe el servicio indicado.',404);}
+    public function cambiarEstado(int $id,string $e):void{$m=['Pendiente'=>'Pendiente','En proceso'=>'En proceso','Completado'=>'Finalizado','Finalizado'=>'Finalizado','Denegado'=>'Cancelado','Cancelado'=>'Cancelado'];if(!isset($m[$e]))throw new DomainException('Estado de servicio no válido.');if(!$this->repo->cambiarEstado($id,$m[$e]))throw new DomainException('No existe el servicio indicado.',404);}
     private function presentar(array $f):array{$e=['Finalizado'=>'Completado','Cancelado'=>'Denegado'][$f['estado']]??$f['estado'];return ['id'=>(string)$f['id_servicio'],'titulo'=>$f['titulo'],'tipo'=>$f['tipo_de_servicio'],'fecha'=>$f['fecha_de_solicitud'],'fechaDeseada'=>$f['fecha_deseada']??'','lugar'=>$f['lugar'],'estado'=>$e,'detalle'=>$f['descripcion'],'solicitante'=>trim($f['nombre_solicitante'].' '.$f['apellido_solicitante']),'solicitanteId'=>(string)$f['cedula'],'creadoEn'=>$f['fecha_de_solicitud']];}
 }

@@ -6,10 +6,10 @@
     <title>Estados vacios | Inventario</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -19,7 +19,7 @@
       </div>
       <div id="rejilla-de-vacios" data-esqueleto="tarjetas" class="empty-grid regla-diseno-013"></div>
     </main>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -48,33 +48,33 @@
         const estadosVacios = [
           {
             icono: 'building-2',
-            titulo: 'Todavia no hay secciones registradas',
+            titulo: 'Todavía no hay secciones registradas',
             descripcion:
-              'Agrega la primera seccion para empezar a ordenar el inventario de la institucion.',
+              'Agrega la primera sección para empezar a ordenar el inventario de la institución.',
             boton:
               '<button class="boton boton--primary regla-diseno-005" type="button">' +
               crearIcono('plus', 'icon-sm') +
-              '<span>Agregar seccion</span></button>',
+              '<span>Agregar sección</span></button>',
           },
           {
             icono: 'search',
             titulo: 'No se encontraron equipos',
             descripcion:
-              'No encontramos equipos con ese criterio. Proba con otro filtro o termino de busqueda.',
+              'No encontramos equipos con ese criterio. Proba con otro filtro o termino de búsqueda.',
             boton:
               '<button class="boton boton--outline regla-diseno-005" type="button">Limpiar filtros</button>',
           },
           {
             icono: 'image',
-            titulo: 'No hay imagenes para esa consulta',
+            titulo: 'No hay imágenes para esa consulta',
             descripcion:
-              'No encontramos respaldos visuales para esa fecha y hora. Proba con otra combinacion.',
+              'No encontramos respaldos visuales para esa fecha y hora. Proba con otra combinación.',
           },
           {
             icono: 'file-text',
             titulo: 'No hay cambios registrados',
             descripcion:
-              'Cuando haya movimientos, altas o cambios en el inventario, van a aparecer aca.',
+              'Cuando haya movimientos, altas o cambios en el inventario, van a aparecer acá.',
           },
         ];
         

@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalle de seccion | Inventario</title>
+    <title>Detalle de sección | Inventario</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -19,7 +19,7 @@
       <div id="lista-de-equipos" data-esqueleto="filas" class="list regla-diseno-037"></div>
       <div id="contenedor-modal"></div>
     </main>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -92,7 +92,7 @@
           );
           const accionesDelHeader =
             crearCajaDeBusqueda('Buscar equipo...', 'input-buscar-equipo') +
-            '<button class="boton boton--outline regla-diseno-005" type="button" data-edit-seccion>Renombrar seccion</button>' +
+            '<button class="boton boton--outline regla-diseno-005" type="button" data-edit-seccion>Renombrar sección</button>' +
             '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-equipo">' +
             crearIcono('plus', 'icon-sm') +
             '<span>Agregar equipo</span></button>';
@@ -113,7 +113,7 @@
               crearEstadoVacio({
                 icono: 'building-2',
                 titulo: 'No hay secciones disponibles',
-                descripcion: 'Crea una seccion para poder cargar equipos.',
+                descripcion: 'Crea una sección para poder cargar equipos.',
               }),
             );
             dibujarIconos();
@@ -124,8 +124,8 @@
           if (equiposDeLaSeccion.length === 0) {
             htmlDeFilas = crearEstadoVacio({
               icono: 'monitor',
-              titulo: 'No hay equipos en esta seccion',
-              descripcion: 'Usa Agregar equipo para dar de alta televisores, all in one, torres, perifericos o monitores.',
+              titulo: 'No hay equipos en esta sección',
+              descripcion: 'Usa Agregar equipo para dar de alta televisores, all in one, torres, periféricos o monitores.',
             });
           } else {
             for (let i = 0; i < equiposDeLaSeccion.length; i++) {
@@ -156,7 +156,7 @@
           '</div>' +
           '<div class="input-stack regla-diseno-025">' +
           '<label for="nuevo-equipo-observaciones">Observaciones</label>' +
-          '<textarea class="textarea-input regla-diseno-026" id="nuevo-equipo-observaciones" rows="3" placeholder="Detalle opcional del estado o ubicacion dentro del salon." data-clave-placeholder="detalle_opcional_equipo"></textarea>' +
+          '<textarea class="textarea-input regla-diseno-026" id="nuevo-equipo-observaciones" rows="3" placeholder="Detalle opcional del estado o ubicación dentro del salón." data-clave-placeholder="detalle_opcional_equipo"></textarea>' +
           '</div>';
         const pieModalEquipo =
           '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
@@ -164,9 +164,9 @@
         const cuerpoModalTraslado =
           '<p class="dialogo__move-summary" id="equipo-traslado-resumen">Selecciona un equipo para trasladar.</p>' +
           '<div class="input-stack regla-diseno-025">' +
-          '<label for="equipo-seccion-destino-lista">Seccion destino</label>' +
+          '<label for="equipo-seccion-destino-lista">Sección destino</label>' +
           '<select class="select-input regla-diseno-026" id="equipo-seccion-destino-lista">' +
-          '<option value="">Elegir seccion</option>' +
+          '<option value="">Elegir sección</option>' +
           '</select>' +
           '</div>';
         const pieModalTraslado =
@@ -200,7 +200,7 @@
         }
 
         function opcionesSeccionesDestinoTraslado(equipo) {
-          let opciones = '<option value="">Elegir seccion</option>';
+          let opciones = '<option value="">Elegir sección</option>';
           let cantidadDestinos = 0;
           for (let i = 0; i < seccionesInventario.length; i++) {
             if (String(seccionesInventario[i].id) === String(equipo.seccionId)) {
@@ -215,7 +215,7 @@
               '</option>';
           }
           if (cantidadDestinos === 0) {
-            return '<option value="" disabled>No hay otra seccion disponible</option>';
+            return '<option value="" disabled>No hay otra sección disponible</option>';
           }
           return opciones;
         }
@@ -227,7 +227,7 @@
             return;
           }
           document.getElementById('equipo-traslado-resumen').textContent =
-            equipoTrasladoSeleccionado.nombre + ' | Seccion actual: ' + equipoTrasladoSeleccionado.seccion;
+            equipoTrasladoSeleccionado.nombre + ' | Sección actual: ' + equipoTrasladoSeleccionado.seccion;
           const selectDestino = document.getElementById('equipo-seccion-destino-lista');
           selectDestino.innerHTML = opcionesSeccionesDestinoTraslado(equipoTrasladoSeleccionado);
           sincronizarSelectPersonalizado(selectDestino);
@@ -303,7 +303,7 @@
         document.addEventListener('click', async function (evento) {
           const botonEditarSeccion = evento.target.closest('[data-edit-seccion]');
           if (botonEditarSeccion && seccionActual) {
-            const nombre = prompt('Nuevo nombre de la seccion', seccionActual.nombre);
+            const nombre = prompt('Nuevo nombre de la sección', seccionActual.nombre);
             if (nombre && nombre !== seccionActual.nombre) {
               await solicitarApi('api/ubicaciones.php', { method:'PATCH', body:JSON.stringify({ id:seccionActual.id, nombre:nombre }) });
               window.location.reload();

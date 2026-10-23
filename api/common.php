@@ -53,7 +53,7 @@ function usuarioSesion(): ?array {
 function exigirSesion(): array {
     $usuario = usuarioSesion();
     if ($usuario === null) {
-        errorApi('Debes iniciar sesion para continuar.', 401);
+        errorApi('Debes iniciar sesión para continuar.', 401);
     }
     return $usuario;
 }
@@ -61,7 +61,7 @@ function exigirSesion(): array {
 function exigirRol(array $roles): array {
     $usuario = exigirSesion();
     if (!in_array($usuario['rol'] ?? '', $roles, true)) {
-        errorApi('No tenes permisos para realizar esta operacion.', 403);
+        errorApi('No tenés permisos para realizar esta operación.', 403);
     }
     return $usuario;
 }
@@ -81,7 +81,7 @@ function exigirCsrf(): void {
     $recibido = (string) ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
     $esperado = (string) ($_SESSION['csrf'] ?? '');
     if ($esperado === '' || $recibido === '' || !hash_equals($esperado, $recibido)) {
-        errorApi('Token de seguridad invalido o vencido.', 403);
+        errorApi('Token de seguridad inválido o vencido.', 403);
     }
 }
 
@@ -96,21 +96,37 @@ function autorizarEndpoint(string $recurso): ?array {
             segExigirRegistroAbierto();
             segLimitarPeticiones('registro', SEG_REGISTROS_POR_HORA, 3600, true);
         }
+        // Cota propia de las escrituras publicas: sin ella solo rige el bucket generico de la API.
+        if ($recurso === 'reportes_error') {
+            segLimitarPeticiones('reportes-error', SEG_REPORTES_POR_HORA, 3600, true);
+        }
+        if ($recurso === 'recuperacion') {
+            segLimitarPeticiones('recuperacion', SEG_RECUPERACIONES_POR_HORA, 3600, true);
+        }
         return null;
     }
     $usuario = exigirSesion();
     $administrador = ['Administrador'];
     $gestion = ['Tecnico_Asistente', 'Administrador'];
+    // Deny por defecto: un recurso que no figura aca no se atiende con "cualquier sesion".
+    $conocidos = ['cambios_rol', 'catalogos', 'configuracion', 'equipos', 'foto_perfil', 'historial', 'incidencias',
+        'planilla_ta', 'prestamos', 'recuperacion', 'reportes_error', 'servicios', 'solicitudes_registro',
+        'tareas', 'ubicaciones', 'usuarios'];
+    if (!in_array($recurso, $conocidos, true)) {
+        errorApi('No tenés permisos para realizar esta operación.', 403);
+    }
     if ((in_array($recurso, ['catalogos', 'configuracion'], true) && $metodo !== 'GET')
         || $recurso === 'solicitudes_registro'
         || ($recurso === 'usuarios' && in_array($metodo, ['POST', 'DELETE'], true))
         || ($recurso === 'cambios_rol' && $metodo !== 'POST')) {
         $usuario = exigirRol($administrador);
-    } elseif (in_array($recurso, ['planilla_ta', 'reportes_error'], true)) {
+    } elseif (in_array($recurso, ['planilla_ta', 'reportes_error', 'historial', 'configuracion'], true)) {
+        // Auditoria, configuracion y tablero de tareas son datos operativos de TI: el Solicitante no los lee.
         $usuario = exigirRol($gestion);
     } elseif ($recurso === 'recuperacion') {
         $usuario = exigirRol($gestion);
-    } elseif (in_array($recurso, ['equipos', 'ubicaciones', 'tareas'], true) && $metodo !== 'GET') {
+    } elseif ($recurso === 'tareas'
+        || (in_array($recurso, ['equipos', 'ubicaciones'], true) && $metodo !== 'GET')) {
         $usuario = exigirRol($gestion);
     } elseif (in_array($recurso, ['incidencias', 'prestamos', 'servicios'], true) && $metodo === 'POST') {
         $usuario = exigirRol(['Solicitante', 'Administrador']);
@@ -132,7 +148,7 @@ function cuerpoJson(): array {
     }
     $datos = json_decode($cuerpo, true);
     if (!is_array($datos)) {
-        errorApi('El cuerpo de la solicitud debe ser JSON valido.');
+        errorApi('El cuerpo de la solicitud debe ser JSON válido.');
     }
     return $datos;
 }
@@ -140,7 +156,7 @@ function cuerpoJson(): array {
 function exigirMetodo(array $metodos): void {
     if (!in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', $metodos, true)) {
         header('Allow: ' . implode(', ', $metodos));
-        errorApi('Metodo no permitido.', 405);
+        errorApi('Método no permitido.', 405);
     }
 }
 
@@ -153,7 +169,7 @@ function texto($valor, int $maximo = 65535): string {
 
 function entero($valor, string $campo): int {
     if (filter_var($valor, FILTER_VALIDATE_INT) === false || (int) $valor < 1) {
-        errorApi('El campo ' . $campo . ' debe ser un identificador valido.');
+        errorApi('El campo ' . $campo . ' debe ser un identificador válido.');
     }
     return (int) $valor;
 }
@@ -245,9 +261,9 @@ function ejecutar(callable $operacion): void {
     } catch (PDOException $error) {
         error_log($error->getMessage());
         if ($error->getCode() === '23000') {
-            errorApi('La operacion viola una restriccion de datos relacionada.', 409);
+            errorApi('La operación viola una restricción de datos relacionada.', 409);
         }
-        errorApi('No se pudo completar la operacion en la base de datos.', 500);
+        errorApi('No se pudo completar la operación en la base de datos.', 500);
     } catch (Throwable $error) {
         error_log($error->getMessage());
         errorApi('No se pudo completar la solicitud.', 500);
@@ -260,7 +276,7 @@ function estadoPrestamoBase(string $estado): string {
         'Aprobado', 'Activo' => 'Activo',
         'Devuelto' => 'Devuelto',
         'Denegado', 'Cancelado' => 'Cancelado',
-        default => errorApi('Estado de prestamo no valido.'),
+        default => errorApi('Estado de préstamo no válido.'),
     };
 }
 
@@ -280,7 +296,7 @@ function estadoIncidenciaBase(string $estado): string {
         'Resuelto' => 'Resuelto',
         
         'Denegado', 'Cerrado' => 'Cerrado',
-        default => errorApi('Estado de incidencia no valido.'),
+        default => errorApi('Estado de incidencia no válido.'),
     };
 }
 
@@ -298,7 +314,7 @@ function estadoServicioBase(string $estado): string {
         'En proceso' => 'En proceso',
         'Completado', 'Finalizado' => 'Finalizado',
         'Denegado', 'Cancelado' => 'Cancelado',
-        default => errorApi('Estado de servicio no valido.'),
+        default => errorApi('Estado de servicio no válido.'),
     };
 }
 

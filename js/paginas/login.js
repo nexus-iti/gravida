@@ -79,7 +79,7 @@
     evento.preventDefault();
     const codigo = campoCodigo.value.replace(/\D/g, '');
     if (codigo.length !== 6) {
-      mostrarMensajeCodigo('El codigo tiene 6 numeros.', 'error');
+      mostrarMensajeCodigo('El código tiene 6 números.', 'error');
       return;
     }
     try {

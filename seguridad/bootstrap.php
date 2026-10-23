@@ -11,11 +11,14 @@ const SEG_DURACION_MAXIMA = 28800;       // F-04: 8 h como maximo por sesion nor
 const SEG_DURACION_RECORDAR = 604800;    // F-04: 7 dias con "mantener sesion iniciada"
 const SEG_ROTAR_ID = 900;                // F-04: nuevo id de sesion cada 15 min
 const SEG_LOGIN_VENTANA = 900;           // F-01: ventana de 15 min para contar fallos
-const SEG_LOGIN_MAX_FALLOS_CUENTA = 5;   // F-01: fallos por cuenta antes de bloquear
+const SEG_LOGIN_MAX_FALLOS_CUENTA = 5;   // F-01: fallos de una cuenta desde una misma IP antes de bloquear
+const SEG_LOGIN_MAX_FALLOS_CUENTA_TOTAL = 50; // F-01: fallos de una cuenta desde cualquier IP (tope duro contra ataques distribuidos)
 const SEG_LOGIN_MAX_FALLOS_IP = 20;      // F-01: fallos por IP antes de bloquear
 const SEG_API_PETICIONES_POR_MINUTO = 120; // F-10: limite por usuario autenticado
 const SEG_API_PETICIONES_POR_IP = 600;     // F-10: limite por IP (amplio: un aula entera comparte IP)
 const SEG_REGISTROS_POR_HORA = 5;        // F-10: altas publicas por IP
+const SEG_REPORTES_POR_HORA = 10;        // F-10: reportes de error publicos por IP
+const SEG_RECUPERACIONES_POR_HORA = 10;  // F-10: solicitudes y consultas de recuperacion por IP
 const SEG_TAMANO_MAXIMO_CUERPO = 3145728;  // F-10: 3 MB (la foto admite 2 MB)
 const SEG_ALMACEN = __DIR__ . '/almacen';
 
@@ -41,16 +44,20 @@ const SEG_RANGOS_CLOUDFLARE = [
 
 require_once __DIR__ . '/totp.php';
 
+/* El proxy propio (front nginx, nginx del host) no es Cloudflare: se declara con
+   SGRSI_PROXIES_CONFIABLES (lista separada por comas de IPs o CIDR). Sin esa variable
+   solo cuenta REMOTE_ADDR, que es lo correcto cuando no hay proxy delante. */
+
 /* ---------- Utilidades ---------- */
 
 function segIpEnRango(string $ip, string $rango): bool {
-    [$red, $bits] = explode('/', $rango);
+    [$red, $bits] = array_pad(explode('/', $rango, 2), 2, null);
     $ipBin = @inet_pton($ip);
     $redBin = @inet_pton($red);
     if ($ipBin === false || $redBin === false || strlen($ipBin) !== strlen($redBin)) {
         return false;
     }
-    $bits = (int) $bits;
+    $bits = $bits === null ? strlen($redBin) * 8 : (int) $bits;
     $bytes = intdiv($bits, 8);
     if (substr($ipBin, 0, $bytes) !== substr($redBin, 0, $bytes)) {
         return false;
@@ -67,24 +74,55 @@ function segDetrasDeCloudflare(): bool {
     return ($_SERVER['SGRSI_DETRAS_DE_CLOUDFLARE'] ?? $_SERVER['REDIRECT_SGRSI_DETRAS_DE_CLOUDFLARE'] ?? getenv('SGRSI_DETRAS_DE_CLOUDFLARE')) === '1';
 }
 
+function segProxiesConfiables(): array {
+    $valor = (string) ($_SERVER['SGRSI_PROXIES_CONFIABLES'] ?? getenv('SGRSI_PROXIES_CONFIABLES') ?: '');
+    return array_values(array_filter(array_map('trim', explode(',', $valor)), 'strlen'));
+}
+
+function segIpEnLista(string $ip, array $rangos): bool {
+    foreach ($rangos as $rango) {
+        if (segIpEnRango($ip, $rango)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function segIp(): string {
     static $ip = null;
     if ($ip !== null) {
         return $ip;
     }
-    // Por defecto solo REMOTE_ADDR: X-Forwarded-For lo controla el atacante y permitiria saltar los limites.
+    // Por defecto solo REMOTE_ADDR: los encabezados de reenvio los controla el cliente y
+    // permitirian saltar los limites. Solo se leen si la conexion llega de un salto de confianza.
     $remota = (string) ($_SERVER['REMOTE_ADDR'] ?? '0.0.0.0');
     $ip = filter_var($remota, FILTER_VALIDATE_IP) ? $remota : '0.0.0.0';
+    $proxies = segProxiesConfiables();
+    $real = (string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? '');
     // Detras de Cloudflare todas las conexiones vienen de sus servidores: sin esto, los limites
     // por IP se aplicarian a Cloudflare entero. Solo se acepta el encabezado si viene de sus rangos.
-    if (segDetrasDeCloudflare()) {
-        $real = (string) ($_SERVER['HTTP_CF_CONNECTING_IP'] ?? '');
-        foreach (SEG_RANGOS_CLOUDFLARE as $rango) {
-            if (segIpEnRango($ip, $rango)) {
-                if (filter_var($real, FILTER_VALIDATE_IP)) {
-                    $ip = $real;
-                }
+    if (segDetrasDeCloudflare() && segIpEnLista($ip, SEG_RANGOS_CLOUDFLARE)) {
+        if (filter_var($real, FILTER_VALIDATE_IP)) {
+            $ip = $real;
+        }
+        return $ip;
+    }
+    // Detras del proxy propio (contenedores: front nginx -> php-fpm, nginx del host al frente) el
+    // par TCP es siempre el proxy: sin esto los limites, el bloqueo y el baneo por IP serian un
+    // unico cubo compartido por todos los clientes.
+    if ($proxies !== [] && segIpEnLista($ip, $proxies)) {
+        if (filter_var($real, FILTER_VALIDATE_IP)) {
+            return $ip = $real;
+        }
+        // X-Forwarded-For se recorre de derecha a izquierda: lo que agrega un proxy de confianza
+        // va al final; lo que viene antes lo pudo escribir el cliente.
+        $cadena = array_reverse(array_map('trim', explode(',', (string) ($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))));
+        foreach ($cadena as $candidato) {
+            if (!filter_var($candidato, FILTER_VALIDATE_IP)) {
                 break;
+            }
+            if (!segIpEnLista($candidato, $proxies)) {
+                return $ip = $candidato;
             }
         }
     }
@@ -201,7 +239,7 @@ function segExigirHttps(): void {
     // El despliegue institucional es exclusivamente interno: HTTP se admite cuando
     // ambos extremos pertenecen a rangos privados. Internet continúa exigiendo HTTPS.
     if (!segEsHttps() && !segEsLocal() && !segEsLanPrivada()) {
-        segFalla('Conexion no segura: HTTP solo esta permitido dentro de la red LAN privada.', 403);
+        segFalla('Conexión no segura: HTTP solo está permitido dentro de la red LAN privada.', 403);
     }
 }
 
@@ -213,7 +251,7 @@ function segLimitarPeticiones(string $grupo, int $maximo, int $ventanaSegundos, 
     $manejador = @fopen($archivo, 'c+');
     if ($manejador === false || !flock($manejador, LOCK_EX)) {
         // Nunca en silencio: queda en el log de PHP y en seguridad_eventos (la BD no depende del disco local).
-        error_log('segLimitarPeticiones: no se pudo usar ' . $archivo . ' (grupo ' . $grupo . ')');
+        error_log('seglimitarpeticiones: no se pudo usar ' . $archivo . ' (grupo ' . $grupo . ')');
         segRegistrarEvento(null, 'limite_no_disponible', segUsuario()['cedula'] ?? null, $grupo);
         if ($manejador !== false) {
             fclose($manejador);
@@ -252,7 +290,7 @@ function segLimitarPeticiones(string $grupo, int $maximo, int $ventanaSegundos, 
         }
         $espera = max(1, $datos['inicio'] + $ventanaSegundos - $ahora);
         header('Retry-After: ' . $espera);
-        segFalla('Demasiadas solicitudes. Espera unos segundos y volve a intentar.', 429);
+        segFalla('Demasiadas solicitudes. Espera unos segundos y volvé a intentar.', 429);
     }
 }
 
@@ -326,7 +364,7 @@ function segFiltroTemprano(): void {
     $baneo = segSegundosDeBaneo();
     if ($baneo > 0) {
         header('Retry-After: ' . $baneo);
-        segFalla('Tu conexion quedo bloqueada temporalmente por exceso de solicitudes.', 429, ['codigo' => 'bloqueada']);
+        segFalla('Tu conexión quedó bloqueada temporalmente por exceso de solicitudes.', 429, ['codigo' => 'bloqueada']);
     }
     segLimitarTamanoCuerpo();
     segLimitarPeticiones('api', SEG_API_PETICIONES_POR_IP, 60);
@@ -335,7 +373,7 @@ function segFiltroTemprano(): void {
 function segExigirRegistroAbierto(): void {
     if (segModoAtaque()) {
         header('Retry-After: 900');
-        segFalla('El registro esta cerrado temporalmente. Intenta mas tarde.', 503);
+        segFalla('El registro está cerrado temporalmente. Intenta más tarde.', 503);
     }
 }
 
@@ -450,6 +488,23 @@ function segCsrf(): string {
     return (string) ($_SESSION['csrf'] ?? '');
 }
 
+/* El POST que crea una sesion no tiene token previo, pero tampoco puede venir de otro sitio:
+   un formulario ajeno que lo dispare deja a la victima autenticada en la cuenta del atacante. */
+function segExigirOrigenPropio(): void {
+    $origen = (string) ($_SERVER['HTTP_ORIGIN'] ?? '');
+    if ($origen !== '') {
+        $hostOrigen = parse_url($origen, PHP_URL_HOST) . (parse_url($origen, PHP_URL_PORT) ? ':' . parse_url($origen, PHP_URL_PORT) : '');
+        if (strcasecmp($hostOrigen, (string) ($_SERVER['HTTP_HOST'] ?? '')) !== 0) {
+            segFalla('Origen de la solicitud no permitido.', 403, ['codigo' => 'origen']);
+        }
+    }
+    // Los navegadores informan el contexto de la peticion aunque no manden Origin.
+    $sitio = (string) ($_SERVER['HTTP_SEC_FETCH_SITE'] ?? '');
+    if ($sitio !== '' && !in_array($sitio, ['same-origin', 'none'], true)) {
+        segFalla('Origen de la solicitud no permitido.', 403, ['codigo' => 'origen']);
+    }
+}
+
 function segVerificarCsrf(): void {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     if (in_array($metodo, ['GET', 'HEAD', 'OPTIONS'], true)) {
@@ -464,7 +519,7 @@ function segVerificarCsrf(): void {
     }
     $token = (string) ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
     if ($token === '' || !hash_equals(segCsrf(), $token)) {
-        segFalla('La sesion de seguridad expiro. Recarga la pagina.', 403, ['codigo' => 'csrf']);
+        segFalla('La sesión de seguridad expiró. Recarga la página.', 403, ['codigo' => 'csrf']);
     }
 }
 
@@ -499,11 +554,11 @@ function segCargarUsuario(PDO $pdo): ?array {
 function segExigirRol(array $roles): array {
     $usuario = segUsuario();
     if ($usuario === null) {
-        segFalla('Necesitas iniciar sesion.', 401, ['codigo' => 'sesion']);
+        segFalla('Necesitas iniciar sesión.', 401, ['codigo' => 'sesion']);
     }
     if (!in_array($usuario['rol'], $roles, true)) {
         segRegistrarEvento(null, 'acceso_denegado', $usuario['cedula'], ($_SERVER['REQUEST_METHOD'] ?? '') . ' ' . basename((string) ($_SERVER['SCRIPT_NAME'] ?? '')));
-        segFalla('Tu rol no tiene permiso para esta accion.', 403, ['codigo' => 'rol']);
+        segFalla('Tu rol no tiene permiso para esta acción.', 403, ['codigo' => 'rol']);
     }
     return $usuario;
 }
@@ -540,19 +595,10 @@ function segEsHash(string $valor): bool {
 }
 
 function segValidarContrasenaNueva(string $contrasena): void {
-    if (\Nexus\Shared\Security\PasswordCharset::contieneEnie($contrasena)) {
-        segFalla(\Nexus\Shared\Security\PasswordCharset::MENSAJE, 400);
-    }
-    $largo = function_exists('mb_strlen') ? mb_strlen($contrasena, 'UTF-8') : strlen($contrasena);
-    if ($largo < 8 || $largo > 128
-        || !preg_match('/[A-Z]/', $contrasena) || !preg_match('/[a-z]/', $contrasena) || !preg_match('/\d/', $contrasena)) {
-        segFalla('La contrasena necesita entre 8 y 128 caracteres, una mayuscula, una minuscula y un numero.', 400);
-    }
-    $comunes = ['Password1', 'Contrasena1', 'Qwerty123', 'Abc12345', 'Admin123', 'Welcome1', 'Iloveyou1', 'Usuario1', 'Cept2026', 'Nexus123'];
-    foreach ($comunes as $comun) {
-        if (strcasecmp($contrasena, $comun) === 0) {
-            segFalla('Esa contrasena es demasiado comun. Elegi otra.', 400);
-        }
+    // Las reglas viven en PasswordRules: las usan tambien los servicios de usuario y de registro.
+    $error = \Nexus\Shared\Security\PasswordRules::error($contrasena);
+    if ($error !== null) {
+        segFalla($error, 400);
     }
 }
 
@@ -618,6 +664,6 @@ function segProtegerApi(PDO $pdo, array $publicos = []): void {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     // Denegar por defecto: solo lo listado como publico funciona sin sesion.
     if (segUsuario() === null && !in_array($metodo, $publicos, true)) {
-        segFalla('Necesitas iniciar sesion.', 401, ['codigo' => 'sesion']);
+        segFalla('Necesitas iniciar sesión.', 401, ['codigo' => 'sesion']);
     }
 }

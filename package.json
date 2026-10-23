@@ -1,6 +1,6 @@
 {
   "name": "nexus-codigo",
-  "version": "1.0.14",
+  "version": "1.0.17",
   "private": true,
   "description": "Sistema de Gestión de Recursos y Servicios de Informática (SGRSI / NEXUS)",
   "scripts": {
@@ -13,7 +13,8 @@
     "iconos": "bun scripts/generar-iconos.mjs",
     "movimiento": "bun scripts/generar-movimiento.mjs",
     "assets:version": "bun scripts/versionar-assets.mjs",
-    "assets:check": "bun scripts/versionar-assets.mjs --check"
+    "assets:check": "bun scripts/versionar-assets.mjs --check",
+    "test": "php tests/run.php"
   },
   "devDependencies": {
     "lucide": "0.469.0",

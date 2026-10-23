@@ -54,6 +54,9 @@ jobs:
           done < <(git ls-files '*.php')
           exit $fallos
 
+      - name: Pruebas PHP
+        run: bun run test
+
       # Valida el compose y las variables sin construir nada: atrapa un yaml roto o una
       # variable sin default antes de que el deploy se coma el error en el servidor.
       - name: Validar compose del stack

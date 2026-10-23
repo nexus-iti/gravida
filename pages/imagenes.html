@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Imagenes de secciones | Inventario</title>
+    <title>Imágenes de secciones | Inventario</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -23,7 +23,7 @@
       </p>
       <div id="rejilla-de-imagenes" data-esqueleto="tarjetas" class="image-grid regla-diseno-013"></div>
     </main>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -45,16 +45,16 @@
           crearCabeceraCompleta([
             { etiqueta: 'Home', enlace: 'home.html' },
             { etiqueta: 'Inventario', enlace: 'inventario.html' },
-            { etiqueta: 'Imagenes de secciones' },
+            { etiqueta: 'Imágenes de secciones' },
           ]),
         );
         mostrarEn(
           'cabecera-de-pagina',
-          '<h1 class="page-title regla-diseno-042">Imagenes de secciones</h1>',
+          '<h1 class="page-title regla-diseno-042">Imágenes de secciones</h1>',
         );
         
         
-        const selectoresHtml = ` <div class="input-group regla-diseno-086"> <label data-clave="fecha">Fecha</label> <div class="input-field regla-diseno-069" style="width:200px;"> ${crearIcono('calendar', 'icon-sm')} <input type="text" placeholder="dd/mm/aaaa" data-clave-placeholder="fecha_placeholder" /> </div> </div> <div class="input-group regla-diseno-086"> <label>Hora</label> <div class="input-field regla-diseno-069" style="width:140px;"> ${crearIcono('timer', 'icon-sm')} <input type="text" placeholder="hh:mm" data-clave-placeholder="hora_placeholder" /> </div> </div> <div class="input-group regla-diseno-086"> <label data-clave="seccion">Seccion</label> <div class="input-field regla-diseno-069" style="width:220px; justify-content:space-between;"> <span style="color:var(--color-texto-secundario)" data-clave="todas_las_secciones">Todas las secciones</span> ${crearIcono('chevron-down', 'icon-sm')} </div> </div> <button class="boton boton--primary regla-diseno-005" type="button" style="height:42px;"> ${crearIcono('search', 'icon-sm')} <span data-clave="ver_respaldo">Ver respaldo</span> </button> `;
+        const selectoresHtml = ` <div class="input-group regla-diseno-086"> <label data-clave="fecha">Fecha</label> <div class="input-field regla-diseno-069" style="width:200px;"> ${crearIcono('calendar', 'icon-sm')} <input type="text" placeholder="dd/mm/aaaa" data-clave-placeholder="fecha_placeholder" /> </div> </div> <div class="input-group regla-diseno-086"> <label>Hora</label> <div class="input-field regla-diseno-069" style="width:140px;"> ${crearIcono('timer', 'icon-sm')} <input type="text" placeholder="hh:mm" data-clave-placeholder="hora_placeholder" /> </div> </div> <div class="input-group regla-diseno-086"> <label data-clave="seccion">Sección</label> <div class="input-field regla-diseno-069" style="width:220px; justify-content:space-between;"> <span style="color:var(--color-texto-secundario)" data-clave="todas_las_secciones">Todas las secciones</span> ${crearIcono('chevron-down', 'icon-sm')} </div> </div> <button class="boton boton--primary regla-diseno-005" type="button" style="height:42px;"> ${crearIcono('search', 'icon-sm')} <span data-clave="ver_respaldo">Ver respaldo</span> </button> `;
         mostrarEn('selectores', selectoresHtml);
         
         const imagenes = obtenerImagenesInventario();
@@ -63,7 +63,7 @@
           tarjetasHtml = crearEstadoVacio({
             icono: 'camera',
             titulo: 'No hay respaldos visuales cargados',
-            descripcion: 'Cuando se agreguen imagenes de secciones, van a aparecer en esta galeria.',
+            descripcion: 'Cuando se agreguen imágenes de secciones, van a aparecer en esta galeria.',
           });
         } else {
           for (let i = 0; i < imagenes.length; i++) {

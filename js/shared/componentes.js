@@ -149,7 +149,7 @@ function obtenerRolNavbar(usuarioActual) {
     return 'Rol sin asignar';
   }
   if (typeof obtenerEtiquetaRol === 'function') {
-    return obtenerEtiquetaRol(usuarioActual.rol);
+    return t(obtenerEtiquetaRol(usuarioActual.rol));
   }
   return usuarioActual.rol;
 }
@@ -176,7 +176,7 @@ function crearBarraDeNavegacion() {
   const claseTemaOscuro = obtenerClaseOpcionSegmentada(temaActual === 'oscuro');
   const claseIdiomaEs = obtenerClaseOpcionSegmentada(idiomaActual === 'es');
   const claseIdiomaEn = obtenerClaseOpcionSegmentada(idiomaActual === 'en');
-  return ` <header class="barra-superior regla-diseno-111" data-navbar-root> <div class="barra-superior__left regla-diseno-112"> <a href="home.html" class="barra-superior__brand regla-diseno-113"> ${crearIcono('building-2', 'icon-lg')} <span>SGRSI</span> </a> <button class="barra-superior__menu-toggle regla-diseno-114" type="button" data-navbar-menu-trigger aria-controls="navbar-menu-principal" aria-expanded="false" aria-label="Abrir menu de navegacion"> ${crearIcono('menu', 'icon-md')} </button> </div> <nav class="barra-superior__links regla-diseno-115" id="navbar-menu-principal" data-navbar-menu aria-label="Navegacion principal"> ${enlacesHtml} </nav> <div class="barra-superior__right regla-diseno-116"> <div class="barra-superior__account regla-diseno-117" data-account-menu-root> <button class="barra-superior__account-trigger ${clasePerfil} regla-diseno-118" type="button" data-account-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Abrir menu de cuenta"> ${crearAvatarDeUsuario(usuarioActual, 'avatar-fallback--sm')} <span class="barra-superior__user-meta regla-diseno-119"> <span class="barra-superior__user-name regla-diseno-120">${obtenerTextoSeguro(nombre)}</span> <span class="barra-superior__user-role regla-diseno-121">${obtenerTextoSeguro(rol)}</span> </span> ${crearIcono('chevron-down', 'icon-sm barra-superior__account-chev')} </button> <div class="account-menu regla-diseno-122" data-account-menu hidden> <div class="account-menu__header regla-diseno-123"> ${crearAvatarDeUsuario(usuarioActual, 'avatar-fallback--sm')} <div> <strong>${obtenerTextoSeguro(nombre)}</strong> <span>${obtenerTextoSeguro(correo || rol)}</span> </div> </div> <div class="account-menu__section regla-diseno-124"> <a class="account-menu__item regla-diseno-125" href="cuenta.html"> ${crearIcono('user-cog', 'icon-sm')} <span> <strong>Perfil y datos personales</strong> <small></small> </span> </a> </div> <div class="account-menu__section regla-diseno-124"> <div class="account-menu__section-title regla-diseno-126">Preferencias</div> <p class="account-menu__section-desc regla-diseno-127">Ajusta el tema, el idioma y como queres usar el portal.</p> <div class="account-menu__setting regla-diseno-128"> <span>Aspecto</span> <div class="segmented-control regla-diseno-003" aria-label="Aspecto"> <button class="${claseTemaClaro}" type="button" data-tema-opcion="claro" aria-pressed="${temaActual === 'claro'}">Claro</button> <button class="${claseTemaOscuro}" type="button" data-tema-opcion="oscuro" aria-pressed="${temaActual === 'oscuro'}">Oscuro</button> </div> </div> <div class="account-menu__setting regla-diseno-128"> <span>Idioma</span> <div class="segmented-control regla-diseno-003" aria-label="Idioma"> <button class="${claseIdiomaEs}" type="button" data-idioma-opcion="es" aria-pressed="${idiomaActual === 'es'}">Español</button> <button class="${claseIdiomaEn}" type="button" data-idioma-opcion="en" aria-pressed="${idiomaActual === 'en'}">Ingles</button> </div> </div> </div> <div class="account-menu__section account-menu__section--footer regla-diseno-124"> <button class="account-menu__item account-menu__item--danger regla-diseno-125" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span> <strong>Cerrar sesion</strong> </span> </button> </div> </div> </div> </div> </header> `;
+  return ` <header class="barra-superior regla-diseno-111" data-navbar-root> <div class="barra-superior__left regla-diseno-112"> <a href="home.html" class="barra-superior__brand regla-diseno-113"> ${crearIcono('building-2', 'icon-lg')} <span>SGRSI</span> </a> <button class="barra-superior__menu-toggle regla-diseno-114" type="button" data-navbar-menu-trigger aria-controls="navbar-menu-principal" aria-expanded="false" aria-label="Abrir menú de navegación"> ${crearIcono('menu', 'icon-md')} </button> </div> <nav class="barra-superior__links regla-diseno-115" id="navbar-menu-principal" data-navbar-menu aria-label="Navegación principal"> ${enlacesHtml} </nav> <div class="barra-superior__right regla-diseno-116"> <div class="barra-superior__account regla-diseno-117" data-account-menu-root> <button class="barra-superior__account-trigger ${clasePerfil} regla-diseno-118" type="button" data-account-menu-trigger aria-haspopup="menu" aria-expanded="false" aria-label="Abrir menú de cuenta"> ${crearAvatarDeUsuario(usuarioActual, 'avatar-fallback--sm')} <span class="barra-superior__user-meta regla-diseno-119"> <span class="barra-superior__user-name regla-diseno-120">${obtenerTextoSeguro(nombre)}</span> <span class="barra-superior__user-role regla-diseno-121">${obtenerTextoSeguro(rol)}</span> </span> ${crearIcono('chevron-down', 'icon-sm barra-superior__account-chev')} </button> <div class="account-menu regla-diseno-122" data-account-menu hidden> <div class="account-menu__header regla-diseno-123"> ${crearAvatarDeUsuario(usuarioActual, 'avatar-fallback--sm')} <div> <strong>${obtenerTextoSeguro(nombre)}</strong> <span>${obtenerTextoSeguro(correo || rol)}</span> </div> </div> <div class="account-menu__section regla-diseno-124"> <a class="account-menu__item regla-diseno-125" href="cuenta.html"> ${crearIcono('user-cog', 'icon-sm')} <span> <strong>Perfil y datos personales</strong> <small></small> </span> </a> </div> <div class="account-menu__section regla-diseno-124"> <div class="account-menu__section-title regla-diseno-126">Preferencias</div> <p class="account-menu__section-desc regla-diseno-127">Ajusta el tema, el idioma y cómo querés usar el portal.</p> <div class="account-menu__setting regla-diseno-128"> <span>Aspecto</span> <div class="segmented-control regla-diseno-003" aria-label="Aspecto"> <button class="${claseTemaClaro}" type="button" data-tema-opcion="claro" aria-pressed="${temaActual === 'claro'}">Claro</button> <button class="${claseTemaOscuro}" type="button" data-tema-opcion="oscuro" aria-pressed="${temaActual === 'oscuro'}">Oscuro</button> </div> </div> <div class="account-menu__setting regla-diseno-128"> <span>Idioma</span> <div class="segmented-control regla-diseno-003" aria-label="Idioma"> <button class="${claseIdiomaEs}" type="button" data-idioma-opcion="es" aria-pressed="${idiomaActual === 'es'}">Español</button> <button class="${claseIdiomaEn}" type="button" data-idioma-opcion="en" aria-pressed="${idiomaActual === 'en'}">Inglés</button> </div> </div> </div> <div class="account-menu__section account-menu__section--footer regla-diseno-124"> <button class="account-menu__item account-menu__item--danger regla-diseno-125" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span> <strong>Cerrar sesión</strong> </span> </button> </div> </div> </div> </div> </header> `;
 }
 
 function crearMigasDePan(items) {
@@ -326,7 +326,7 @@ function crearTarjetaDeTicket(ticket, accionesHtml) {
     (ticket.solucion
       ? `<p class="activity-card__desc"><strong>Solución:</strong> ${obtenerTextoSeguro(ticket.solucion)}</p>`
       : '');
-  return ` <article class="activity-card regla-diseno-137"> <header class="activity-card__header regla-diseno-138"> <div> <h3 class="activity-card__title regla-diseno-139">${obtenerTextoSeguro(ticket.asunto)}</h3> <p class="activity-card__meta regla-diseno-041">${obtenerTextoSeguro(ticket.categoria)}</p> </div> ${crearInsigniaDeEstado(ticket.estado)} </header> <p class="activity-card__desc regla-diseno-140">${obtenerTextoSeguro(ticket.mensaje)}</p> ${comentario}${diagnostico} <div class="activity-card__info-grid regla-diseno-141"> <span><strong>Ubicacion:</strong> ${obtenerTextoSeguro(ticket.ubicacion)}</span> <span><strong>Solicitante:</strong> ${obtenerTextoSeguro(ticket.solicitante)}</span> ${gestion} </div> ${acciones} <footer class="activity-card__footer regla-diseno-142"> <span class="mono">${obtenerTextoSeguro(ticket.id)}</span> <span>${obtenerFechaSegura(ticket.creadoEn)}</span> </footer> </article> `;
+  return ` <article class="activity-card regla-diseno-137"> <header class="activity-card__header regla-diseno-138"> <div> <h3 class="activity-card__title regla-diseno-139">${obtenerTextoSeguro(ticket.asunto)}</h3> <p class="activity-card__meta regla-diseno-041">${obtenerTextoSeguro(ticket.categoria)}</p> </div> ${crearInsigniaDeEstado(ticket.estado)} </header> <p class="activity-card__desc regla-diseno-140">${obtenerTextoSeguro(ticket.mensaje)}</p> ${comentario}${diagnostico} <div class="activity-card__info-grid regla-diseno-141"> <span><strong>Ubicación:</strong> ${obtenerTextoSeguro(ticket.ubicacion)}</span> <span><strong>Solicitante:</strong> ${obtenerTextoSeguro(ticket.solicitante)}</span> ${gestion} </div> ${acciones} <footer class="activity-card__footer regla-diseno-142"> <span class="mono">${obtenerTextoSeguro(ticket.id)}</span> <span>${obtenerFechaSegura(ticket.creadoEn)}</span> </footer> </article> `;
 }
 
 function crearTarjetaDeSolicitud(solicitud, accionesHtml) {
@@ -345,20 +345,20 @@ function crearParcelaPlanillaTA(parcela, puedeEditar) {
   const miembro = parcela.usuario;
   const planilla = parcela.planilla;
   const rolEtiqueta =
-    typeof obtenerEtiquetaRol === 'function' ? obtenerEtiquetaRol(miembro.rol) : miembro.rol;
+    typeof obtenerEtiquetaRol === 'function' ? t(obtenerEtiquetaRol(miembro.rol)) : miembro.rol;
   const claseRol =
     typeof obtenerRolCanonico === 'function' && obtenerRolCanonico(miembro.rol) === 'administrativo'
       ? 'etiqueta--purple'
       : 'etiqueta--info';
   const avatarGrande = crearAvatarDeUsuario(miembro, 'planilla-parcela__avatar');
-  const area = miembro.area || 'Area sin definir';
+  const area = miembro.area || 'Área sin definir';
   const actualizado =
     typeof formatearFechaHumana === 'function'
       ? formatearFechaHumana(planilla.actualizadoEn)
       : planilla.actualizadoEn;
   const usuarioId = obtenerTextoSeguro(miembro.id);
   const tareasMostrar = obtenerTextoSeguro(
-    planilla.tareasDelDia || 'Todavia no hay tareas cargadas para esta jornada.',
+    planilla.tareasDelDia || 'Todavía no hay tareas cargadas para esta jornada.',
   ).replace(/\n/g, '<br />');
   const tareasValor = obtenerTextoSeguro(planilla.tareasDelDia || '');
   const entradaValor = obtenerTextoSeguro(planilla.horaEntrada || '08:00');
@@ -454,7 +454,7 @@ function crearFilaDeSeccion(seccion, opciones) {
       obtenerTextoSeguro(seccion.nombre) +
       '" aria-label="Dar de baja ' +
       obtenerTextoSeguro(seccion.nombre) +
-      '" title="Dar de baja seccion">' +
+      '" title="Dar de baja sección">' +
       crearIcono('trash-2', 'icon-md') +
       '</button>'
     : '';
@@ -499,8 +499,8 @@ function crearTablaDeEquipos(equipos) {
       '<div class="table-wrap">' +
       crearEstadoVacio({
         icono: 'monitor',
-        titulo: 'Todavia no hay equipos cargados',
-        descripcion: 'Da de alta equipos desde una seccion del inventario para verlos aca.',
+        titulo: 'Todavía no hay equipos cargados',
+        descripcion: 'Da de alta equipos desde una sección del inventario para verlos acá.',
       }) +
       '</div>'
     );
@@ -511,7 +511,7 @@ function crearTablaDeEquipos(equipos) {
     const iconoEquipo = obtenerIconoSeguroEquipo(equipo);
     filasHtml += ` <tr> <td data-label="Equipo"> <div class="cell-name"> <span class="cell-icon">${crearIcono(iconoEquipo, 'icon-sm')}</span> <span>${obtenerTextoSeguro(equipo.nombre)}</span> </div> </td> <td data-label="ID" class="cell-id">${obtenerTextoSeguro(equipo.id)}</td> <td data-label="Tipo">${obtenerTextoSeguro(equipo.tipoEtiqueta || '')}</td> <td data-label="Seccion">${obtenerTextoSeguro(equipo.seccion)}</td> <td data-label="Actualizacion">${obtenerTextoSeguro(equipo.actualizado)}</td> <td data-label="Acciones"> <div class="cell-actions regla-diseno-136"> <a class="boton-icono regla-diseno-016" href="equipo-detalle.html?id=${encodeURIComponent(equipo.id)}" aria-label="Ver detalle" title="Ver detalle">${crearIcono('eye', 'icon-sm')}</a> <button class="boton-icono regla-diseno-016" type="button" data-open-move-equipo="${obtenerTextoSeguro(equipo.id)}" aria-label="Trasladar equipo" title="Trasladar equipo">${crearIcono('move-right', 'icon-sm')}</button> <button class="boton-icono boton-icono--peligro regla-diseno-016" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}" data-equipo-nombre="${obtenerTextoSeguro(equipo.nombre)}" aria-label="Dar de baja equipo" title="Dar de baja equipo">${crearIcono('trash-2', 'icon-sm')}</button> </div> </td> </tr> `;
   }
-  return ` <div class="table-wrap"> <table class="tabla"> <thead> <tr> <th>Equipo</th> <th style="width:120px">ID</th> <th style="width:140px">Tipo</th> <th style="width:180px">Seccion</th> <th style="width:160px">Actualizacion</th> <th style="width:132px">Acciones</th> </tr> </thead> <tbody>${filasHtml}</tbody> </table> </div> `;
+  return ` <div class="table-wrap"> <table class="tabla"> <thead> <tr> <th>Equipo</th> <th style="width:120px">ID</th> <th style="width:140px">Tipo</th> <th style="width:180px">Sección</th> <th style="width:160px">Actualización</th> <th style="width:132px">Acciones</th> </tr> </thead> <tbody>${filasHtml}</tbody> </table> </div> `;
 }
 
 function crearTarjetaDeHistorial(evento) {

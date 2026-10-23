@@ -6,10 +6,10 @@
     <title>Secciones | Inventario</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="inventario" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -19,7 +19,7 @@
       <div id="lista-de-secciones" data-esqueleto="filas" class="list regla-diseno-037"></div>
       <div id="contenedor-modal"></div>
     </main>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -46,10 +46,10 @@
         );
         
         const accionesDelHeader =
-          crearCajaDeBusqueda('Buscar seccion...', 'input-buscar-seccion') +
+          crearCajaDeBusqueda('Buscar sección...', 'input-buscar-seccion') +
           '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-seccion">' +
           crearIcono('plus', 'icon-sm') +
-          '<span>Agregar seccion</span></button>';
+          '<span>Agregar sección</span></button>';
         mostrarEn(
           'cabecera-de-pagina',
           crearCabeceraDePagina({
@@ -59,12 +59,12 @@
         );
         const cuerpoModalSeccion =
           '<div class="input-stack regla-diseno-025">' +
-          '<label for="nueva-seccion-nombre">Nombre de la seccion</label>' +
+          '<label for="nueva-seccion-nombre">Nombre de la sección</label>' +
           '<input class="text-input regla-diseno-026" id="nueva-seccion-nombre" type="text" placeholder="Ej. Laboratorio 6" data-clave-placeholder="ej_laboratorio" />' +
           '</div>';
         const pieModalSeccion =
           '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
-          '<button class="boton boton--primary regla-diseno-005" type="button" data-save-seccion>Guardar seccion</button>';
+          '<button class="boton boton--primary regla-diseno-005" type="button" data-save-seccion>Guardar sección</button>';
         mostrarEn(
           'contenedor-modal',
           crearModal({
@@ -87,7 +87,7 @@
             htmlDeFilas = crearEstadoVacio({
               icono: 'building-2',
               titulo: 'No hay secciones cargadas',
-              descripcion: 'Agrega una seccion para poder asignar equipos al inventario.',
+              descripcion: 'Agrega una sección para poder asignar equipos al inventario.',
             });
           } else {
             for (let i = 0; i < seccionesInventario.length; i++) {

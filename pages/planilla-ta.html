@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Planilla de T.A. | Portal de Gestion TI</title>
+    <title>Planilla de T.A. | Portal de Gestión TI</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="planilla-ta" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -19,9 +19,9 @@
       <section class="section-block regla-diseno-072">
         <div class="section-block__header regla-diseno-104">
           <div>
-            <h2 class="section-block__title regla-diseno-048" data-clave="plantel_tecnico_administrativo">Plantel tecnico-administrativo</h2>
+            <h2 class="section-block__title regla-diseno-048" data-clave="plantel_tecnico_administrativo">Plantel técnico-administrativo</h2>
             <p class="section-block__subtitle regla-diseno-011">
-              Cada persona tiene su horario del dia y las tareas que necesita dejar visibles para el
+              Cada persona tiene su horario del día y las tareas que necesita dejar visibles para el
               equipo.
             </p>
           </div>
@@ -29,7 +29,7 @@
         <div id="grid-planilla-ta" data-esqueleto="tarjetas" class="planilla-grid regla-diseno-013"></div>
       </section>
     </main>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -80,7 +80,7 @@
           let html = '';
           if (parcelas.length === 0) {
             html =
-              '<div class="empty-inline regla-diseno-043">Todavia no hay integrantes tecnico-administrativos para mostrar.</div>';
+              '<div class="empty-inline regla-diseno-043">Todavía no hay integrantes técnico-administrativos para mostrar.</div>';
           } else {
             for (let i = 0; i < parcelas.length; i++) {
               const puedeEditar = usuarioPuedeEditarParcelaPlanilla(
@@ -162,7 +162,7 @@
           }
           const usuarioId = botonEliminar.getAttribute('data-delete-parcela');
           const confirmar = window.confirm(
-            t('Seguro que queres quitar esta persona de la planilla T.A.?'),
+            t('Seguro que querés quitar esta persona de la planilla T.A.?'),
           );
           if (!confirmar) {
             return;

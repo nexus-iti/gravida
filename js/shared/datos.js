@@ -8,13 +8,13 @@ const rolesDisponibles = [
   },
   {
     valor: 'Usuario tecnico',
-    etiqueta: 'Usuario tecnico',
+    etiqueta: 'Usuario técnico',
     descripcion: 'Para el equipo del ITI.',
   },
   {
     valor: 'Usuario administrativo',
     etiqueta: 'Usuario administrativo',
-    descripcion: 'Para el coordinador de los tecnicos.',
+    descripcion: 'Para el coordinador de los técnicos.',
   },
 ];
 
@@ -38,7 +38,7 @@ const usuariosSemilla = [
     correo: 'tecnico@mail.local',
     contrasena: 'Tecnico123*',
     rol: 'Usuario tecnico',
-    descripcion: 'Otorga prestamos, resuelve incidencias y brinda soporte.',
+    descripcion: 'Otorga préstamos, resuelve incidencias y brinda soporte.',
     fotoPerfil: '',
     fechaRegistro: '2026-05-14',
     area: 'tecnico',
@@ -51,7 +51,7 @@ const usuariosSemilla = [
     contrasena: 'Docente123*',
     rol: 'Usuario solicitante',
     descripcion:
-      'Docente que usa el SGRSI para pedir prestamos, solicitar servicios y reportar incidencias tecnicas.',
+      'Docente que usa el SGRSI para pedir préstamos, solicitar servicios y reportar incidencias técnicas.',
     fotoPerfil: '',
     fechaRegistro: '2026-05-14',
     area: 'Docencia',
@@ -63,7 +63,7 @@ const usuariosSemilla = [
     correo: 'miguel.torres@mail.local',
     contrasena: 'Tecnico123*',
     rol: 'Usuario tecnico',
-    descripcion: 'Otorga prestamos, resuelve incidencias y brinda soporte.',
+    descripcion: 'Otorga préstamos, resuelve incidencias y brinda soporte.',
     fotoPerfil:
       'https://ui-avatars.com/api/?name=Miguel+Torres&background=2563eb&color=fff&size=128',
     fechaRegistro: '2026-05-15',
@@ -76,7 +76,7 @@ const usuariosSemilla = [
     correo: 'sofia.ramirez@mail.local',
     contrasena: 'Tecnico123*',
     rol: 'Usuario tecnico',
-    descripcion: 'Otorga prestamos, resuelve incidencias y brinda soporte.',
+    descripcion: 'Otorga préstamos, resuelve incidencias y brinda soporte.',
     fotoPerfil:
       'https://ui-avatars.com/api/?name=Sofia+Ramirez&background=7c3aed&color=fff&size=128',
     fechaRegistro: '2026-05-15',
@@ -89,7 +89,7 @@ const usuariosSemilla = [
     correo: 'diego.morales@mail.local',
     contrasena: 'Tecnico123*',
     rol: 'Usuario tecnico',
-    descripcion: 'Otorga prestamos, resuelve incidencias y brinda soporte.',
+    descripcion: 'Otorga préstamos, resuelve incidencias y brinda soporte.',
     fotoPerfil:
       'https://ui-avatars.com/api/?name=Diego+Morales&background=059669&color=fff&size=128',
     fechaRegistro: '2026-05-15',
@@ -110,16 +110,16 @@ const modulosDelPortal = [
     id: 'prestamos',
     icono: 'briefcase',
     titulo: 'Prestamos',
-    descripcion: 'Pide PCs, perifericos o monitores indicando fecha, lugar y motivo de uso.',
+    descripcion: 'Pide PCs, periféricos o monitores indicando fecha, lugar y motivo de uso.',
     enlace: 'prestamos.html',
     rolesPermitidos: ['solicitante', 'tecnico', 'administrativo'],
   },
   {
     id: 'soporte',
     icono: 'life-buoy',
-    titulo: 'Incidencias tecnicas',
+    titulo: 'Incidencias técnicas',
     descripcion:
-      'Cuenta que esta pasando y envia el caso al equipo tecnico para darle seguimiento.',
+      'Cuenta qué está pasando y envia el caso al equipo técnico para darle seguimiento.',
     enlace: 'soporte.html',
     rolesPermitidos: ['solicitante', 'tecnico', 'administrativo'],
   },
@@ -136,7 +136,7 @@ const modulosDelPortal = [
     icono: 'users',
     titulo: 'Planilla de T.A.',
     descripcion:
-      'Mira horarios, tareas del dia y disponibilidad del plantel tecnico-administrativo.',
+      'Mira horarios, tareas del día y disponibilidad del plantel técnico-administrativo.',
     enlace: 'planilla-ta.html',
     rolesPermitidos: ['tecnico', 'administrativo'],
   },
@@ -144,7 +144,7 @@ const modulosDelPortal = [
     id: 'cuenta',
     icono: 'user',
     titulo: 'Cuenta',
-    descripcion: 'Mantene tus datos, area y foto de perfil actualizados.',
+    descripcion: 'Mantené tus datos, área y foto de perfil actualizados.',
     enlace: 'cuenta.html',
     rolesPermitidos: ['solicitante', 'tecnico', 'administrativo'],
   },
@@ -182,9 +182,9 @@ const categoriasDeSoporte = ['Hardware', 'Software', 'Redes', 'Cuenta', 'Otro'];
 const ticketsSoporteSemilla = [];
 
 const tiposDeSolicitud = [
-  'Instalacion de software en los equipos',
-  'Preparacion de salones',
-  'Solicitud de material didactico para usar en clase',
+  'Instalación de software en los equipos',
+  'Preparación de salones',
+  'Solicitud de material didáctico para usar en clase',
 ];
 const planillaTASemilla = [];
 const estadosKanbanTA = ['Pendiente', 'En curso', 'En revision', 'Completado'];

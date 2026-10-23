@@ -2,12 +2,101 @@
 <html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Solicitar cambio de rol | SGRSI</title>
 <link rel="icon" href="data:," />
 <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-<link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-<noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+<link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+<noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
 <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-<link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+<link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
-<body data-requires-auth="true"><main class="portal-main"><article class="panel"><div class="panel__body"><h1>Solicitar cambio de rol</h1><form id="form-rol"><div class="input-stack"><label for="rol">Rol solicitado</label><select id="rol" required><option value="Usuario solicitante">Solicitante</option><option value="Usuario tecnico">Técnico asistente</option><option value="Usuario administrativo">Administrador</option></select></div><div class="input-stack"><label for="motivo">Motivo</label><textarea id="motivo" required></textarea></div><button class="boton boton--primary" type="submit">Enviar solicitud</button></form><div id="mensaje" aria-live="polite" aria-atomic="true"></div><p><a href="cuenta.html">Volver a mi cuenta</a></p></div></article></main>
-<script src="../js/router.js?v=e5dbd5ae11"></script><script>
-if(!protegerRuta())throw new Error('Sin sesión');const u=obtenerUsuarioActual();document.getElementById('form-rol').addEventListener('submit',async e=>{e.preventDefault();try{await solicitarApi('api/cambios_rol.php',{method:'POST',body:JSON.stringify({cedula:u.cedula,rolSolicitado:document.getElementById('rol').value,motivo:document.getElementById('motivo').value})});document.getElementById('mensaje').innerHTML='<div class="form-message form-message--success">Solicitud enviada.</div>';}catch(x){document.getElementById('mensaje').innerHTML='<div class="form-message form-message--error">'+x.message+'</div>';}});
-</script></body></html>
+  <body data-section="cuenta" data-requires-auth="true">
+    <div id="cabecera-superior"></div>
+    <main class="portal-main role-request">
+      <header class="admin-hero">
+        <div>
+          <span class="admin-hero__eyebrow">Cuenta</span>
+          <h1 data-clave="solicitar_cambio_de_rol">Solicitar cambio de rol</h1>
+          <p data-clave="un_administrador_revisa_cada_solicitud">
+            Un administrador revisa cada solicitud antes de aplicar el cambio.
+          </p>
+        </div>
+      </header>
+      <article class="panel role-request__panel">
+        <div class="panel__body">
+          <form id="form-rol" class="role-request__form">
+            <div class="input-stack">
+              <label for="rol" data-clave="rol_solicitado">Rol solicitado</label>
+              <select id="rol" class="select-input" required>
+                <option value="Usuario solicitante" data-clave="solicitante">Solicitante</option>
+                <option value="Usuario tecnico" data-clave="tecnico_asistente">Técnico asistente</option>
+                <option value="Usuario administrativo" data-clave="administrador">Administrador</option>
+              </select>
+            </div>
+            <div class="input-stack">
+              <label for="motivo" data-clave="motivo">Motivo</label>
+              <textarea
+                id="motivo"
+                class="textarea-input role-request__reason"
+                rows="6"
+                maxlength="500"
+                required
+                placeholder="Contá para qué necesitás este rol y qué tareas vas a hacer con él."
+                data-clave-placeholder="motivo_del_cambio_de_rol"
+              ></textarea>
+              <div class="role-request__hint">
+                <span data-clave="un_motivo_claro_acelera_la_revision">Un motivo claro acelera la revisión.</span>
+                <span id="motivo-contador" aria-live="polite">0 / 500</span>
+              </div>
+            </div>
+            <div class="role-request__actions">
+              <a class="boton boton--outline" href="cuenta.html" data-clave="volver_a_mi_cuenta">Volver a mi cuenta</a>
+              <button class="boton boton--primary" type="submit" data-clave="enviar_solicitud">Enviar solicitud</button>
+            </div>
+          </form>
+          <div id="mensaje" aria-live="polite" aria-atomic="true"></div>
+        </div>
+      </article>
+    </main>
+    <script src="../js/router.js?v=da36595f64"></script>
+    <script>
+      if (!protegerRuta()) throw new Error('Sin sesión');
+      const u = obtenerUsuarioActual();
+      mostrarEn(
+        'cabecera-superior',
+        crearCabeceraCompleta([
+          { etiqueta: 'Home', enlace: 'home.html' },
+          { etiqueta: 'Cuenta', enlace: 'cuenta.html' },
+          { etiqueta: 'Solicitar cambio de rol' },
+        ]),
+      );
+      const formRol = document.getElementById('form-rol');
+      const campoMotivo = document.getElementById('motivo');
+      const contadorMotivo = document.getElementById('motivo-contador');
+      const botonEnviar = formRol.querySelector('button[type=submit]');
+
+      campoMotivo.addEventListener('input', function () {
+        contadorMotivo.textContent = campoMotivo.value.length + ' / ' + campoMotivo.maxLength;
+      });
+
+      formRol.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        botonEnviar.disabled = true;
+        try {
+          await solicitarApi('api/cambios_rol.php', {
+            method: 'POST',
+            body: JSON.stringify({
+              cedula: u.cedula,
+              rolSolicitado: document.getElementById('rol').value,
+              motivo: campoMotivo.value.trim(),
+            }),
+          });
+          mostrarMensajeFormulario('mensaje', 'Solicitud enviada.', 'success');
+          formRol.reset();
+          contadorMotivo.textContent = '0 / ' + campoMotivo.maxLength;
+        } catch (x) {
+          mostrarMensajeFormulario('mensaje', x.message, 'error');
+        } finally {
+          botonEnviar.disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>

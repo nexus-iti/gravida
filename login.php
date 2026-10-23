@@ -37,28 +37,40 @@ function registrarIntento(PDO $pdo, string $identificador, bool $exito): void {
     $consulta->execute([segIp(), $identificador, $exito ? 1 : 0]);
 }
 
-function segundosDeBloqueo(PDO $pdo, string $columna, string $valor, int $maximo): int {
+function segundosDeBloqueo(PDO $pdo, string $columna, string $valor, int $maximo, ?string $ip = null): int {
     // Por cuenta, un ingreso correcto reinicia el contador; por IP no (si no, una cuenta propia lo resetearia).
     $desdeExito = $columna === 'identificador'
         ? "AND fecha > COALESCE((SELECT MAX(fecha) FROM seguridad_intentos_login
                                  WHERE identificador = :valor2 AND exito = 1), '1970-01-01')"
         : '';
+    $porIp = $ip !== null ? 'AND ip = :ip' : '';
     $consulta = $pdo->prepare(
         "SELECT COUNT(*) AS fallos,
                 TIMESTAMPDIFF(SECOND, NOW(), MAX(fecha) + INTERVAL " . SEG_LOGIN_VENTANA . " SECOND) AS espera
          FROM seguridad_intentos_login
          WHERE {$columna} = :valor AND exito = 0 AND fecha > NOW() - INTERVAL " . SEG_LOGIN_VENTANA . " SECOND
-         {$desdeExito}"
+         {$desdeExito} {$porIp}"
     );
-    $consulta->execute($desdeExito ? ['valor' => $valor, 'valor2' => $valor] : ['valor' => $valor]);
+    $parametros = ['valor' => $valor];
+    if ($desdeExito) {
+        $parametros['valor2'] = $valor;
+    }
+    if ($ip !== null) {
+        $parametros['ip'] = $ip;
+    }
+    $consulta->execute($parametros);
     $fila = $consulta->fetch(PDO::FETCH_ASSOC);
     return (int) $fila['fallos'] >= $maximo ? max(1, (int) $fila['espera']) : 0;
 }
 
 
 function bloquearSiCorresponde(PDO $pdo, string $identificadorHash): void {
+    // Los fallos de la cuenta se cuentan por IP de origen: cinco intentos de un tercero cierran la
+    // puerta a ese tercero, no al titular que entra desde otra IP. El tope por cuenta sin importar
+    // la IP queda alto, solo para frenar un ataque distribuido.
     $espera = max(
-        segundosDeBloqueo($pdo, 'identificador', $identificadorHash, SEG_LOGIN_MAX_FALLOS_CUENTA),
+        segundosDeBloqueo($pdo, 'identificador', $identificadorHash, SEG_LOGIN_MAX_FALLOS_CUENTA, segIp()),
+        segundosDeBloqueo($pdo, 'identificador', $identificadorHash, SEG_LOGIN_MAX_FALLOS_CUENTA_TOTAL),
         segundosDeBloqueo($pdo, 'ip', segIp(), SEG_LOGIN_MAX_FALLOS_IP)
     );
     if ($espera > 0) {
@@ -98,7 +110,7 @@ function verificarSegundoFactor(PDO $pdo, array $datos): void {
     $pendiente = $_SESSION['pre2fa'] ?? null;
     if (!is_array($pendiente) || time() - $pendiente['inicio'] > SEG_2FA_VENTANA_LOGIN) {
         unset($_SESSION['pre2fa']);
-        errorApi('El tiempo para ingresar el codigo vencio. Volve a escribir tu contrasena.', 401);
+        errorApi('El tiempo para ingresar el código venció. Volvé a escribir tu contraseña.', 401);
     }
     bloquearSiCorresponde($pdo, $pendiente['clave']);
 
@@ -122,9 +134,9 @@ function verificarSegundoFactor(PDO $pdo, array $datos): void {
         $_SESSION['pre2fa']['intentos'] = ($pendiente['intentos'] ?? 0) + 1;
         if ($_SESSION['pre2fa']['intentos'] >= SEG_2FA_MAX_INTENTOS) {
             unset($_SESSION['pre2fa']);
-            errorApi('Demasiados codigos incorrectos. Volve a escribir tu contrasena.', 401);
+            errorApi('Demasiados códigos incorrectos. Volvé a escribir tu contraseña.', 401);
         }
-        errorApi('El codigo no es correcto o ya fue usado. Espera el siguiente e intenta de nuevo.', 401);
+        errorApi('El código no es correcto o ya fue usado. Espera el siguiente e intenta de nuevo.', 401);
     }
 
     // Se guarda el paso usado: el mismo codigo no sirve dos veces (aunque lo capture un sitio falso).
@@ -149,6 +161,9 @@ ejecutar(function () use ($pdo): void {
             'csrf' => segCsrf(),
         ]);
     }
+
+    // El POST de login no lleva token (todavia no hay sesion), pero no puede venir de otro sitio.
+    segExigirOrigenPropio();
 
     $datos = datosLogin();
     $accion = texto($datos['accion'] ?? '', 20);
@@ -175,7 +190,7 @@ ejecutar(function () use ($pdo): void {
     $contrasena = (string) ($datos['contrasena'] ?? '');
     $recordar = in_array((string) ($datos['recordarme'] ?? ''), ['1', 'true', 'on'], true);
     if ($identificadorEntrada === '' || $contrasena === '' || strlen($identificadorEntrada) > 150 || strlen($contrasena) > 1024) {
-        errorApi('Ingresa tu correo o cedula y tu contrasena.');
+        errorApi('Ingresa tu correo o cédula y tu contraseña.');
     }
     // Se canoniza el identificador y se resuelve la cuenta ANTES de contar intentos: el bloqueo
     // por cuenta se indexa por la cedula real, asi variar el formato (correo <-> cedula, puntos,
@@ -208,12 +223,12 @@ ejecutar(function () use ($pdo): void {
     if (!$fila || !$valida) {
         registrarIntento($pdo, $identificadorHash, false);
         segRegistrarEvento($pdo, 'login_fallido', $fila ? (string) $fila['cedula'] : null);
-        errorApi('Correo, cedula o contrasena incorrectos.', 401);
+        errorApi('Correo, cédula o contraseña incorrectos.', 401);
     }
     if ($fila['estado'] !== 'Activo') {
         // Credenciales correctas pero cuenta pendiente: no es un fallo, no se cuenta para el bloqueo.
         segRegistrarEvento($pdo, 'login_inactivo', (string) $fila['cedula']);
-        errorApi('Tu cuenta todavia no esta habilitada. Un administrador debe aprobarla.', 403);
+        errorApi('Tu cuenta todavía no está habilitada. Un administrador debe aprobarla.', 403);
     }
 
     // F-03: se migra a Argon2id/bcrypt al primer ingreso correcto.

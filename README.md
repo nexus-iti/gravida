@@ -193,8 +193,17 @@ Detalles y credenciales: `deploy/README.md`.
 1. Clonar el repositorio NEXUS dentro de `htdocs`.
 
 2. Importar únicamente `database.sql` desde phpMyAdmin. Este archivo contiene
-   toda la estructura, relaciones, configuración y datos necesarios para dejar
-   la base en el estado actual del sistema.
+   la estructura, las relaciones, la configuración y los catálogos iniciales.
+   No trae cuentas de usuario: el primer Administrador se crea desde la consola
+   del servidor (la contraseña se lee de `SGRSI_ADMIN_PASSWORD` o de la entrada
+   estándar, nunca de un argumento):
+
+   ```bash
+   php seguridad/crear_administrador.php <cedula> <correo> "<nombre completo>"
+   ```
+
+   En el primer ingreso el sistema fuerza el cambio de contraseña y el
+   enrolamiento del segundo factor.
 
    La carpeta `database old` conserva las migraciones históricas como referencia.
    No deben ejecutarse después de `database.sql`.

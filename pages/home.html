@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | Portal de Gestion TI</title>
+    <title>Home | Portal de Gestión TI</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="home" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -88,7 +88,7 @@
               </div>
             </div>
             <div class="input-stack regla-diseno-025">
-              <label for="tarea-descripcion" data-clave="que_hay_que_hacer">Que hay que hacer</label>
+              <label for="tarea-descripcion" data-clave="que_hay_que_hacer">Qué hay que hacer</label>
               <textarea
                 class="textarea-input regla-diseno-026"
                 id="tarea-descripcion"
@@ -98,7 +98,7 @@
             </div>
             <div class="field-grid regla-diseno-024">
               <div class="input-stack regla-diseno-025">
-                <label for="tarea-categoria" data-clave="categoria">Categoria</label>
+                <label for="tarea-categoria" data-clave="categoria">Categoría</label>
                 <select
                   class="select-input regla-diseno-026"
                   id="tarea-categoria"
@@ -193,7 +193,7 @@
         </form>
       </div>
     </div>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -266,7 +266,7 @@
             let html = '';
             for (let i = 0; i < responsables.length; i++) {
               const selected = responsables[i].id === seleccionado ? ' selected' : '';
-              const etiquetaRol = obtenerEtiquetaRol(responsables[i].rol).replace('Usuario ', '');
+              const etiquetaRol = t(obtenerEtiquetaRol(responsables[i].rol)).replace('Usuario ', '');
               html +=
                 '<option value="' +
                 escaparHtml(responsables[i].id) +
@@ -450,7 +450,7 @@
               if (!tareaId) {
                 return;
               }
-              const confirmar = window.confirm(t('Seguro que queres eliminar esta tarea?'));
+              const confirmar = window.confirm(t('Seguro que querés eliminar esta tarea?'));
               if (!confirmar) {
                 return;
               }
@@ -602,7 +602,7 @@
       const panel=document.getElementById('gestion-reportes-2');panel.hidden=false;
       if(usuarioEsAdministrativo(usuario)){document.getElementById('enlace-administracion').hidden=false;}else{document.querySelector('#gestion-reportes-2 .panel__title').textContent='Bandeja técnica de incidencias y accesos';}
       function tarjetaReporte(x, finalizado){return '<article class="activity-card"><h4>#'+escaparHtml(x.id)+' '+escaparHtml(x.asunto)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p>'+(finalizado?'<p>'+escaparHtml(x.respuesta||'Reporte cerrado.')+'</p>':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-reporte="'+x.id+'" data-estado="En proceso">Tomar</button><button class="boton boton--primary boton--sm" data-reporte="'+x.id+'" data-estado="Resuelto">Resolver</button><button class="boton boton--outline-danger boton--sm" data-reporte="'+x.id+'" data-estado="Rechazado">Rechazar</button></div>')+'</article>';}
-      function tarjetaRecuperacion(x, finalizado){return '<article class="activity-card"><h4>Ticket #'+escaparHtml(x.ticketId)+' · '+escaparHtml(x.usuario)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p><p>'+(finalizado?'Solicitud cerrada.':'Al resolver se genera una contraseña temporal y se cierran las sesiones anteriores.')+'</p>'+(finalizado?'':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-recuperacion="'+x.id+'" data-accion="tomar">Tomar</button><button class="boton boton--primary boton--sm" data-recuperacion="'+x.id+'" data-accion="resolver">Resolver</button><button class="boton boton--outline-danger boton--sm" data-recuperacion="'+x.id+'" data-accion="rechazar">Rechazar</button></div>')+'</article>';}
+      function tarjetaRecuperacion(x, finalizado){return '<article class="activity-card"><h4>Ticket #'+escaparHtml(x.ticketId)+' · '+escaparHtml(x.usuario)+'</h4><p>Estado: <strong>'+escaparHtml(x.estado)+'</strong></p><p>Código de seguimiento (entregalo solo después de verificar la identidad): <strong class="mono">'+escaparHtml(x.codigo)+'</strong></p><p>'+(finalizado?'Solicitud cerrada.':'Al resolver se genera una contraseña temporal y se cierran las sesiones anteriores.')+'</p>'+(finalizado?'':'<div class="activity-actions"><button class="boton boton--outline boton--sm" data-recuperacion="'+x.id+'" data-accion="tomar">Tomar</button><button class="boton boton--primary boton--sm" data-recuperacion="'+x.id+'" data-accion="resolver">Resolver</button><button class="boton boton--outline-danger boton--sm" data-recuperacion="'+x.id+'" data-accion="rechazar">Rechazar</button></div>')+'</article>';}
       function bloqueFinalizados(titulo, elementos){if(!elementos.length)return '';return '<details class="resolved-folder"><summary><span class="resolved-folder__title"><span class="resolved-folder__chevron" aria-hidden="true">›</span>'+escaparHtml(titulo)+'</span><span class="etiqueta etiqueta--primary">'+elementos.length+'</span></summary><div class="activity-stack">'+elementos.join('')+'</div></details>';}
       async function cargar(){const datos=await Promise.all([solicitarApi('api/reportes_error.php'),solicitarApi('api/recuperacion.php')]);const reportesPendientes=[],reportesFinalizados=[],recuperacionesPendientes=[],recuperacionesFinalizadas=[];datos[0].forEach(x=>{const finalizado=['Resuelto','Rechazado'].includes(x.estado);(finalizado?reportesFinalizados:reportesPendientes).push(tarjetaReporte(x,finalizado));});datos[1].forEach(x=>{const finalizado=['Resuelto','Rechazado'].includes(x.estado);(finalizado?recuperacionesFinalizadas:recuperacionesPendientes).push(tarjetaRecuperacion(x,finalizado));});let html='<section class="report-tray"><h3>Reportes públicos pendientes</h3><div class="activity-stack">'+(reportesPendientes.join('')||'<p>Sin reportes pendientes.</p>')+'</div>'+bloqueFinalizados('Reportes públicos resueltos y cerrados',reportesFinalizados)+'</section>';html+='<section class="report-tray"><h3>Recuperaciones de contraseña pendientes</h3><div class="activity-stack">'+(recuperacionesPendientes.join('')||'<p>Sin solicitudes pendientes.</p>')+'</div>'+bloqueFinalizados('Recuperaciones resueltas y cerradas',recuperacionesFinalizadas)+'</section>';document.getElementById('lista-reportes-2').innerHTML=html;}
       document.getElementById('lista-reportes-2').addEventListener('click',async e=>{const botonReporte=e.target.closest('[data-reporte]'),botonRecuperacion=e.target.closest('[data-recuperacion]');if(!botonReporte&&!botonRecuperacion)return;try{if(botonReporte){await solicitarApi('api/reportes_error.php',{method:'PATCH',body:JSON.stringify({id:botonReporte.dataset.reporte,estado:botonReporte.dataset.estado,responsableCedula:usuario.cedula,respuesta:botonReporte.dataset.estado==='Resuelto'?'Reporte resuelto.':''})});}if(botonRecuperacion){await solicitarApi('api/recuperacion.php',{method:'PATCH',body:JSON.stringify({id:botonRecuperacion.dataset.recuperacion,accion:botonRecuperacion.dataset.accion,responsableCedula:usuario.cedula})});}await cargar();}catch(x){alert(x.message);}});await cargar();

@@ -42,7 +42,7 @@ function manejarErrorCliente(error, mostrarMensaje, mensaje) {
     window.console.error(error);
   }
   const texto =
-    mensaje || (error && error.message) || 'No se pudo completar la accion. Intenta nuevamente.';
+    mensaje || (error && error.message) || 'No se pudo completar la acción. Intenta nuevamente.';
   if (typeof mostrarMensaje === 'function') {
     mostrarMensaje(texto, 'error');
     return;
@@ -87,16 +87,17 @@ function validarContrasenaSegura(contrasena) {
   if (contrasenaContieneEnie(valor)) {
     return { ok: false, mensaje: MENSAJE_CONTRASENA_SIN_ENIE };
   }
-  const tieneLargoMinimo = valor.length >= 7;
+  // Mismas reglas que PasswordRules en el servidor, que es quien las hace cumplir.
+  const tieneLargoValido = valor.length >= 8 && valor.length <= 128;
   const tieneMayuscula = /[A-Z]/.test(valor);
   const tieneMinuscula = /[a-z]/.test(valor);
   const tieneNumero = /\d/.test(valor);
-  const cumpleReglas = tieneLargoMinimo && tieneMayuscula && tieneMinuscula && tieneNumero;
+  const cumpleReglas = tieneLargoValido && tieneMayuscula && tieneMinuscula && tieneNumero;
   if (!cumpleReglas) {
     return {
       ok: false,
       mensaje:
-        'La contraseña necesita al menos 7 caracteres, una mayuscula, una minuscula y un numero.',
+        'La contraseña necesita entre 8 y 128 caracteres, una mayúscula, una minúscula y un número.',
     };
   }
   return { ok: true, mensaje: '' };

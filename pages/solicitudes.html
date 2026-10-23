@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solicitudes de servicio | Portal de Gestion TI</title>
+    <title>Solicitudes de servicio | Portal de Gestión TI</title>
     <link rel="icon" href="data:," />
     <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-    <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
     <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-    <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="solicitudes" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -57,7 +57,7 @@
               <textarea
                 class="textarea-input regla-diseno-026"
                 id="solicitud-detalle"
-                placeholder="Ej. Instalar software, dejar el salon pronto o preparar material didactico."
+                placeholder="Ej. Instalar software, dejar el salón pronto o preparar material didáctico."
                 required
                data-clave-placeholder="ej_servicio"></textarea>
             </div>
@@ -82,7 +82,7 @@
         </div>
       </section>
     </main>
-    <script src="../js/router.js?v=e5dbd5ae11"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     
@@ -166,21 +166,21 @@
         if (esSolicitante) {
           actualizarTextoSiExiste(
             'subtitulo-panel-solicitud',
-            'Envia solicitudes y mira aca mismo como avanza cada preparacion.',
+            'Enviá solicitudes y mirá acá mismo cómo avanza cada preparación.',
           );
         } else if (esTecnico) {
           document.getElementById('titulo-panel-solicitud').textContent =
-            'Bandeja tecnica de solicitudes';
+            'Bandeja técnica de solicitudes';
           actualizarTextoSiExiste(
             'subtitulo-panel-solicitud',
-            'Aca llegan los pedidos de preparacion para revisarlos y actualizar su estado.',
+            'Acá llegan los pedidos de preparación para revisarlos y actualizar su estado.',
           );
         } else if (esAdministrativo) {
           document.getElementById('titulo-panel-solicitud').textContent =
-            'Gestion de solicitudes';
+            'Gestión de solicitudes';
           actualizarTextoSiExiste(
             'subtitulo-panel-solicitud',
-            'Desde aca podes crear solicitudes y revisar el estado de las que llegan al portal.',
+            'Desde acá podés crear solicitudes y revisar el estado de las que llegan al portal.',
           );
         }
         
@@ -194,9 +194,9 @@
           if (tipoSeleccionado) {
             tituloPanel.textContent = tipoSeleccionado;
           } else if (esTecnico) {
-            tituloPanel.textContent = 'Bandeja tecnica de solicitudes';
+            tituloPanel.textContent = 'Bandeja técnica de solicitudes';
           } else if (esAdministrativo) {
-            tituloPanel.textContent = 'Gestion de solicitudes';
+            tituloPanel.textContent = 'Gestión de solicitudes';
           } else {
             tituloPanel.textContent = 'Pedir un servicio';
           }
@@ -274,7 +274,7 @@
           let html = '';
           if (solicitudes.length === 0) {
             html =
-              '<div class="empty-inline regla-diseno-043">Todavia no hay solicitudes de servicio para mostrar con este perfil.</div>';
+              '<div class="empty-inline regla-diseno-043">Todavía no hay solicitudes de servicio para mostrar con este perfil.</div>';
           } else {
             for (let i = 0; i < solicitudes.length; i++) {
               let acciones = '';

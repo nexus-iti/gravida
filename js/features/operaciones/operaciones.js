@@ -37,7 +37,7 @@ async function obtenerSolicitudesVisibles() {
 async function guardarNuevoPrestamo(datos) {
   const usuarioEnSesion = obtenerUsuarioActual();
   if (!usuarioEnSesion) {
-    throw new Error('Necesitas iniciar sesion para solicitar un prestamo.');
+    throw new Error('Necesitas iniciar sesión para solicitar un préstamo.');
   }
   const recursosDetalle = [];
   if (Array.isArray(datos.recursosDetalle)) {
@@ -53,7 +53,7 @@ async function guardarNuevoPrestamo(datos) {
         idEquipo < 1
       ) {
         throw new Error(
-          'Cada recurso seleccionado debe pertenecer a un equipo valido del inventario.',
+          'Cada recurso seleccionado debe pertenecer a un equipo válido del inventario.',
         );
       }
       recursosDetalle.push({
@@ -134,7 +134,7 @@ async function actualizarEstadoPrestamo(idPrestamo, nuevoEstado) {
 async function guardarNuevoTicket(datos) {
   const usuarioEnSesion = obtenerUsuarioActual();
   if (!usuarioEnSesion) {
-    throw new Error('Necesitas iniciar sesion para crear un ticket.');
+    throw new Error('Necesitas iniciar sesión para crear un ticket.');
   }
   const nuevoTicket = {
     id: '',
@@ -170,7 +170,7 @@ async function actualizarEstadoTicket(idTicket, nuevoEstado) {
 async function guardarNuevaSolicitud(datos) {
   const usuarioEnSesion = obtenerUsuarioActual();
   if (!usuarioEnSesion) {
-    throw new Error('Necesitas iniciar sesion para crear una solicitud.');
+    throw new Error('Necesitas iniciar sesión para crear una solicitud.');
   }
   const nuevaSolicitud = {
     id: '',
@@ -315,7 +315,7 @@ async function subirFotoPerfil(archivo) {
   try {
     datos = await respuesta.json();
   } catch (error) {
-    throw new Error('El servidor devolvio una respuesta invalida.', { cause: error });
+    throw new Error('El servidor devolvió una respuesta inválida.', { cause: error });
   }
   if (!respuesta.ok) {
     throw new Error(

@@ -5,3 +5,6 @@
 - [PRUEBAS_3_0.md](PRUEBAS_3_0.md): pruebas de la versión 3.0.
 - [fixes-2026-10-22-v1.0.4/](fixes-2026-10-22-v1.0.4/README.md): lote de bugs de octubre 2026 (issues #4 a #8).
 - [fixes-2026-10-22-v1.0.9/](fixes-2026-10-22-v1.0.9/README.md): casos de prueba fallidos (CT-02, 07, 11, 12, 14, 15, 17, 18, 30, 31, 44).
+- [fixes-2026-10-22-v1.0.14/](fixes-2026-10-22-v1.0.14/README.md): hallazgos de la auditoría de seguridad.
+- [fixes-2026-10-23-v1.0.15/](fixes-2026-10-23-v1.0.15/README.md): política de contraseñas en el servidor y pruebas PHP.
+- [fixes-2026-10-23-v1.0.16/](fixes-2026-10-23-v1.0.16/README.md): feedback de interfaz (cambio de rol, préstamos, textos en español).

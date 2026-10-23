@@ -6,10 +6,10 @@
   <title>Recuperar contraseña | SGRSI</title>
   <link rel="icon" href="data:," />
   <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
-  <link rel="preload" as="style" href="../css/fuentes.css?v=e5dbd5ae11" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
-  <noscript><link rel="stylesheet" href="../css/fuentes.css?v=e5dbd5ae11" /></noscript>
+  <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+  <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
   <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
-  <link rel="stylesheet" href="../css/global.css?v=e5dbd5ae11" data-css-critico />
+  <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
 <body class="recovery-page">
   <main class="recovery-shell">
@@ -20,17 +20,17 @@
     </header>
     <section class="recovery-intro">
       <div class="recovery-intro__copy"><span class="etiqueta etiqueta--primary" data-clave="recuperacion_segura">Recuperación segura</span><h1 data-clave="recupera_acceso">Recuperá el acceso a tu cuenta</h1><p data-clave="recuperacion_descripcion">Creá una solicitud y consultá su avance sin iniciar sesión. Un técnico o administrador verificará el caso antes de emitir una contraseña temporal.</p></div>
-      <div class="recovery-intro__steps" aria-label="Pasos de recuperación" data-clave-aria-label="pasos_recuperacion"><span><b>1</b> <span data-clave="crea_ticket">Creá el ticket</span></span><span><b>2</b> <span data-clave="guarda_codigo">Guardá el código</span></span><span><b>3</b> <span data-clave="consulta_respuesta">Consultá la respuesta</span></span></div>
+      <div class="recovery-intro__steps" aria-label="Pasos de recuperación" data-clave-aria-label="pasos_recuperacion"><span><b>1</b> <span data-clave="crea_ticket">Creá el ticket</span></span><span><b>2</b> <span data-clave="guarda_codigo">Pedí el código a un técnico</span></span><span><b>3</b> <span data-clave="consulta_respuesta">Consultá la respuesta</span></span></div>
     </section>
     <section class="recovery-grid">
       <article class="panel recovery-card"><div class="panel__header"><div><h2 class="panel__title">1. <span data-clave="crear_solicitud">Crear solicitud</span></h2><p data-clave="datos_registrados">Ingresá los mismos datos registrados en tu cuenta.</p></div></div><div class="panel__body">
         <form id="form-recuperar" class="auth-form"><label class="input-stack"><span data-clave="cedula">Cédula</span><input class="text-input" id="rec-cedula" inputmode="numeric" required maxlength="15"></label><label class="input-stack"><span data-clave="correo_registrado">Correo registrado</span><input class="text-input" id="rec-correo" type="email" required></label><button class="boton boton--primary" type="submit" data-clave="crear_ticket">Crear ticket</button></form><div id="mensaje-recuperar" aria-live="polite" aria-atomic="true"></div>
       </div></article>
-      <article class="panel recovery-card"><div class="panel__header"><div><h2 class="panel__title">2. <span data-clave="consultar_solicitud">Consultar solicitud</span></h2><p data-clave="usar_codigo_seguimiento">Usá el código de seguimiento entregado al crear el ticket.</p></div></div><div class="panel__body">
+      <article class="panel recovery-card"><div class="panel__header"><div><h2 class="panel__title">2. <span data-clave="consultar_solicitud">Consultar solicitud</span></h2><p data-clave="usar_codigo_seguimiento">Usá el código de seguimiento que te entregó el técnico.</p></div></div><div class="panel__body">
         <form id="form-consultar" class="auth-form"><label class="input-stack"><span data-clave="cedula">Cédula</span><input class="text-input" id="con-cedula" inputmode="numeric" required maxlength="15"></label><label class="input-stack"><span data-clave="codigo_seguimiento">Código de seguimiento</span><input class="text-input mono" id="con-codigo" required maxlength="12"></label><button class="boton boton--outline" type="submit" data-clave="consultar_estado">Consultar estado</button></form><div id="resultado-consulta" aria-live="polite" aria-atomic="true"></div>
       </div></article>
     </section>
   </main>
-  <script src="../js/router.js?v=e5dbd5ae11"></script>
+  <script src="../js/router.js?v=da36595f64"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | Portal de Gestion TI</title>
+    <title>Home | Portal de Gestión TI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -89,7 +89,7 @@
               </div>
             </div>
             <div class="input-stack regla-diseno-025">
-              <label for="tarea-descripcion" data-clave="que_hay_que_hacer">Que hay que hacer</label>
+              <label for="tarea-descripcion" data-clave="que_hay_que_hacer">Qué hay que hacer</label>
               <textarea
                 class="textarea-input regla-diseno-026"
                 id="tarea-descripcion"
@@ -99,7 +99,7 @@
             </div>
             <div class="field-grid regla-diseno-024">
               <div class="input-stack regla-diseno-025">
-                <label for="tarea-categoria" data-clave="categoria">Categoria</label>
+                <label for="tarea-categoria" data-clave="categoria">Categoría</label>
                 <select
                   class="select-input regla-diseno-026"
                   id="tarea-categoria"
@@ -268,7 +268,7 @@
             let html = '';
             for (let i = 0; i < responsables.length; i++) {
               const selected = responsables[i].id === seleccionado ? ' selected' : '';
-              const etiquetaRol = obtenerEtiquetaRol(responsables[i].rol).replace('Usuario ', '');
+              const etiquetaRol = t(obtenerEtiquetaRol(responsables[i].rol)).replace('Usuario ', '');
               html +=
                 '<option value="' +
                 escaparHtml(responsables[i].id) +
@@ -452,7 +452,7 @@
               if (!tareaId) {
                 return;
               }
-              const confirmar = window.confirm(t('Seguro que queres eliminar esta tarea?'));
+              const confirmar = window.confirm(t('Seguro que querés eliminar esta tarea?'));
               if (!confirmar) {
                 return;
               }

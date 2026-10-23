@@ -8,7 +8,7 @@ if (protegerRuta()) {
     crearCabeceraDePagina({
       titulo: 'Cuenta',
       subtitulo:
-        'Revisa tu informacion personal, actualiza tu foto y deja claro desde que area trabajas.',
+        'Revisa tu información personal, actualiza tu foto y deja claro desde qué área trabajas.',
     }),
   );
 
@@ -36,11 +36,11 @@ if (protegerRuta()) {
       : '<span class="profile-card__avatar-fallback">' + crearIcono('user', 'icon-lg') + '</span>';
     mostrarEn(
       'perfil-resumen',
-      ` <article class="profile-card regla-diseno-037"> <div class="profile-card__cover regla-diseno-038"> ${avatarGrande} <h2 class="profile-card__name regla-diseno-039">${escaparHtml(usuarioActual.nombreCompleto)}</h2> <p class="profile-card__role regla-diseno-011">${escaparHtml(obtenerEtiquetaRol(usuarioActual.rol))} | ${escaparHtml(usuarioActual.correo)}</p> </div> <div class="profile-card__body regla-diseno-012"> <button class="boton boton--outline profile-card__logout regla-diseno-005" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span data-clave="cerrar_sesion">Cerrar sesion</span> </button> </div> </article> `,
+      ` <article class="profile-card regla-diseno-037"> <div class="profile-card__cover regla-diseno-038"> ${avatarGrande} <h2 class="profile-card__name regla-diseno-039">${escaparHtml(usuarioActual.nombreCompleto)}</h2> <p class="profile-card__role regla-diseno-011">${escaparHtml(t(obtenerEtiquetaRol(usuarioActual.rol)))} | ${escaparHtml(usuarioActual.correo)}</p> </div> <div class="profile-card__body regla-diseno-012"> <button class="boton boton--outline profile-card__logout regla-diseno-005" type="button" data-logout-button> ${crearIcono('log-out', 'icon-sm')} <span data-clave="cerrar_sesion">Cerrar sesión</span> </button> </div> </article> `,
     );
     camposCuenta.nombre.value = usuarioActual.nombreCompleto || '';
     camposCuenta.correo.value = usuarioActual.correo || '';
-    camposCuenta.rol.value = obtenerEtiquetaRol(usuarioActual.rol) || '';
+    camposCuenta.rol.value = t(obtenerEtiquetaRol(usuarioActual.rol)) || '';
     camposCuenta.area.value = usuarioActual.area || '';
     camposCuenta.descripcion.value = usuarioActual.descripcion || '';
   }
@@ -79,7 +79,7 @@ if (protegerRuta()) {
         descripcion: camposCuenta.descripcion.value.trim(),
       });
       mostrarMensaje(
-        'Perfil actualizado. Tus nuevos datos ya estan visibles en la cuenta.',
+        'Perfil actualizado. Tus nuevos datos ya están visibles en la cuenta.',
         'success',
       );
       renderPerfil();

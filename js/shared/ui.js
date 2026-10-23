@@ -176,20 +176,20 @@ function crearIndiceI18n() {
 const CLAVES_I18N_POR_TEXTO = crearIndiceI18n();
 
 const CLAVES_I18N_LEGADAS = {
-  'La sesion vencio. Volve a iniciar sesion.': 'sesion_vencida',
-  'El servidor devolvio una respuesta invalida.': 'respuesta_invalida',
+  'La sesión venció. Volvé a iniciar sesión.': 'sesion_vencida',
+  'El servidor devolvió una respuesta inválida.': 'respuesta_invalida',
   'No se pudo completar la solicitud.': 'solicitud_fallida',
-  'No se pudo iniciar sesion.': 'inicio_sesion_fallido',
+  'No se pudo iniciar sesión.': 'inicio_sesion_fallido',
   'Los datos no corresponden a una cuenta activa.': 'datos_recuperacion_invalidos',
   'No existe una solicitud con esos datos.': 'solicitud_recuperacion_inexistente',
-  'Debes iniciar sesion para continuar.': 'inicio_sesion_requerido',
-  'No tenes permisos para realizar esta operacion.': 'sin_permisos',
-  'Token de seguridad invalido o vencido.': 'token_invalido',
-  'El cuerpo de la solicitud debe ser JSON valido.': 'json_invalido',
-  'Metodo no permitido.': 'metodo_no_permitido',
-  'No se pudo completar la operacion en la base de datos.': 'error_base_datos',
-  'Correo, cedula o contrasena incorrectos.': 'credenciales_incorrectas',
-  'Tu cuenta todavia no esta habilitada. Un administrador debe aprobarla.': 'cuenta_sin_habilitar',
+  'Debes iniciar sesión para continuar.': 'inicio_sesion_requerido',
+  'No tenés permisos para realizar esta operación.': 'sin_permisos',
+  'Token de seguridad inválido o vencido.': 'token_invalido',
+  'El cuerpo de la solicitud debe ser JSON válido.': 'json_invalido',
+  'Método no permitido.': 'metodo_no_permitido',
+  'No se pudo completar la operación en la base de datos.': 'error_base_datos',
+  'Correo, cédula o contraseña incorrectos.': 'credenciales_incorrectas',
+  'Tu cuenta todavía no está habilitada. Un administrador debe aprobarla.': 'cuenta_sin_habilitar',
   Ingles: 'ingles',
   Configuracion: 'configuracion',
   'Cerrar sesion': 'cerrar_sesion',
@@ -197,20 +197,20 @@ const CLAVES_I18N_LEGADAS = {
   'Incidencias tecnicas': 'soporte_tecnico',
   Imagenes: 'imagenes',
   'Usuario tecnico': 'usuario_tecnico',
-  'Gestion diaria del area TI': 'gestion_diaria_del_area_ti',
-  'Portal de Gestion TI': 'portal_de_gestion_ti',
+  'Gestión diaria del área TI': 'gestion_diaria_del_area_ti',
+  'Portal de Gestión TI': 'portal_de_gestion_ti',
   'Modulos disponibles': 'modulos_disponibles',
   Cedula: 'cedula',
   Descripcion: 'descripcion',
   Categoria: 'categoria',
-  'Correo o cedula': 'correo_o_cedula',
+  'Correo o cédula': 'correo_o_cedula',
   'Inicia sesion': 'inicia_sesion',
   'Iniciar sesion': 'iniciar_sesion',
-  'Mantener sesion iniciada': 'mantener_sesion',
-  'Pedir ayuda tecnica': 'pedir_ayuda_tecnica',
+  'Mantener sesión iniciada': 'mantener_sesion',
+  'Pedir ayuda técnica': 'pedir_ayuda_tecnica',
   'Plantel tecnico-administrativo': 'plantel_tecnico_administrativo',
   'Trabajo tecnico': 'trabajo_tecnico',
-  'Gestion TI Institucional': 'gestion_ti_institucional',
+  'Gestión TI Institucional': 'gestion_ti_institucional',
   Seccion: 'seccion',
   Actualizacion: 'actualizacion',
   'Navegacion principal': 'navegacion_principal',
@@ -330,14 +330,14 @@ function traducirVariable(textoNormalizado, idioma) {
       return textoNormalizado
         .replace('Se registro la cuenta de ', 'The account for ')
         .replace(' con rol Usuario solicitante.', ' was registered with requester role.')
-        .replace(' con rol Usuario tecnico.', ' was registered with technical role.')
+        .replace(' con rol Usuario técnico.', ' was registered with technical role.')
         .replace(' con rol Usuario administrativo.', ' was registered with administrative role.');
     }
     if (textoNormalizado.startsWith('Usuario solicitante |')) {
       return textoNormalizado.replace('Usuario solicitante |', 'Requesting user |');
     }
-    if (textoNormalizado.startsWith('Usuario tecnico |')) {
-      return textoNormalizado.replace('Usuario tecnico |', 'Technical user |');
+    if (textoNormalizado.startsWith('Usuario técnico |')) {
+      return textoNormalizado.replace('Usuario técnico |', 'Technical user |');
     }
     if (textoNormalizado.startsWith('Usuario administrativo |')) {
       return textoNormalizado.replace('Usuario administrativo |', 'Administrative user |');
@@ -360,14 +360,14 @@ function traducirVariable(textoNormalizado, idioma) {
       return textoNormalizado
         .replace('The account for ', 'Se registro la cuenta de ')
         .replace(' was registered with requester role.', ' con rol Usuario solicitante.')
-        .replace(' was registered with technical role.', ' con rol Usuario tecnico.')
+        .replace(' was registered with technical role.', ' con rol Usuario técnico.')
         .replace(' was registered with administrative role.', ' con rol Usuario administrativo.');
     }
     if (textoNormalizado.startsWith('Requesting user |')) {
       return textoNormalizado.replace('Requesting user |', 'Usuario solicitante |');
     }
     if (textoNormalizado.startsWith('Technical user |')) {
-      return textoNormalizado.replace('Technical user |', 'Usuario tecnico |');
+      return textoNormalizado.replace('Technical user |', 'Usuario técnico |');
     }
     if (textoNormalizado.startsWith('Administrative user |')) {
       return textoNormalizado.replace('Administrative user |', 'Usuario administrativo |');
@@ -1164,7 +1164,7 @@ function crearOpcionesSelect(lista, opcionInicial, obtenerValor, obtenerEtiqueta
   for (let i = 0; i < lista.length; i++) {
     const item = lista[i];
     const valor = obtenerValor ? obtenerValor(item) : item;
-    const etiqueta = obtenerEtiqueta ? obtenerEtiqueta(item) : item;
+    const etiqueta = obtenerEtiqueta ? obtenerEtiqueta(item) : t(String(item));
     html += '<option value="' + escaparHtml(valor) + '">' + escaparHtml(etiqueta) + '</option>';
   }
   return html;

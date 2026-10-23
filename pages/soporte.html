@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Incidencias tecnicas | Portal de Gestion TI</title>
+    <title>Incidencias técnicas | Portal de Gestión TI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -21,7 +21,7 @@
           <div class="panel__header regla-diseno-009">
             <div>
               <h2 class="panel__title regla-diseno-010" id="titulo-panel-soporte" data-clave="pedir_ayuda_tecnica">
-                Pedir ayuda tecnica
+                Pedir ayuda técnica
               </h2>
             </div>
           </div>
@@ -48,7 +48,7 @@
                 </div>
               </div>
               <div class="input-stack regla-diseno-025">
-                <label for="soporte-categoria" data-clave="categoria">Categoria</label>
+                <label for="soporte-categoria" data-clave="categoria">Categoría</label>
                 <select
                   class="select-input regla-diseno-026"
                   id="soporte-categoria"
@@ -56,7 +56,7 @@
                 ></select>
               </div>
               <div class="input-stack regla-diseno-025">
-                <label for="soporte-mensaje" data-clave="que_esta_pasando">Que esta pasando</label>
+                <label for="soporte-mensaje" data-clave="que_esta_pasando">Qué está pasando</label>
                 <textarea
                   class="textarea-input regla-diseno-026"
                   id="soporte-mensaje"
@@ -121,13 +121,13 @@
           'cabecera-superior',
           crearCabeceraCompleta([
             { etiqueta: 'Home', enlace: 'home.html' },
-            { etiqueta: 'Incidencias tecnicas' },
+            { etiqueta: 'Incidencias técnicas' },
           ]),
         );
         mostrarEn(
           'cabecera-de-pagina',
           crearCabeceraDePagina({
-            titulo: 'Incidencias tecnicas',
+            titulo: 'Incidencias técnicas',
           }),
         );
         
@@ -175,20 +175,20 @@
         if (esSolicitante) {
           actualizarTextoSiExiste(
             'subtitulo-panel-soporte',
-            'Envia consultas y segui aca mismo si estan en revision, resueltas o denegadas.',
+            'Enviá consultas y seguí acá mismo si están en revisión, resueltas o denegadas.',
           );
         } else if (esTecnico) {
           document.getElementById('titulo-panel-soporte').textContent =
-            'Bandeja tecnica de soporte';
+            'Bandeja técnica de soporte';
           actualizarTextoSiExiste(
             'subtitulo-panel-soporte',
-            'Aca llegan los tickets para priorizarlos, responderlos y cerrarlos cuando queden resueltos.',
+            'Acá llegan los tickets para priorizarlos, responderlos y cerrarlos cuando queden resueltos.',
           );
         } else if (esAdministrativo) {
-          document.getElementById('titulo-panel-soporte').textContent = 'Gestion de soporte';
+          document.getElementById('titulo-panel-soporte').textContent = 'Gestión de soporte';
           actualizarTextoSiExiste(
             'subtitulo-panel-soporte',
-            'Desde aca podes crear consultas y revisar el avance de los tickets del portal.',
+            'Desde acá podés crear consultas y revisar el avance de los tickets del portal.',
           );
         }
         
@@ -198,7 +198,7 @@
         }
         
         function renderCategorias() {
-          let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoria</option>';
+          let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoría</option>';
           for (let i = 0; i < categoriasDeSoporte.length; i++) {
             opciones +=
               '<option value="' +
@@ -327,14 +327,14 @@
           let html = '';
           if (tickets.length === 0) {
             html =
-              '<div class="empty-inline regla-diseno-043">Todavia no hay tickets de soporte para mostrar con este perfil.</div>';
+              '<div class="empty-inline regla-diseno-043">Todavía no hay tickets de soporte para mostrar con este perfil.</div>';
           } else {
             for (let i = 0; i < tickets.length; i++) {
               let acciones = '';
               if (puedeGestionar) {
                 acciones = crearBotonesCambioEstado(tickets[i], opcionesEstadoTicket);
                 if ((tickets[i].estado === 'Resuelto' || tickets[i].estado === 'Denegado') && !tickets[i].comentarioResolucion) {
-                  acciones += '<div class="resolution-comment"><label class="input-stack"><span>Comentario de cierre</span><textarea class="textarea-input" data-comentario-ticket="' + escaparHtml(tickets[i].id) + '" placeholder="Deja una aclaracion final para este ticket"></textarea></label><button class="boton boton--primary boton--sm" data-guardar-comentario-ticket="' + escaparHtml(tickets[i].id) + '">Guardar comentario</button></div>';
+                  acciones += '<div class="resolution-comment"><label class="input-stack"><span>Comentario de cierre</span><textarea class="textarea-input" data-comentario-ticket="' + escaparHtml(tickets[i].id) + '" placeholder="Deja una aclaración final para este ticket"></textarea></label><button class="boton boton--primary boton--sm" data-guardar-comentario-ticket="' + escaparHtml(tickets[i].id) + '">Guardar comentario</button></div>';
                 }
                 acciones += crearGestionTicket(tickets[i]);
                 acciones += '<button class="boton boton--outline-danger boton--sm" data-baja-ticket="' + escaparHtml(tickets[i].id) + '" data-baja-titulo="' + escaparHtml(tickets[i].asunto) + '">Dar de baja</button>';

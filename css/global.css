@@ -3923,91 +3923,9 @@ p {
   flex-wrap: wrap;
 }
 
-.loan-resource-picker {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.loan-resource-picker .empty-inline {
-  grid-column: 1 / -1;
-}
-
-.loan-resource-option {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid var(--color-borde-suave);
-  border-radius: var(--radio-borde-medio);
-  background: var(--color-fondo-tarjeta);
-}
-
-.loan-resource-option__check {
-  min-width: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  color: var(--color-texto-principal);
-  font-weight: 700;
-}
-
-.loan-resource-option__check input {
-  width: 16px;
-  height: 16px;
-  flex: 0 0 auto;
-}
-
-.loan-resource-option__check span {
-  overflow-wrap: anywhere;
-}
-
-.loan-resource-option__qty {
-  width: 116px;
-  flex: 0 0 116px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.loan-resource-option__qty span {
-  color: var(--color-texto-secundario);
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.loan-resource-option__qty input {
-  height: 36px;
-}
-
-.loan-resource-option__qty input:disabled {
-  opacity: 0.55;
-}
-
 .loan-selector {
   display: grid;
   gap: 14px;
-}
-
-.loan-toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-}
-
-.loan-toolbar .text-input {
-  flex: 1 1 240px;
-  min-width: 0;
-}
-
-.loan-toolbar__summary {
-  margin-left: auto;
-  color: var(--color-texto-secundario);
-  font-size: 13px;
-  font-weight: 600;
 }
 
 .loan-group {
@@ -4017,97 +3935,114 @@ p {
 }
 
 .loan-group[hidden],
-.loan-resource-option[hidden],
-.loan-empty[hidden] {
+.loan-summary[hidden],
+.loan-selector [data-loan-placeholder][hidden] {
   display: none;
 }
 
-.loan-group__header {
+.loan-model-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.loan-model {
+  min-width: 0;
   display: flex;
-  width: 100%;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 0 0 6px;
-  border-bottom: 1px solid var(--color-borde-suave);
+  padding: 12px 14px;
+  border: 1px solid var(--color-borde-suave);
+  border-radius: var(--radio-borde-medio);
+  background: var(--color-fondo-tarjeta);
 }
 
-.loan-group__check {
+.loan-model:has(.loan-stepper__input:not([value='0'])) {
+  border-color: var(--color-primario);
+}
+
+.loan-model__info {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.loan-model__name {
+  overflow: hidden;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.loan-model__brand,
+.loan-model__available {
+  font-size: 0.82rem;
+  color: var(--color-texto-secundario);
+}
+
+.loan-stepper {
+  flex: 0 0 auto;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  color: var(--color-texto-principal);
+  border: 1px solid var(--color-borde-medio);
+  border-radius: var(--radio-borde-medio);
+  background: var(--color-fondo-entrada);
+  overflow: hidden;
+}
+
+.loan-stepper__button {
+  width: 34px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--color-primario);
+  font-size: 1.15rem;
   font-weight: 700;
-  text-transform: capitalize;
-}
-
-.loan-group__check input {
-  width: 16px;
-  height: 16px;
-}
-
-.loan-group__count {
-  color: var(--color-texto-secundario);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.loan-resource-option__main {
-  min-width: 0;
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-}
-
-.loan-resource-option__meta {
-  color: var(--color-texto-secundario);
-  font-size: 12px;
-  overflow-wrap: anywhere;
-}
-
-.loan-resource-option__details {
-  color: var(--color-texto-secundario);
-  font-size: 12px;
-}
-
-.loan-resource-option__details summary {
+  line-height: 1;
   cursor: pointer;
-  color: var(--color-primario-texto);
-  font-weight: 600;
 }
 
-.loan-resource-option__details dl {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 10px;
-  margin: 6px 0 0;
+.loan-stepper__button:hover {
+  background: var(--color-fondo-hover);
 }
 
-.loan-resource-option__details dt {
+.loan-stepper__input {
+  width: 44px;
+  height: 36px;
+  border: 0;
+  border-inline: 1px solid var(--color-borde-suave);
+  background: var(--color-fondo-tarjeta);
+  color: var(--color-texto-principal);
+  font: inherit;
   font-weight: 700;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
 }
 
-.loan-resource-option__details dd {
+.loan-stepper__input::-webkit-outer-spin-button,
+.loan-stepper__input::-webkit-inner-spin-button {
   margin: 0;
-  overflow-wrap: anywhere;
+  -webkit-appearance: none;
 }
 
-.loan-resource-option__link {
-  color: var(--color-primario-texto);
-  font-size: 12px;
-  font-weight: 600;
-  text-decoration: underline;
-}
-
-.loan-resource-option--unavailable {
-  opacity: 0.75;
-}
-
-.loan-resource-option:has(input[data-loan-resource]:checked) {
-  border-color: var(--color-primario);
+.loan-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--color-primario-borde);
+  border-radius: var(--radio-borde-medio);
   background: var(--color-fondo-seleccionado);
+}
+
+.loan-summary__text {
+  min-width: 0;
+  font-weight: 600;
+  color: var(--color-primario-texto);
 }
 
 .mini-kanban {
@@ -5222,7 +5157,7 @@ p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .loan-resource-picker {
+  .loan-model-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -5416,7 +5351,7 @@ p {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .loan-resource-picker {
+  .loan-model-list {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -5920,7 +5855,7 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .loan-resource-picker {
+  .loan-model-list {
     grid-template-columns: 1fr;
   }
 
@@ -7762,4 +7697,51 @@ p {
   display: grid;
   gap: 10px;
   margin-top: 10px;
+}
+
+/* Solicitud de cambio de rol */
+.role-request {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+}
+
+.role-request__panel {
+  max-width: 760px;
+  margin: 0;
+}
+
+.role-request__form {
+  display: grid;
+  gap: 20px;
+}
+
+.role-request__reason {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.role-request__hint {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: 0.82rem;
+  color: var(--color-texto-secundario);
+}
+
+.role-request__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .role-request__actions .boton {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
 }

@@ -580,19 +580,10 @@ function segEsHash(string $valor): bool {
 }
 
 function segValidarContrasenaNueva(string $contrasena): void {
-    if (\Nexus\Shared\Security\PasswordCharset::contieneEnie($contrasena)) {
-        segFalla(\Nexus\Shared\Security\PasswordCharset::MENSAJE, 400);
-    }
-    $largo = function_exists('mb_strlen') ? mb_strlen($contrasena, 'UTF-8') : strlen($contrasena);
-    if ($largo < 8 || $largo > 128
-        || !preg_match('/[A-Z]/', $contrasena) || !preg_match('/[a-z]/', $contrasena) || !preg_match('/\d/', $contrasena)) {
-        segFalla('La contrasena necesita entre 8 y 128 caracteres, una mayuscula, una minuscula y un numero.', 400);
-    }
-    $comunes = ['Password1', 'Contrasena1', 'Qwerty123', 'Abc12345', 'Admin123', 'Welcome1', 'Iloveyou1', 'Usuario1', 'Cept2026', 'Nexus123'];
-    foreach ($comunes as $comun) {
-        if (strcasecmp($contrasena, $comun) === 0) {
-            segFalla('Esa contrasena es demasiado comun. Elegi otra.', 400);
-        }
+    // Las reglas viven en PasswordRules: las usan tambien los servicios de usuario y de registro.
+    $error = \Nexus\Shared\Security\PasswordRules::error($contrasena);
+    if ($error !== null) {
+        segFalla($error, 400);
     }
 }
 

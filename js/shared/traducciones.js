@@ -1139,8 +1139,6 @@ Object.assign(traduccionesPortal.es, {
   revisa_los_campos_marcados_antes_de_continuar: 'Revisá los campos marcados antes de continuar.',
   no_se_pudo_completar_la_accion_intenta_nuevamente:
     'No se pudo completar la acción. Intentá nuevamente.',
-  la_contrasena_necesita_al_menos_7_caracteres_una_mayusc:
-    'La contraseña necesita al menos 7 caracteres, una mayúscula, una minúscula y un número.',
   solo_un_usuario_administrativo_puede_aprobar_registros:
     'Solo un usuario administrativo puede aprobar registros.',
   registro_aprobado_la_persona_ya_puede_iniciar_sesion:
@@ -1450,7 +1448,6 @@ Object.assign(traduccionesPortal.es, {
   la_contrasena_actual_no_es_correcta: 'La contraseña actual no es correcta.',
   la_contrasena_necesita_entre_8_y_128_caracteres_una_may:
     'La contraseña necesita entre 8 y 128 caracteres, una mayúscula, una minúscula y un número.',
-  la_contrasena_debe_tener_al_menos_7_caracteres: 'La contraseña debe tener al menos 7 caracteres.',
   la_descripcion_de_la_tarea_es_obligatoria: 'La descripción de la tarea es obligatoria.',
   la_fecha_deseada_es_obligatoria: 'La fecha deseada es obligatoria.',
   la_fecha_deseada_no_puede_ser_anterior_a_hoy: 'La fecha deseada no puede ser anterior a hoy.',
@@ -1723,8 +1720,6 @@ Object.assign(traduccionesPortal.en, {
   revisa_los_campos_marcados_antes_de_continuar: 'Review the highlighted fields before continuing.',
   no_se_pudo_completar_la_accion_intenta_nuevamente:
     'The action could not be completed. Please try again.',
-  la_contrasena_necesita_al_menos_7_caracteres_una_mayusc:
-    'The password needs at least 7 characters, an uppercase letter, a lowercase letter and a number.',
   solo_un_usuario_administrativo_puede_aprobar_registros:
     'Only an administrative user can approve registrations.',
   registro_aprobado_la_persona_ya_puede_iniciar_sesion:
@@ -2034,7 +2029,6 @@ Object.assign(traduccionesPortal.en, {
   la_contrasena_actual_no_es_correcta: 'The current password is not correct.',
   la_contrasena_necesita_entre_8_y_128_caracteres_una_may:
     'The password needs between 8 and 128 characters, an uppercase letter, a lowercase letter and a number.',
-  la_contrasena_debe_tener_al_menos_7_caracteres: 'The password must have at least 7 characters.',
   la_descripcion_de_la_tarea_es_obligatoria: 'The task description is required.',
   la_fecha_deseada_es_obligatoria: 'The desired date is required.',
   la_fecha_deseada_no_puede_ser_anterior_a_hoy: 'The desired date cannot be earlier than today.',

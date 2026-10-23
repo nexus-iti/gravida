@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 namespace Nexus\Features\SolicitudRegistro\Application;
-use Nexus\Shared\Security\PasswordCharset;
+use Nexus\Shared\Security\PasswordRules;
 use Nexus\Shared\Security\PasswordHasher;
 use Nexus\Features\SolicitudRegistro\Domain\SolicitudRegistroRepository;
 use Nexus\Shared\Domain\ValueObject\Cedula;
@@ -17,7 +17,7 @@ final class SolicitudRegistroService
         if(!$this->repo->registroHabilitado())throw new DomainException('El registro de nuevas cuentas esta temporalmente deshabilitado.',403);
         if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cedula, correo y contrasena son obligatorios.');
         if($d['nombre']==='')throw new DomainException('El nombre es obligatorio.');
-        if(PasswordCharset::contieneEnie($d['contrasena']))throw new DomainException(PasswordCharset::MENSAJE);
+        PasswordRules::validar($d['contrasena']);
         // El auto-registro no elige privilegios: Administrador solo se concede desde cambios_rol. El rol tecnico
         // se puede pedir, pero queda inactivo hasta que un administrador lo revise.
         $rol=Rol::desdeCliente($d['rol'])->value();$d['rol']=$rol==='Administrador'?'Solicitante':$rol;$d['hash']=$this->hasher->hash($d['contrasena']);

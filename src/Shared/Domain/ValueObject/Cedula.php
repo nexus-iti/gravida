@@ -11,7 +11,7 @@ final class Cedula
     {
         $this->value = preg_replace('/\D/', '', $value) ?? '';
         if ($this->value === '' || strlen($this->value) > 15) {
-            throw new DomainException('La cedula no es valida.');
+            throw new DomainException('La cédula no es válida.');
         }
     }
     public function value(): string { return $this->value; }

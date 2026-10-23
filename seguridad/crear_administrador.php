@@ -28,13 +28,13 @@ if ($cedula === '' || strlen($cedula) > 15 || !filter_var($correo, FILTER_VALIDA
 
 $contrasena = (string) (getenv('SGRSI_ADMIN_PASSWORD') ?: '');
 if ($contrasena === '') {
-    fwrite(STDERR, "Contrasena del administrador (una linea): ");
+    fwrite(STDERR, "Contraseña del administrador (una linea): ");
     $contrasena = rtrim((string) fgets(STDIN), "\r\n");
 }
 if (strlen($contrasena) < 12 || strlen($contrasena) > 128
     || !preg_match('/[A-Z]/', $contrasena) || !preg_match('/[a-z]/', $contrasena) || !preg_match('/\d/', $contrasena)
     || preg_match('/[\x{00D1}\x{00F1}]/u', $contrasena)) {
-    fwrite(STDERR, "La contrasena necesita entre 12 y 128 caracteres, una mayuscula, una minuscula, un numero y sin la letra enie.\n");
+    fwrite(STDERR, "La contraseña necesita entre 12 y 128 caracteres, una mayúscula, una minúscula, un número y sin la letra enie.\n");
     exit(1);
 }
 
@@ -53,9 +53,9 @@ try {
     $alta->execute([$cedula, $nombre, $apellido, $correo, segHashContrasena($contrasena)]);
 } catch (PDOException $error) {
     fwrite(STDERR, $error->getCode() === '23000'
-        ? "Ya existe una cuenta con esa cedula o ese correo.\n"
+        ? "Ya existe una cuenta con esa cédula o ese correo.\n"
         : "No se pudo crear la cuenta: " . $error->getMessage() . "\n");
     exit(1);
 }
 segRegistrarEvento($pdo, 'usuario_creado', $cedula, 'administrador inicial desde la consola del servidor');
-echo "Administrador $cedula creado. En el primer ingreso debe cambiar la contrasena y configurar el segundo factor.\n";
+echo "Administrador $cedula creado. En el primer ingreso debe cambiar la contraseña y configurar el segundo factor.\n";

@@ -15,7 +15,7 @@ final class SolicitudRegistroService
     public function crear(array $d):array
     {
         if(!$this->repo->registroHabilitado())throw new DomainException('El registro de nuevas cuentas esta temporalmente deshabilitado.',403);
-        if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cedula, correo y contrasena son obligatorios.');
+        if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cédula, correo y contraseña son obligatorios.');
         if($d['nombre']==='')throw new DomainException('El nombre es obligatorio.');
         PasswordRules::validar($d['contrasena']);
         // El auto-registro no elige privilegios: Administrador solo se concede desde cambios_rol. El rol tecnico
@@ -31,7 +31,7 @@ final class SolicitudRegistroService
     }
     public function resolver(int $id,string $estado,Cedula $admin):void
     {
-        if(!in_array($estado,['Aprobado','Rechazado'],true))throw new DomainException('Se requiere un estado de resolucion y un administrador valido.');
+        if(!in_array($estado,['Aprobado','Rechazado'],true))throw new DomainException('Se requiere un estado de resolución y un administrador válido.');
         if(!$this->repo->resolver($id,$estado,$admin))throw new DomainException('No existe una solicitud pendiente con ese identificador.',404);
     }
     private function presentar(array $f):array

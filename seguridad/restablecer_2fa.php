@@ -34,4 +34,4 @@ if ($consulta->rowCount() === 0) {
     exit(1);
 }
 segRegistrarEvento($pdo, '2fa_restablecido', $cedula, 'desde la consola del servidor');
-echo "Verificacion en dos pasos quitada para $cedula y sus sesiones cerradas.\n";
+echo "Verificación en dos pasos quitada para $cedula y sus sesiones cerradas.\n";

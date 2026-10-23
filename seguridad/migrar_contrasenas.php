@@ -29,4 +29,4 @@ foreach ($filas as $fila) {
 }
 $pdo->commit();
 
-printf("Usuarios revisados: %d. Contrasenas convertidas a hash: %d.\n", count($filas), $migradas);
+printf("Usuarios revisados: %d. Contraseñas convertidas a hash: %d.\n", count($filas), $migradas);

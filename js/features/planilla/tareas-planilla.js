@@ -221,7 +221,7 @@ async function actualizarParcelaPlanillaTA(usuarioIdParcela, datos) {
   });
   return {
     ok: true,
-    mensaje: 'Planilla actualizada. Los cambios ya estan visibles para el equipo.',
+    mensaje: 'Planilla actualizada. Los cambios ya están visibles para el equipo.',
   };
 }
 
@@ -235,7 +235,7 @@ async function eliminarParcelaPlanillaTA(usuarioIdParcela) {
   }
   const usuarioParcela = buscarUsuarioPorId(usuarioIdParcela);
   if (!usuarioParcela || !usuarioEsTecnico(usuarioParcela)) {
-    return { ok: false, mensaje: 'Solo se pueden quitar usuarios tecnicos de esta planilla.' };
+    return { ok: false, mensaje: 'Solo se pueden quitar usuarios técnicos de esta planilla.' };
   }
   const idsPersonal = await obtenerIdsPersonalBajaTA();
   let yaEstabaDadoDeBaja = false;

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Planilla de T.A. | Portal de Gestion TI</title>
+    <title>Planilla de T.A. | Portal de Gestión TI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,9 +20,9 @@
       <section class="section-block regla-diseno-072">
         <div class="section-block__header regla-diseno-104">
           <div>
-            <h2 class="section-block__title regla-diseno-048" data-clave="plantel_tecnico_administrativo">Plantel tecnico-administrativo</h2>
+            <h2 class="section-block__title regla-diseno-048" data-clave="plantel_tecnico_administrativo">Plantel técnico-administrativo</h2>
             <p class="section-block__subtitle regla-diseno-011">
-              Cada persona tiene su horario del dia y las tareas que necesita dejar visibles para el
+              Cada persona tiene su horario del día y las tareas que necesita dejar visibles para el
               equipo.
             </p>
           </div>
@@ -82,7 +82,7 @@
           let html = '';
           if (parcelas.length === 0) {
             html =
-              '<div class="empty-inline regla-diseno-043">Todavia no hay integrantes tecnico-administrativos para mostrar.</div>';
+              '<div class="empty-inline regla-diseno-043">Todavía no hay integrantes técnico-administrativos para mostrar.</div>';
           } else {
             for (let i = 0; i < parcelas.length; i++) {
               const puedeEditar = usuarioPuedeEditarParcelaPlanilla(
@@ -164,7 +164,7 @@
           }
           const usuarioId = botonEliminar.getAttribute('data-delete-parcela');
           const confirmar = window.confirm(
-            t('Seguro que queres quitar esta persona de la planilla T.A.?'),
+            t('Seguro que querés quitar esta persona de la planilla T.A.?'),
           );
           if (!confirmar) {
             return;

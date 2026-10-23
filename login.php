@@ -110,7 +110,7 @@ function verificarSegundoFactor(PDO $pdo, array $datos): void {
     $pendiente = $_SESSION['pre2fa'] ?? null;
     if (!is_array($pendiente) || time() - $pendiente['inicio'] > SEG_2FA_VENTANA_LOGIN) {
         unset($_SESSION['pre2fa']);
-        errorApi('El tiempo para ingresar el codigo vencio. Volve a escribir tu contrasena.', 401);
+        errorApi('El tiempo para ingresar el código venció. Volvé a escribir tu contraseña.', 401);
     }
     bloquearSiCorresponde($pdo, $pendiente['clave']);
 
@@ -134,9 +134,9 @@ function verificarSegundoFactor(PDO $pdo, array $datos): void {
         $_SESSION['pre2fa']['intentos'] = ($pendiente['intentos'] ?? 0) + 1;
         if ($_SESSION['pre2fa']['intentos'] >= SEG_2FA_MAX_INTENTOS) {
             unset($_SESSION['pre2fa']);
-            errorApi('Demasiados codigos incorrectos. Volve a escribir tu contrasena.', 401);
+            errorApi('Demasiados códigos incorrectos. Volvé a escribir tu contraseña.', 401);
         }
-        errorApi('El codigo no es correcto o ya fue usado. Espera el siguiente e intenta de nuevo.', 401);
+        errorApi('El código no es correcto o ya fue usado. Espera el siguiente e intenta de nuevo.', 401);
     }
 
     // Se guarda el paso usado: el mismo codigo no sirve dos veces (aunque lo capture un sitio falso).
@@ -190,7 +190,7 @@ ejecutar(function () use ($pdo): void {
     $contrasena = (string) ($datos['contrasena'] ?? '');
     $recordar = in_array((string) ($datos['recordarme'] ?? ''), ['1', 'true', 'on'], true);
     if ($identificadorEntrada === '' || $contrasena === '' || strlen($identificadorEntrada) > 150 || strlen($contrasena) > 1024) {
-        errorApi('Ingresa tu correo o cedula y tu contrasena.');
+        errorApi('Ingresa tu correo o cédula y tu contraseña.');
     }
     // Se canoniza el identificador y se resuelve la cuenta ANTES de contar intentos: el bloqueo
     // por cuenta se indexa por la cedula real, asi variar el formato (correo <-> cedula, puntos,
@@ -223,12 +223,12 @@ ejecutar(function () use ($pdo): void {
     if (!$fila || !$valida) {
         registrarIntento($pdo, $identificadorHash, false);
         segRegistrarEvento($pdo, 'login_fallido', $fila ? (string) $fila['cedula'] : null);
-        errorApi('Correo, cedula o contrasena incorrectos.', 401);
+        errorApi('Correo, cédula o contraseña incorrectos.', 401);
     }
     if ($fila['estado'] !== 'Activo') {
         // Credenciales correctas pero cuenta pendiente: no es un fallo, no se cuenta para el bloqueo.
         segRegistrarEvento($pdo, 'login_inactivo', (string) $fila['cedula']);
-        errorApi('Tu cuenta todavia no esta habilitada. Un administrador debe aprobarla.', 403);
+        errorApi('Tu cuenta todavía no está habilitada. Un administrador debe aprobarla.', 403);
     }
 
     // F-03: se migra a Argon2id/bcrypt al primer ingreso correcto.

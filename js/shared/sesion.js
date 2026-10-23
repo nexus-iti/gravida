@@ -36,7 +36,7 @@ function terminarIngreso(sesion, recordarme) {
   guardarUltimoAccesoParaAviso(sesion.ultimoAcceso || null);
   return {
     ok: true,
-    mensaje: 'Sesion iniciada.',
+    mensaje: 'Sesión iniciada.',
     usuario: usuarioEncontrado,
     ultimoAcceso: sesion.ultimoAcceso || null,
   };
@@ -64,11 +64,11 @@ async function registrarUsuario(datos) {
   if (!cedula || !nombreCompleto || !correo || !contrasena || !rol) {
     return {
       ok: false,
-      mensaje: 'Completa cedula, nombre completo, correo, contraseña y rol para continuar.',
+      mensaje: 'Completa cédula, nombre completo, correo, contraseña y rol para continuar.',
     };
   }
   if (!/^\d{8}$/.test(cedula)) {
-    return { ok: false, mensaje: 'La cedula debe tener exactamente 8 numeros.' };
+    return { ok: false, mensaje: 'La cédula debe tener exactamente 8 números.' };
   }
   const validacionContrasena = validarContrasenaSegura(contrasena);
   if (!validacionContrasena.ok) {
@@ -93,7 +93,7 @@ async function registrarUsuario(datos) {
       return {
         ok: true,
         mensaje:
-          'Solicitud enviada. Un administrador revisara tu registro antes de habilitar el acceso.',
+          'Solicitud enviada. Un administrador revisará tu registro antes de habilitar el acceso.',
         pendiente: true,
         solicitud: respuesta.solicitud,
       };
@@ -101,7 +101,7 @@ async function registrarUsuario(datos) {
     guardarUsuarioActual(respuesta.usuario, { persistir: false });
     return {
       ok: true,
-      mensaje: 'Cuenta creada. Ya podes ingresar al portal.',
+      mensaje: 'Cuenta creada. Ya podés ingresar al portal.',
       usuario: respuesta.usuario,
     };
   } catch (error) {

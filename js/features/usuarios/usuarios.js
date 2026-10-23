@@ -75,7 +75,7 @@ async function aprobarSolicitudRegistro(solicitudId) {
         estado: 'Aprobado',
       }),
     });
-    return { ok: true, mensaje: 'Registro aprobado. La persona ya puede iniciar sesion.' };
+    return { ok: true, mensaje: 'Registro aprobado. La persona ya puede iniciar sesión.' };
   } catch (error) {
     return { ok: false, mensaje: error.message };
   }

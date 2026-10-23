@@ -14,7 +14,7 @@ final class UsuarioService
     public function crear(array $d): array
     {
         if(!$this->repo->registroHabilitado())throw new DomainException('El registro de nuevas cuentas esta temporalmente deshabilitado.',403);
-        if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cedula, correo y contrasena son obligatorios.');
+        if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cédula, correo y contraseña son obligatorios.');
         if(trim($d['nombre'])==='')throw new DomainException('El nombre es obligatorio.');
         PasswordRules::validar($d['contrasena']);
         $d['hash']=password_hash($d['contrasena'],PASSWORD_DEFAULT);$d['estado']=$d['estado']==='Inactivo'?'Inactivo':'Activo';$d['rol']=Rol::desdeCliente($d['rol'])->value();
@@ -23,7 +23,7 @@ final class UsuarioService
     }
     public function baja(Cedula $c): void{if(!$this->repo->baja($c))throw new DomainException('No existe la cuenta activa indicada.',404);}
     public function cambiarContrasena(Cedula $c,string $clave): int{PasswordRules::validar($clave);$this->exigir($c);return $this->repo->cambiarContrasena($c,password_hash($clave,PASSWORD_DEFAULT));}
-    public function actualizarPerfil(Cedula $c,array $d): void{if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL))throw new DomainException('El correo no es valido.');$this->exigir($c);$this->repo->actualizarPerfil($c,$d);}
+    public function actualizarPerfil(Cedula $c,array $d): void{if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL))throw new DomainException('El correo no es válido.');$this->exigir($c);$this->repo->actualizarPerfil($c,$d);}
     public function cambiarEstado(Cedula $c,string $estado): void{$this->exigir($c);$this->repo->cambiarEstado($c,$estado==='Inactivo'?'Inactivo':'Activo');}
     private function exigir(Cedula $c): void{if(!$this->repo->existe($c))throw new DomainException('No existe el usuario indicado.',404);}
     private function presentar(array $f): array

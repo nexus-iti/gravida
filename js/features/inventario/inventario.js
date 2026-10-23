@@ -125,12 +125,12 @@ async function guardarNuevaSeccionInventario(datos) {
   }
   const nombre = String(datos && datos.nombre ? datos.nombre : '').trim();
   if (!nombre) {
-    return { ok: false, mensaje: 'Escribi un nombre para la seccion.' };
+    return { ok: false, mensaje: 'Escribí un nombre para la sección.' };
   }
   const seccionesGuardadas = await obtenerSeccionesInventario();
   for (let i = 0; i < seccionesGuardadas.length; i++) {
     if (normalizarTexto(seccionesGuardadas[i].nombre) === normalizarTexto(nombre)) {
-      return { ok: false, mensaje: 'Ya existe una seccion con ese nombre.' };
+      return { ok: false, mensaje: 'Ya existe una sección con ese nombre.' };
     }
   }
   const respuesta = await solicitarApi('api/ubicaciones.php', {
@@ -144,7 +144,7 @@ async function guardarNuevaSeccionInventario(datos) {
     actualizado: 'hoy',
     cantidadEquipos: 0,
   };
-  return { ok: true, mensaje: 'Seccion creada. Ya aparece en inventario.', seccion: nuevaSeccion };
+  return { ok: true, mensaje: 'Sección creada. Ya aparece en inventario.', seccion: nuevaSeccion };
 }
 
 function crearModalBajaSeccionInventario(idModal) {
@@ -154,8 +154,8 @@ function crearModalBajaSeccionInventario(idModal) {
     icono: 'trash-2',
     claseDialogo: 'dialogo--confirmacion-baja',
     cuerpo:
-      '<p class="dialogo__confirm-title" data-baja-seccion-resumen>Confirmar eliminacion de la seccion</p>' +
-      '<p class="dialogo__confirm-text" data-baja-seccion-texto>Se quitara del inventario.</p>' +
+      '<p class="dialogo__confirm-title" data-baja-seccion-resumen>Confirmar eliminación de la sección</p>' +
+      '<p class="dialogo__confirm-text" data-baja-seccion-texto>Se quitará del inventario.</p>' +
       '<div class="input-stack regla-diseno-025" data-baja-seccion-destino-wrap hidden>' +
       '<label for="baja-seccion-destino">Trasladar equipos a</label>' +
       '<select class="select-input regla-diseno-026" id="baja-seccion-destino" data-baja-seccion-destino></select>' +
@@ -167,7 +167,7 @@ function crearModalBajaSeccionInventario(idModal) {
 }
 
 function crearOpcionesDestinoBajaSeccion(secciones, seccionIdActual) {
-  let opciones = '<option value="">Elegir seccion destino</option>';
+  let opciones = '<option value="">Elegir sección destino</option>';
   let cantidad = 0;
   for (let i = 0; i < secciones.length; i++) {
     if (String(secciones[i].id) === String(seccionIdActual)) {
@@ -182,7 +182,7 @@ function crearOpcionesDestinoBajaSeccion(secciones, seccionIdActual) {
     cantidad++;
   }
   if (cantidad === 0) {
-    return '<option value="" disabled selected>No hay otra seccion disponible</option>';
+    return '<option value="" disabled selected>No hay otra sección disponible</option>';
   }
   return opciones;
 }
@@ -198,8 +198,8 @@ async function abrirModalBajaSeccionInventario(idModal, seccionId, nombreSeccion
   const resumen = modal.querySelector('[data-baja-seccion-resumen]');
   if (resumen) {
     resumen.textContent = nombre
-      ? 'De verdad queres eliminar la seccion "' + nombre + '"?'
-      : 'De verdad queres eliminar esta seccion?';
+      ? 'De verdad querés eliminar la sección "' + nombre + '"?'
+      : 'De verdad querés eliminar esta sección?';
   }
   abrirModal(idModal);
   const texto = modal.querySelector('[data-baja-seccion-texto]');
@@ -231,7 +231,7 @@ async function abrirModalBajaSeccionInventario(idModal, seccionId, nombreSeccion
   if (equipos.length > 0) {
     if (texto) {
       texto.textContent =
-        'Esta seccion tiene ' +
+        'Esta sección tiene ' +
         equipos.length +
         ' equipo' +
         (equipos.length === 1 ? '' : 's') +
@@ -251,7 +251,7 @@ async function abrirModalBajaSeccionInventario(idModal, seccionId, nombreSeccion
     return;
   }
   if (texto) {
-    texto.textContent = 'La seccion no tiene equipos activos. Se quitara del inventario.';
+    texto.textContent = 'La sección no tiene equipos activos. Se quitará del inventario.';
   }
   if (botonConfirmar) {
     botonConfirmar.disabled = false;
@@ -309,7 +309,7 @@ async function eliminarSeccionInventario(seccionId, seccionDestinoId) {
     }
   }
   if (!seccionEliminada) {
-    return { ok: false, mensaje: 'No encontramos esa seccion.' };
+    return { ok: false, mensaje: 'No encontramos esa sección.' };
   }
   const equiposGuardados = await obtenerEquiposInventario();
   let equiposATrasladar = 0;
@@ -329,7 +329,7 @@ async function eliminarSeccionInventario(seccionId, seccionDestinoId) {
     if (!seccionDestino) {
       return {
         ok: false,
-        mensaje: 'Elegí una seccion destino para trasladar los equipos antes de eliminar.',
+        mensaje: 'Elegí una sección destino para trasladar los equipos antes de eliminar.',
       };
     }
   }
@@ -341,14 +341,14 @@ async function eliminarSeccionInventario(seccionId, seccionDestinoId) {
     ok: true,
     mensaje:
       equiposATrasladar > 0
-        ? 'Seccion eliminada. Se trasladaron ' +
+        ? 'Sección eliminada. Se trasladaron ' +
           equiposATrasladar +
           ' equipo' +
           (equiposATrasladar === 1 ? '' : 's') +
           ' a ' +
           seccionDestino.nombre +
           '.'
-        : 'Seccion eliminada. No tenia equipos activos asociados.',
+        : 'Sección eliminada. No tenía equipos activos asociados.',
     seccion: seccionEliminada,
   };
 }
@@ -360,12 +360,12 @@ async function guardarNuevoEquipoInventario(datos) {
   }
   const tipoValor = String(datos && datos.tipo ? datos.tipo : '').trim();
   if (!tipoValor) {
-    return { ok: false, mensaje: 'Elegí un tipo de equipo valido.' };
+    return { ok: false, mensaje: 'Elegí un tipo de equipo válido.' };
   }
   const tipo = obtenerTipoEquipoInventario(tipoValor);
   const seccion = await obtenerSeccionInventarioPorId(datos && datos.seccionId);
   if (!seccion) {
-    return { ok: false, mensaje: 'Elegí una seccion valida.' };
+    return { ok: false, mensaje: 'Elegí una sección válida.' };
   }
   const nombre = String(datos && datos.nombre ? datos.nombre : '').trim() || tipo.etiqueta;
   const respuesta = await solicitarApi('api/equipos.php', {
@@ -396,7 +396,7 @@ async function guardarNuevoEquipoInventario(datos) {
   };
   return {
     ok: true,
-    mensaje: 'Equipo dado de alta. Ya aparece en la seccion.',
+    mensaje: 'Equipo dado de alta. Ya aparece en la sección.',
     equipo: nuevoEquipo,
   };
 }
@@ -409,7 +409,7 @@ function crearModalBajaEquipoInventario(idModal) {
     claseDialogo: 'dialogo--confirmacion-baja',
     cuerpo:
       '<p class="dialogo__confirm-title" data-baja-equipo-resumen>Confirmar baja del equipo</p>' +
-      '<p class="dialogo__confirm-text">Se quitara del inventario y quedara registrado en historial de cambios.</p>',
+      '<p class="dialogo__confirm-text">Se quitará del inventario y quedará registrado en historial de cambios.</p>',
     pieDeModal:
       '<button class="boton boton--outline regla-diseno-005" type="button" data-cancel-delete-equipo>No, cancelar</button>' +
       '<button class="boton boton--outline-danger regla-diseno-005" type="button" data-confirm-delete-equipo>Si, dar de baja</button>',
@@ -427,8 +427,8 @@ function abrirModalBajaEquipoInventario(idModal, equipoId, nombreEquipo) {
   const resumen = modal.querySelector('[data-baja-equipo-resumen]');
   if (resumen) {
     resumen.textContent = nombre
-      ? 'Confirmas que queres dar de baja "' + nombre + '"?'
-      : 'Confirmas que queres dar de baja este equipo?';
+      ? 'Confirmás que querés dar de baja "' + nombre + '"?'
+      : 'Confirmás que querés dar de baja este equipo?';
   }
   abrirModal(idModal);
 }
@@ -495,10 +495,10 @@ async function moverEquipoInventario(equipoId, seccionDestinoId) {
   }
   const seccionDestino = await obtenerSeccionInventarioPorId(seccionDestinoId);
   if (!seccionDestino) {
-    return { ok: false, mensaje: 'Elegí una seccion de destino valida.' };
+    return { ok: false, mensaje: 'Elegí una sección de destino válida.' };
   }
   if (equipoActual.seccionId === seccionDestino.id) {
-    return { ok: false, mensaje: 'El equipo ya esta en esa seccion.' };
+    return { ok: false, mensaje: 'El equipo ya está en esa sección.' };
   }
   await solicitarApi('api/equipos.php', {
     method: 'PATCH',

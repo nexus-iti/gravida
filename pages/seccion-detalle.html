@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Detalle de seccion | Inventario</title>
+    <title>Detalle de sección | Inventario</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -94,7 +94,7 @@
           );
           const accionesDelHeader =
             crearCajaDeBusqueda('Buscar equipo...', 'input-buscar-equipo') +
-            '<button class="boton boton--outline regla-diseno-005" type="button" data-edit-seccion>Renombrar seccion</button>' +
+            '<button class="boton boton--outline regla-diseno-005" type="button" data-edit-seccion>Renombrar sección</button>' +
             '<button class="boton boton--primary regla-diseno-005" type="button" data-modal-open="modal-equipo">' +
             crearIcono('plus', 'icon-sm') +
             '<span>Agregar equipo</span></button>';
@@ -115,7 +115,7 @@
               crearEstadoVacio({
                 icono: 'building-2',
                 titulo: 'No hay secciones disponibles',
-                descripcion: 'Crea una seccion para poder cargar equipos.',
+                descripcion: 'Crea una sección para poder cargar equipos.',
               }),
             );
             dibujarIconos();
@@ -126,8 +126,8 @@
           if (equiposDeLaSeccion.length === 0) {
             htmlDeFilas = crearEstadoVacio({
               icono: 'monitor',
-              titulo: 'No hay equipos en esta seccion',
-              descripcion: 'Usa Agregar equipo para dar de alta televisores, all in one, torres, perifericos o monitores.',
+              titulo: 'No hay equipos en esta sección',
+              descripcion: 'Usa Agregar equipo para dar de alta televisores, all in one, torres, periféricos o monitores.',
             });
           } else {
             for (let i = 0; i < equiposDeLaSeccion.length; i++) {
@@ -158,7 +158,7 @@
           '</div>' +
           '<div class="input-stack regla-diseno-025">' +
           '<label for="nuevo-equipo-observaciones">Observaciones</label>' +
-          '<textarea class="textarea-input regla-diseno-026" id="nuevo-equipo-observaciones" rows="3" placeholder="Detalle opcional del estado o ubicacion dentro del salon." data-clave-placeholder="detalle_opcional_equipo"></textarea>' +
+          '<textarea class="textarea-input regla-diseno-026" id="nuevo-equipo-observaciones" rows="3" placeholder="Detalle opcional del estado o ubicación dentro del salón." data-clave-placeholder="detalle_opcional_equipo"></textarea>' +
           '</div>';
         const pieModalEquipo =
           '<button class="boton boton--outline regla-diseno-005" type="button" data-modal-close data-clave="cancelar">Cancelar</button>' +
@@ -166,9 +166,9 @@
         const cuerpoModalTraslado =
           '<p class="dialogo__move-summary" id="equipo-traslado-resumen">Selecciona un equipo para trasladar.</p>' +
           '<div class="input-stack regla-diseno-025">' +
-          '<label for="equipo-seccion-destino-lista">Seccion destino</label>' +
+          '<label for="equipo-seccion-destino-lista">Sección destino</label>' +
           '<select class="select-input regla-diseno-026" id="equipo-seccion-destino-lista">' +
-          '<option value="">Elegir seccion</option>' +
+          '<option value="">Elegir sección</option>' +
           '</select>' +
           '</div>';
         const pieModalTraslado =
@@ -202,7 +202,7 @@
         }
 
         function opcionesSeccionesDestinoTraslado(equipo) {
-          let opciones = '<option value="">Elegir seccion</option>';
+          let opciones = '<option value="">Elegir sección</option>';
           let cantidadDestinos = 0;
           for (let i = 0; i < seccionesInventario.length; i++) {
             if (String(seccionesInventario[i].id) === String(equipo.seccionId)) {
@@ -217,7 +217,7 @@
               '</option>';
           }
           if (cantidadDestinos === 0) {
-            return '<option value="" disabled>No hay otra seccion disponible</option>';
+            return '<option value="" disabled>No hay otra sección disponible</option>';
           }
           return opciones;
         }
@@ -229,7 +229,7 @@
             return;
           }
           document.getElementById('equipo-traslado-resumen').textContent =
-            equipoTrasladoSeleccionado.nombre + ' | Seccion actual: ' + equipoTrasladoSeleccionado.seccion;
+            equipoTrasladoSeleccionado.nombre + ' | Sección actual: ' + equipoTrasladoSeleccionado.seccion;
           const selectDestino = document.getElementById('equipo-seccion-destino-lista');
           selectDestino.innerHTML = opcionesSeccionesDestinoTraslado(equipoTrasladoSeleccionado);
           sincronizarSelectPersonalizado(selectDestino);
@@ -305,7 +305,7 @@
         document.addEventListener('click', async function (evento) {
           const botonEditarSeccion = evento.target.closest('[data-edit-seccion]');
           if (botonEditarSeccion && seccionActual) {
-            const nombre = prompt('Nuevo nombre de la seccion', seccionActual.nombre);
+            const nombre = prompt('Nuevo nombre de la sección', seccionActual.nombre);
             if (nombre && nombre !== seccionActual.nombre) {
               await solicitarApi('api/ubicaciones.php', { method:'PATCH', body:JSON.stringify({ id:seccionActual.id, nombre:nombre }) });
               window.location.reload();

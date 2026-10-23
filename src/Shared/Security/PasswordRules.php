@@ -12,8 +12,8 @@ use Nexus\Shared\DomainException;
  */
 final class PasswordRules
 {
-    public const MENSAJE = 'La contrasena necesita entre 8 y 128 caracteres, una mayuscula, una minuscula y un numero.';
-    public const MENSAJE_COMUN = 'Esa contrasena es demasiado comun. Elegi otra.';
+    public const MENSAJE = 'La contraseña necesita entre 8 y 128 caracteres, una mayúscula, una minúscula y un número.';
+    public const MENSAJE_COMUN = 'Esa contraseña es demasiado comun. Elegí otra.';
 
     private const LARGO_MINIMO = 8;
     private const LARGO_MAXIMO = 128;

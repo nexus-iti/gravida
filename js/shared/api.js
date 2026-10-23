@@ -31,8 +31,8 @@ async function renovarTokenCsrf() {
   if (!respuesta.ok || !estado || !estado.autenticado || !estado.csrf) {
     throw new Error(
       typeof t === 'function'
-        ? t('La sesion vencio. Volve a iniciar sesion.')
-        : 'La sesion vencio. Volve a iniciar sesion.',
+        ? t('La sesión venció. Volvé a iniciar sesión.')
+        : 'La sesión venció. Volvé a iniciar sesión.',
     );
   }
   if (typeof obtenerUsuarioActual === 'function' && typeof guardarUsuarioActual === 'function') {
@@ -84,8 +84,8 @@ async function solicitarApi(ruta, opciones, reintentarCsrf = true) {
   } catch (error) {
     throw new Error(
       typeof t === 'function'
-        ? t('El servidor devolvio una respuesta invalida.')
-        : 'El servidor devolvio una respuesta invalida.',
+        ? t('El servidor devolvió una respuesta inválida.')
+        : 'El servidor devolvió una respuesta inválida.',
       { cause: error },
     );
   }
@@ -130,13 +130,13 @@ async function solicitarLogin(identificador, contrasena, recordarme) {
   } catch (error) {
     throw new Error(
       typeof t === 'function'
-        ? t('El servidor devolvio una respuesta invalida.')
-        : 'El servidor devolvio una respuesta invalida.',
+        ? t('El servidor devolvió una respuesta inválida.')
+        : 'El servidor devolvió una respuesta inválida.',
       { cause: error },
     );
   }
   if (!respuesta.ok || (datos && datos.status === 'error')) {
-    const mensaje = (datos && (datos.message || datos.error)) || 'No se pudo iniciar sesion.';
+    const mensaje = (datos && (datos.message || datos.error)) || 'No se pudo iniciar sesión.';
     throw new Error(typeof t === 'function' ? t(mensaje) : mensaje);
   }
   return datos && datos.status === 'success' ? datos.data : datos;

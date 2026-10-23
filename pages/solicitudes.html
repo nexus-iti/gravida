@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Solicitudes de servicio | Portal de Gestion TI</title>
+    <title>Solicitudes de servicio | Portal de Gestión TI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -58,7 +58,7 @@
               <textarea
                 class="textarea-input regla-diseno-026"
                 id="solicitud-detalle"
-                placeholder="Ej. Instalar software, dejar el salon pronto o preparar material didactico."
+                placeholder="Ej. Instalar software, dejar el salón pronto o preparar material didáctico."
                 required
                data-clave-placeholder="ej_servicio"></textarea>
             </div>
@@ -168,21 +168,21 @@
         if (esSolicitante) {
           actualizarTextoSiExiste(
             'subtitulo-panel-solicitud',
-            'Envia solicitudes y mira aca mismo como avanza cada preparacion.',
+            'Enviá solicitudes y mirá acá mismo cómo avanza cada preparación.',
           );
         } else if (esTecnico) {
           document.getElementById('titulo-panel-solicitud').textContent =
-            'Bandeja tecnica de solicitudes';
+            'Bandeja técnica de solicitudes';
           actualizarTextoSiExiste(
             'subtitulo-panel-solicitud',
-            'Aca llegan los pedidos de preparacion para revisarlos y actualizar su estado.',
+            'Acá llegan los pedidos de preparación para revisarlos y actualizar su estado.',
           );
         } else if (esAdministrativo) {
           document.getElementById('titulo-panel-solicitud').textContent =
-            'Gestion de solicitudes';
+            'Gestión de solicitudes';
           actualizarTextoSiExiste(
             'subtitulo-panel-solicitud',
-            'Desde aca podes crear solicitudes y revisar el estado de las que llegan al portal.',
+            'Desde acá podés crear solicitudes y revisar el estado de las que llegan al portal.',
           );
         }
         
@@ -196,9 +196,9 @@
           if (tipoSeleccionado) {
             tituloPanel.textContent = tipoSeleccionado;
           } else if (esTecnico) {
-            tituloPanel.textContent = 'Bandeja tecnica de solicitudes';
+            tituloPanel.textContent = 'Bandeja técnica de solicitudes';
           } else if (esAdministrativo) {
-            tituloPanel.textContent = 'Gestion de solicitudes';
+            tituloPanel.textContent = 'Gestión de solicitudes';
           } else {
             tituloPanel.textContent = 'Pedir un servicio';
           }
@@ -276,7 +276,7 @@
           let html = '';
           if (solicitudes.length === 0) {
             html =
-              '<div class="empty-inline regla-diseno-043">Todavia no hay solicitudes de servicio para mostrar con este perfil.</div>';
+              '<div class="empty-inline regla-diseno-043">Todavía no hay solicitudes de servicio para mostrar con este perfil.</div>';
           } else {
             for (let i = 0; i < solicitudes.length; i++) {
               let acciones = '';

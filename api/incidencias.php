@@ -14,7 +14,7 @@ ejecutar(function() use($servicio,$sesionActual): void {
     $usuario=new Cedula((string)$sesionActual['cedula']);
     $puedeGestionar=in_array($sesionActual['rol'],['Tecnico_Asistente','Administrador'],true);
     if($metodo==='GET'){
-        if(texto($_GET['bajas']??'',1)==='1'){if(!$puedeGestionar) throw new DomainException('No tenes permisos para gestionar incidencias.',403);responder($servicio->listarBajas());}
+        if(texto($_GET['bajas']??'',1)==='1'){if(!$puedeGestionar) throw new DomainException('No tenés permisos para gestionar incidencias.',403);responder($servicio->listarBajas());}
         responder($servicio->listar($usuario,$puedeGestionar));
     }
     $datos=cuerpoJson();
@@ -24,7 +24,7 @@ ejecutar(function() use($servicio,$sesionActual): void {
         responder(['ok'=>true,'id'=>(string)$id],201);
     }
     $id=entero($datos['id']??null,'id');
-    if(!$puedeGestionar) throw new DomainException('No tenes permisos para gestionar incidencias.',403);
+    if(!$puedeGestionar) throw new DomainException('No tenés permisos para gestionar incidencias.',403);
     if($metodo==='DELETE'){$servicio->baja($id);responder(['ok'=>true]);}
     $accion=texto($datos['accion']??'',30);
     if($accion==='comentar') $servicio->comentar($id,texto($datos['comentario']??'',65535));

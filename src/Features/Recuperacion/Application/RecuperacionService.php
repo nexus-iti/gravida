@@ -33,10 +33,10 @@ final class RecuperacionService
     }
     public function gestionar(int $id,string $accion,Cedula $responsable):array
     {
-        $s=$this->repo->buscarPendiente($id);if(!$s)throw new DomainException('La solicitud ya no esta pendiente.',409);
-        if($s['cedula']===$responsable->value())throw new DomainException('No podes gestionar tu propia solicitud de recuperacion.',403);
+        $s=$this->repo->buscarPendiente($id);if(!$s)throw new DomainException('La solicitud ya no está pendiente.',409);
+        if($s['cedula']===$responsable->value())throw new DomainException('No podés gestionar tu propia solicitud de recuperación.',403);
         if($accion==='tomar'){$this->repo->tomar($id,(int)$s['id_ticket'],$responsable);return ['ok'=>true];}
-        if(!in_array($accion,['resolver','rechazar'],true))throw new DomainException('Accion no valida.');
+        if(!in_array($accion,['resolver','rechazar'],true))throw new DomainException('Acción no valida.');
         $temporal=$accion==='resolver'?'Nx'.random_int(10000000,99999999).'!':null;$hash=$temporal===null?null:$this->hasher->hash($temporal);
         if($temporal!==null&&!$this->hasher->verify($temporal,(string)$hash))throw new \RuntimeException('No se pudo validar la contraseña temporal.');
         $this->repo->resolver($id,$s,$responsable,$temporal,$hash);return ['ok'=>true,'estado'=>$accion==='resolver'?'Resuelto':'Rechazado'];

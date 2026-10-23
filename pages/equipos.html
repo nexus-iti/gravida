@@ -62,9 +62,9 @@
         const cuerpoModalTraslado =
           '<p class="dialogo__move-summary" id="equipo-traslado-resumen">Selecciona un equipo para trasladar.</p>' +
           '<div class="input-stack regla-diseno-025">' +
-          '<label for="equipo-seccion-destino-lista">Seccion destino</label>' +
+          '<label for="equipo-seccion-destino-lista">Sección destino</label>' +
           '<select class="select-input regla-diseno-026" id="equipo-seccion-destino-lista">' +
-          '<option value="">Elegir seccion</option>' +
+          '<option value="">Elegir sección</option>' +
           '</select>' +
           '</div>';
         const pieModalTraslado =
@@ -86,7 +86,7 @@
           mostrarMensajeFormulario('mensaje-equipos', texto, tipo);
         }
         function opcionesSeccionesDestinoTraslado(equipo) {
-          let opciones = '<option value="">Elegir seccion</option>';
+          let opciones = '<option value="">Elegir sección</option>';
           let cantidadDestinos = 0;
           for (let i = 0; i < seccionesInventario.length; i++) {
             if (String(seccionesInventario[i].id) === String(equipo.seccionId)) {
@@ -101,7 +101,7 @@
               '</option>';
           }
           if (cantidadDestinos === 0) {
-            return '<option value="" disabled>No hay otra seccion disponible</option>';
+            return '<option value="" disabled>No hay otra sección disponible</option>';
           }
           return opciones;
         }
@@ -117,7 +117,7 @@
             return;
           }
           document.getElementById('equipo-traslado-resumen').textContent =
-            equipoTrasladoSeleccionado.nombre + ' | Seccion actual: ' + equipoTrasladoSeleccionado.seccion;
+            equipoTrasladoSeleccionado.nombre + ' | Sección actual: ' + equipoTrasladoSeleccionado.seccion;
           const selectDestino = document.getElementById('equipo-seccion-destino-lista');
           selectDestino.innerHTML = opcionesSeccionesDestinoTraslado(equipoTrasladoSeleccionado);
           sincronizarSelectPersonalizado(selectDestino);

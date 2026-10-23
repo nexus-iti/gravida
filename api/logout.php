@@ -6,4 +6,4 @@ exigirSesion();
 exigirCsrf();
 segRegistrarEvento($pdo, 'logout', (string) exigirSesion()['cedula']);
 segCerrarSesion();
-responder(null,200,'Sesion cerrada.');
+responder(null,200,'Sesión cerrada.');

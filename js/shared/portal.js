@@ -42,7 +42,7 @@ function manejarErrorCliente(error, mostrarMensaje, mensaje) {
     window.console.error(error);
   }
   const texto =
-    mensaje || (error && error.message) || 'No se pudo completar la accion. Intenta nuevamente.';
+    mensaje || (error && error.message) || 'No se pudo completar la acción. Intenta nuevamente.';
   if (typeof mostrarMensaje === 'function') {
     mostrarMensaje(texto, 'error');
     return;

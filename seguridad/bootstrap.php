@@ -224,7 +224,7 @@ function segExigirHttps(): void {
     // El despliegue institucional es exclusivamente interno: HTTP se admite cuando
     // ambos extremos pertenecen a rangos privados. Internet continúa exigiendo HTTPS.
     if (!segEsHttps() && !segEsLocal() && !segEsLanPrivada()) {
-        segFalla('Conexion no segura: HTTP solo esta permitido dentro de la red LAN privada.', 403);
+        segFalla('Conexión no segura: HTTP solo está permitido dentro de la red LAN privada.', 403);
     }
 }
 
@@ -236,7 +236,7 @@ function segLimitarPeticiones(string $grupo, int $maximo, int $ventanaSegundos, 
     $manejador = @fopen($archivo, 'c+');
     if ($manejador === false || !flock($manejador, LOCK_EX)) {
         // Nunca en silencio: queda en el log de PHP y en seguridad_eventos (la BD no depende del disco local).
-        error_log('segLimitarPeticiones: no se pudo usar ' . $archivo . ' (grupo ' . $grupo . ')');
+        error_log('seglimitarpeticiones: no se pudo usar ' . $archivo . ' (grupo ' . $grupo . ')');
         segRegistrarEvento(null, 'limite_no_disponible', segUsuario()['cedula'] ?? null, $grupo);
         if ($manejador !== false) {
             fclose($manejador);
@@ -275,7 +275,7 @@ function segLimitarPeticiones(string $grupo, int $maximo, int $ventanaSegundos, 
         }
         $espera = max(1, $datos['inicio'] + $ventanaSegundos - $ahora);
         header('Retry-After: ' . $espera);
-        segFalla('Demasiadas solicitudes. Espera unos segundos y volve a intentar.', 429);
+        segFalla('Demasiadas solicitudes. Espera unos segundos y volvé a intentar.', 429);
     }
 }
 
@@ -349,7 +349,7 @@ function segFiltroTemprano(): void {
     $baneo = segSegundosDeBaneo();
     if ($baneo > 0) {
         header('Retry-After: ' . $baneo);
-        segFalla('Tu conexion quedo bloqueada temporalmente por exceso de solicitudes.', 429, ['codigo' => 'bloqueada']);
+        segFalla('Tu conexión quedó bloqueada temporalmente por exceso de solicitudes.', 429, ['codigo' => 'bloqueada']);
     }
     segLimitarTamanoCuerpo();
     segLimitarPeticiones('api', SEG_API_PETICIONES_POR_IP, 60);
@@ -358,7 +358,7 @@ function segFiltroTemprano(): void {
 function segExigirRegistroAbierto(): void {
     if (segModoAtaque()) {
         header('Retry-After: 900');
-        segFalla('El registro esta cerrado temporalmente. Intenta mas tarde.', 503);
+        segFalla('El registro está cerrado temporalmente. Intenta más tarde.', 503);
     }
 }
 
@@ -504,7 +504,7 @@ function segVerificarCsrf(): void {
     }
     $token = (string) ($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '');
     if ($token === '' || !hash_equals(segCsrf(), $token)) {
-        segFalla('La sesion de seguridad expiro. Recarga la pagina.', 403, ['codigo' => 'csrf']);
+        segFalla('La sesión de seguridad expiró. Recarga la página.', 403, ['codigo' => 'csrf']);
     }
 }
 
@@ -539,11 +539,11 @@ function segCargarUsuario(PDO $pdo): ?array {
 function segExigirRol(array $roles): array {
     $usuario = segUsuario();
     if ($usuario === null) {
-        segFalla('Necesitas iniciar sesion.', 401, ['codigo' => 'sesion']);
+        segFalla('Necesitas iniciar sesión.', 401, ['codigo' => 'sesion']);
     }
     if (!in_array($usuario['rol'], $roles, true)) {
         segRegistrarEvento(null, 'acceso_denegado', $usuario['cedula'], ($_SERVER['REQUEST_METHOD'] ?? '') . ' ' . basename((string) ($_SERVER['SCRIPT_NAME'] ?? '')));
-        segFalla('Tu rol no tiene permiso para esta accion.', 403, ['codigo' => 'rol']);
+        segFalla('Tu rol no tiene permiso para esta acción.', 403, ['codigo' => 'rol']);
     }
     return $usuario;
 }
@@ -649,6 +649,6 @@ function segProtegerApi(PDO $pdo, array $publicos = []): void {
     $metodo = $_SERVER['REQUEST_METHOD'] ?? 'GET';
     // Denegar por defecto: solo lo listado como publico funciona sin sesion.
     if (segUsuario() === null && !in_array($metodo, $publicos, true)) {
-        segFalla('Necesitas iniciar sesion.', 401, ['codigo' => 'sesion']);
+        segFalla('Necesitas iniciar sesión.', 401, ['codigo' => 'sesion']);
     }
 }

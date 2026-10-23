@@ -5,13 +5,13 @@ const ETIQUETAS_EVENTOS_SEGURIDAD = {
   login_ok: 'Ingreso correcto',
   login_fallido: 'Contrasena incorrecta',
   login_bloqueado: 'Cuenta bloqueada por intentos',
-  '2fa_fallido': 'Codigo de verificacion incorrecto',
-  '2fa_activado': 'Verificacion en dos pasos activada',
-  '2fa_desactivado': 'Verificacion en dos pasos desactivada',
-  '2fa_restablecido': 'Verificacion en dos pasos restablecida',
+  '2fa_fallido': 'Código de verificación incorrecto',
+  '2fa_activado': 'Verificación en dos pasos activada',
+  '2fa_desactivado': 'Verificación en dos pasos desactivada',
+  '2fa_restablecido': 'Verificación en dos pasos restablecida',
   sesiones_cerradas: 'Se cerraron todas las sesiones',
   contrasena_cambiada: 'Contrasena cambiada',
-  logout: 'Cierre de sesion',
+  logout: 'Cierre de sesión',
 };
 
 const EVENTOS_DE_ALERTA = ['login_fallido', 'login_bloqueado', '2fa_fallido'];
@@ -68,7 +68,7 @@ function mostrarAvisoUltimoAcceso(idContenedor) {
     ? 'Este es tu primer ingreso registrado.'
     : 'Tu ingreso anterior fue el ' +
       formatearFechaSeguridad(dato.fecha) +
-      ' desde la direccion ' +
+      ' desde la dirección ' +
       dato.ip +
       '.';
   contenedor.innerHTML =
@@ -76,7 +76,7 @@ function mostrarAvisoUltimoAcceso(idContenedor) {
     crearIcono('shield-check', 'icon-sm') +
     '<p>' +
     escaparHtml(texto) +
-    ' Si no fuiste vos, <a href="cuenta.html#panel-seguridad">cambia tu contrasena y cerra las demas sesiones</a>.</p>' +
+    ' Si no fuiste vos, <a href="cuenta.html#panel-seguridad">cambia tu contraseña y cerrá las demás sesiones</a>.</p>' +
     '<button type="button" class="aviso-seguridad__cerrar" aria-label="Cerrar aviso">&times;</button>' +
     '</div>';
   contenedor.querySelector('.aviso-seguridad__cerrar').addEventListener('click', function () {
@@ -132,9 +132,9 @@ function iniciarPanelSeguridadCuenta() {
       bloqueDosFactores.innerHTML =
         '<p class="seguridad-estado seguridad-estado--ok">' +
         crearIcono('shield-check', 'icon-sm') +
-        ' Activada. Para entrar se pide tu contrasena y el codigo del telefono.</p>' +
+        ' Activada. Para entrar se pide tu contraseña y el código del teléfono.</p>' +
         (estado.obligatorio
-          ? '<p class="seguridad-nota">Es obligatoria para los administradores. Si perdes el telefono, pedile a otro administrador que la restablezca.</p>'
+          ? '<p class="seguridad-nota">Es obligatoria para los administradores. Si perdés el teléfono, pedile a otro administrador que la restablezca.</p>'
           : '<button type="button" class="boton boton--outline-danger boton--sm" id="boton-desactivar-2fa">Desactivar</button>');
       const botonDesactivar = document.getElementById('boton-desactivar-2fa');
       if (botonDesactivar) {
@@ -144,15 +144,15 @@ function iniciarPanelSeguridadCuenta() {
       bloqueDosFactores.innerHTML =
         '<p class="seguridad-estado seguridad-estado--alerta">' +
         crearIcono('shield-alert', 'icon-sm') +
-        ' Desactivada. Si alguien consigue tu contrasena con un correo falso, puede entrar.</p>' +
+        ' Desactivada. Si alguien consigue tu contraseña con un correo falso, puede entrar.</p>' +
         '<form id="form-iniciar-2fa" class="seguridad-form">' +
         campo(
           'contrasena-2fa',
-          'Tu contrasena actual',
+          'Tu contraseña actual',
           'password',
           'autocomplete="current-password"',
         ) +
-        '<button type="submit" class="boton boton--primary boton--sm">Activar verificacion en dos pasos</button></form>';
+        '<button type="submit" class="boton boton--primary boton--sm">Activar verificación en dos pasos</button></form>';
       document.getElementById('form-iniciar-2fa').addEventListener('submit', iniciarActivacion);
     }
     dibujarIconos();
@@ -168,8 +168,8 @@ function iniciarPanelSeguridadCuenta() {
       document.getElementById('mensaje-seguridad').innerHTML = '';
       bloqueDosFactores.innerHTML =
         '<ol class="seguridad-pasos">' +
-        '<li>Instala Google Authenticator, Microsoft Authenticator o Authy en tu telefono.</li>' +
-        '<li>Agrega una cuenta con esta clave (o abri el enlace desde el telefono):</li></ol>' +
+        '<li>Instala Google Authenticator, Microsoft Authenticator o Authy en tu teléfono.</li>' +
+        '<li>Agrega una cuenta con esta clave (o abrí el enlace desde el teléfono):</li></ol>' +
         '<code class="auth-2fa__secreto">' +
         escaparHtml(respuesta.secreto.replace(/(.{4})/g, '$1 ').trim()) +
         '</code>' +
@@ -179,7 +179,7 @@ function iniciarPanelSeguridadCuenta() {
         '<form id="form-confirmar-2fa" class="seguridad-form">' +
         campo(
           'codigo-confirmar-2fa',
-          'Codigo de 6 digitos que muestra la app',
+          'Código de 6 dígitos que muestra la app',
           'text',
           atributosCodigo,
         ) +
@@ -199,7 +199,7 @@ function iniciarPanelSeguridadCuenta() {
         codigo: document.getElementById('codigo-confirmar-2fa').value,
       });
       mostrarMensaje(
-        'Verificacion en dos pasos activada. Desde ahora se pide el codigo al entrar.',
+        'Verificación en dos pasos activada. Desde ahora se pide el código al entrar.',
         'success',
       );
       cargar();
@@ -213,11 +213,11 @@ function iniciarPanelSeguridadCuenta() {
       '<form id="form-desactivar-2fa" class="seguridad-form">' +
       campo(
         'contrasena-desactivar',
-        'Tu contrasena actual',
+        'Tu contraseña actual',
         'password',
         'autocomplete="current-password"',
       ) +
-      campo('codigo-desactivar', 'Codigo actual de la app', 'text', atributosCodigo) +
+      campo('codigo-desactivar', 'Código actual de la app', 'text', atributosCodigo) +
       '<button type="submit" class="boton boton--outline-danger boton--sm">Desactivar</button></form>';
     document
       .getElementById('form-desactivar-2fa')
@@ -229,7 +229,7 @@ function iniciarPanelSeguridadCuenta() {
             contrasena: document.getElementById('contrasena-desactivar').value,
             codigo: document.getElementById('codigo-desactivar').value,
           });
-          mostrarMensaje('Verificacion en dos pasos desactivada.', 'info');
+          mostrarMensaje('Verificación en dos pasos desactivada.', 'info');
           cargar();
         } catch (error) {
           mostrarMensaje(error.message, 'error');
@@ -240,7 +240,7 @@ function iniciarPanelSeguridadCuenta() {
   function renderActividad(eventos) {
     if (!eventos.length) {
       tablaActividad.innerHTML =
-        '<p class="seguridad-nota">Todavia no hay actividad registrada.</p>';
+        '<p class="seguridad-nota">Todavía no hay actividad registrada.</p>';
       return;
     }
     let filas = '';
@@ -261,7 +261,7 @@ function iniciarPanelSeguridadCuenta() {
         '</td></tr>';
     }
     tablaActividad.innerHTML =
-      '<div class="tabla-wrap"><table class="tabla seguridad-tabla"><thead><tr><th>Fecha</th><th>Evento</th><th>Direccion IP</th><th>Navegador</th></tr></thead><tbody>' +
+      '<div class="tabla-wrap"><table class="tabla seguridad-tabla"><thead><tr><th>Fecha</th><th>Evento</th><th>Dirección IP</th><th>Navegador</th></tr></thead><tbody>' +
       filas +
       '</tbody></table></div>';
   }
@@ -283,7 +283,7 @@ function iniciarPanelSeguridadCuenta() {
     evento.preventDefault();
     const nueva = document.getElementById('contrasena-nueva').value;
     if (nueva !== document.getElementById('contrasena-repetir').value) {
-      mostrarMensaje('La contrasena nueva y su repeticion no coinciden.', 'error');
+      mostrarMensaje('La contraseña nueva y su repetición no coinciden.', 'error');
       return;
     }
     const validacion = validarContrasenaSegura(nueva);
@@ -298,7 +298,7 @@ function iniciarPanelSeguridadCuenta() {
         nueva: nueva,
       });
       formContrasena.reset();
-      mostrarMensaje('Contrasena cambiada. Se cerraron todas tus otras sesiones.', 'success');
+      mostrarMensaje('Contraseña cambiada. Se cerraron todas tus otras sesiones.', 'success');
       cargar();
     } catch (error) {
       mostrarMensaje(error.message, 'error');
@@ -311,7 +311,7 @@ function iniciarPanelSeguridadCuenta() {
       if (
         !window.confirm(
           t(
-            'Se cerraran todas tus sesiones en otros navegadores y dispositivos. Esta sesion sigue abierta. Continuar?',
+            'Se cerrarán todas tus sesiones en otros navegadores y dispositivos. Esta sesión sigue abierta. Continuar?',
           ),
         )
       ) {
@@ -335,9 +335,9 @@ function iniciarPanelSeguridadCuenta() {
       if (
         !window.confirm(
           t(
-            'Se quitara la verificacion en dos pasos de la cedula ' +
+            'Se quitará la verificación en dos pasos de la cédula ' +
               cedula +
-              ' y se cerraran sus sesiones. Continuar?',
+              ' y se cerrarán sus sesiones. Continuar?',
           ),
         )
       ) {
@@ -347,7 +347,7 @@ function iniciarPanelSeguridadCuenta() {
         await enviarAccionSeguridad({ accion: 'restablecer_2fa', cedula: cedula });
         formRestablecer.reset();
         mostrarMensaje(
-          'Verificacion restablecida. En su proximo ingreso debera configurarla de nuevo.',
+          'Verificación restablecida. En su próximo ingreso deberá configurarla de nuevo.',
           'success',
         );
       } catch (error) {

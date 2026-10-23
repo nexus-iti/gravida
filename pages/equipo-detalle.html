@@ -77,9 +77,9 @@
 
         function opcionesSeccionesDestinoHtml() {
           if (seccionesDestino.length === 0) {
-            return '<option value="" disabled>No hay otra seccion disponible</option>';
+            return '<option value="" disabled>No hay otra sección disponible</option>';
           }
-          let opciones = '<option value="">Elegir seccion</option>';
+          let opciones = '<option value="">Elegir sección</option>';
           for (let i = 0; i < seccionesDestino.length; i++) {
             opciones +=
               '<option value="' +
@@ -101,10 +101,10 @@
           }
           const seccionDestino = await obtenerSeccionInventarioPorId(seccionDestinoId);
           if (!seccionDestino) {
-            return { ok: false, mensaje: 'Elegi una seccion de destino valida.' };
+            return { ok: false, mensaje: 'Elegí una sección de destino válida.' };
           }
           if (equipo.seccionId === seccionDestino.id) {
-            return { ok: false, mensaje: 'El equipo ya esta en esa seccion.' };
+            return { ok: false, mensaje: 'El equipo ya está en esa sección.' };
           }
           await solicitarApi('api/equipos.php', {
             method: 'PATCH',
@@ -137,12 +137,12 @@
             html += '<option value="' + escaparHtml(categoriasEquipo[i].nombre) + '"' + (seleccionada ? ' selected' : '') + '>' + escaparHtml(categoriasEquipo[i].nombre) + '</option>';
           }
           if (!incluida && equipo.tipo) html = '<option value="' + escaparHtml(equipo.tipo) + '" selected>' + escaparHtml(equipo.tipo) + ' (actual)</option>' + html;
-          return html || '<option value="" disabled>No hay categorias activas</option>';
+          return html || '<option value="" disabled>No hay categorías activas</option>';
         }
         let historialHtml = '';
         if (historial.length === 0) {
           historialHtml =
-            '<div class="empty-inline regla-diseno-043">Sin movimientos registrados todavia.</div>';
+            '<div class="empty-inline regla-diseno-043">Sin movimientos registrados todavía.</div>';
         } else {
           for (let i = 0; i < historial.length; i++) {
             historialHtml += crearItemHistorialCompacto(historial[i]);
@@ -150,7 +150,7 @@
         }
         const cuerpoModalTraslado =
           '<div class="input-stack regla-diseno-025">' +
-          '<label for="equipo-seccion-destino">Seccion destino</label>' +
+          '<label for="equipo-seccion-destino">Sección destino</label>' +
           '<select class="select-input regla-diseno-026" id="equipo-seccion-destino">' +
           opcionesSeccionesDestinoHtml() +
           '</select>' +
@@ -177,14 +177,14 @@
               id: 'modal-editar-equipo',
               titulo: 'Editar equipo',
               icono: 'pencil',
-              cuerpo: '<form id="form-editar-equipo" class="auth-form"><div class="field-grid"><label class="input-stack"><span>Nombre</span><input class="text-input" id="editar-equipo-nombre" required value="' + escaparHtml(equipo.nombre) + '"></label><label class="input-stack"><span>Categoria</span><select class="select-input" id="editar-equipo-tipo" required>' + opcionesCategoriaEquipo() + '</select></label><label class="input-stack"><span>Marca</span><input class="text-input" id="editar-equipo-marca" value="' + escaparHtml(equipo.marca || '') + '"></label><label class="input-stack"><span>Estado</span><select class="select-input" id="editar-equipo-estado"><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option></select></label></div><label class="input-stack"><span>Observaciones</span><textarea class="textarea-input" id="editar-equipo-observaciones">' + escaparHtml(equipo.observaciones || '') + '</textarea></label></form>',
+              cuerpo: '<form id="form-editar-equipo" class="auth-form"><div class="field-grid"><label class="input-stack"><span>Nombre</span><input class="text-input" id="editar-equipo-nombre" required value="' + escaparHtml(equipo.nombre) + '"></label><label class="input-stack"><span>Categoría</span><select class="select-input" id="editar-equipo-tipo" required>' + opcionesCategoriaEquipo() + '</select></label><label class="input-stack"><span>Marca</span><input class="text-input" id="editar-equipo-marca" value="' + escaparHtml(equipo.marca || '') + '"></label><label class="input-stack"><span>Estado</span><select class="select-input" id="editar-equipo-estado"><option value="Disponible">Disponible</option><option value="Mantenimiento">Mantenimiento</option></select></label></div><label class="input-stack"><span>Observaciones</span><textarea class="textarea-input" id="editar-equipo-observaciones">' + escaparHtml(equipo.observaciones || '') + '</textarea></label></form>',
               pieDeModal: '<button class="boton boton--outline" type="button" data-modal-close>Cancelar</button><button class="boton boton--primary" type="submit" form="form-editar-equipo">Guardar cambios</button>',
             }),
         );
         const observaciones = equipo.observaciones || 'Sin observaciones cargadas.';
         const botonTrasladoDeshabilitado =
-          seccionesDestino.length === 0 ? ' disabled title="No hay otra seccion disponible"' : '';
-        const detalleHtml = ` <section class="tarjeta detail-card regla-diseno-044"> <header class="detail-title-row regla-diseno-045"> <div class="detail-title-with-icon regla-diseno-046"> <span class="list-row__icon-wrap list-row__icon-wrap--muted regla-diseno-047">${crearIcono(iconoEquipo, 'icon-md')}</span> <h2 class="detail-title regla-diseno-048">${obtenerTextoSeguro(equipo.nombre)}</h2> </div> <span class="etiqueta etiqueta--success regla-diseno-049">${obtenerTextoSeguro(equipo.estado)}</span> </header> <div class="detail-fields regla-diseno-050"> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">ID</span> <span class="detail-field__value mono regla-diseno-041">${obtenerTextoSeguro(equipo.id)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="seccion">Seccion</span> <a class="detail-field__value detail-field__value--link regla-diseno-041" href="seccion-detalle.html?id=${encodeURIComponent(equipo.seccionId)}">${obtenerTextoSeguro(equipo.seccion)}</a> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="tipo">Tipo</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(tipoEquipo)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">Marca</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(equipo.marca || '-')}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">Alta</span> <span class="detail-field__value regla-diseno-041">${obtenerFechaSegura(equipo.fechaAlta)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="actualizacion">Actualizacion</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(equipo.actualizado)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="estado">Estado</span> <span class="detail-field__value detail-field__value--success regla-diseno-041">${obtenerTextoSeguro(equipo.estado)}</span> </div> </div> <div class="detail-section regla-diseno-053"> <span class="detail-section__label regla-diseno-054">Observaciones</span> <p class="detail-section__text regla-diseno-055">${obtenerTextoSeguro(observaciones)}</p> </div> <div class="detail-actions regla-diseno-056"> <button class="boton boton--sm boton--outline regla-diseno-034" type="button" data-modal-open="modal-traslado-equipo"${botonTrasladoDeshabilitado}> ${crearIcono('move-right', 'icon-sm')} <span>Trasladar</span> </button> <button class="boton boton--sm boton--outline-danger regla-diseno-034" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}" data-equipo-nombre="${obtenerTextoSeguro(equipo.nombre)}"> ${crearIcono('trash-2', 'icon-sm')} <span>Dar de baja</span> </button> </div> </section> <aside class="tarjeta"> <h3 style="font-size:18px;font-weight:600;margin-bottom:20px;">Historial reciente</h3> <div class="timeline-compact">${historialHtml}</div> </aside> `;
+          seccionesDestino.length === 0 ? ' disabled title="No hay otra sección disponible"' : '';
+        const detalleHtml = ` <section class="tarjeta detail-card regla-diseno-044"> <header class="detail-title-row regla-diseno-045"> <div class="detail-title-with-icon regla-diseno-046"> <span class="list-row__icon-wrap list-row__icon-wrap--muted regla-diseno-047">${crearIcono(iconoEquipo, 'icon-md')}</span> <h2 class="detail-title regla-diseno-048">${obtenerTextoSeguro(equipo.nombre)}</h2> </div> <span class="etiqueta etiqueta--success regla-diseno-049">${obtenerTextoSeguro(equipo.estado)}</span> </header> <div class="detail-fields regla-diseno-050"> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">ID</span> <span class="detail-field__value mono regla-diseno-041">${obtenerTextoSeguro(equipo.id)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="seccion">Sección</span> <a class="detail-field__value detail-field__value--link regla-diseno-041" href="seccion-detalle.html?id=${encodeURIComponent(equipo.seccionId)}">${obtenerTextoSeguro(equipo.seccion)}</a> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="tipo">Tipo</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(tipoEquipo)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">Marca</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(equipo.marca || '-')}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052">Alta</span> <span class="detail-field__value regla-diseno-041">${obtenerFechaSegura(equipo.fechaAlta)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="actualizacion">Actualización</span> <span class="detail-field__value regla-diseno-041">${obtenerTextoSeguro(equipo.actualizado)}</span> </div> <div class="detail-field regla-diseno-051"> <span class="detail-field__label regla-diseno-052" data-clave="estado">Estado</span> <span class="detail-field__value detail-field__value--success regla-diseno-041">${obtenerTextoSeguro(equipo.estado)}</span> </div> </div> <div class="detail-section regla-diseno-053"> <span class="detail-section__label regla-diseno-054">Observaciones</span> <p class="detail-section__text regla-diseno-055">${obtenerTextoSeguro(observaciones)}</p> </div> <div class="detail-actions regla-diseno-056"> <button class="boton boton--sm boton--outline regla-diseno-034" type="button" data-modal-open="modal-traslado-equipo"${botonTrasladoDeshabilitado}> ${crearIcono('move-right', 'icon-sm')} <span>Trasladar</span> </button> <button class="boton boton--sm boton--outline-danger regla-diseno-034" type="button" data-delete-equipo="${obtenerTextoSeguro(equipo.id)}" data-equipo-nombre="${obtenerTextoSeguro(equipo.nombre)}"> ${crearIcono('trash-2', 'icon-sm')} <span>Dar de baja</span> </button> </div> </section> <aside class="tarjeta"> <h3 style="font-size:18px;font-weight:600;margin-bottom:20px;">Historial reciente</h3> <div class="timeline-compact">${historialHtml}</div> </aside> `;
         mostrarEn('cuadrilla-de-detalle', detalleHtml);
         const accionesDetalle = document.querySelector('.detail-actions');
         if (accionesDetalle) {

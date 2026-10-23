@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Prestamos | Portal de Gestion TI</title>
+    <title>Préstamos | Portal de Gestión TI</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -21,7 +21,7 @@
           <div class="panel__header regla-diseno-009">
             <div>
               <h2 class="panel__title regla-diseno-010" id="titulo-panel-prestamo" data-clave="solicitar_un_prestamo">
-                Solicitar un prestamo
+                Solicitar un préstamo
               </h2>
             </div>
           </div>
@@ -29,7 +29,7 @@
             <form id="form-prestamo" class="auth-form regla-diseno-033">
               <div class="field-grid regla-diseno-024">
                 <div class="input-stack regla-diseno-025">
-                  <label for="prestamo-categoria" data-clave="filtrar_por_categoria">Filtrar por categoria</label>
+                  <label for="prestamo-categoria" data-clave="categoria">Categoría</label>
                   <select
                     class="select-input regla-diseno-026"
                     id="prestamo-categoria"
@@ -77,11 +77,11 @@
                 ></select>
               </div>
               <div class="input-stack regla-diseno-025">
-                <label for="prestamo-detalle" data-clave="para_que_se_necesita">Para que se necesita</label>
+                <label for="prestamo-detalle" data-clave="para_que_se_necesita">Para qué se necesita</label>
                 <textarea
                   class="textarea-input regla-diseno-026"
                   id="prestamo-detalle"
-                  placeholder="Ej. Prueba de programacion en el Teorico 3 con el grupo de la mañana."
+                  placeholder="Ej. Prueba de programación en el Teórico 3 con el grupo de la mañana."
                   required
                  data-clave-placeholder="ej_prestamo"></textarea>
               </div>
@@ -135,7 +135,7 @@
         mostrarEn(
           'cabecera-de-pagina',
           crearCabeceraDePagina({
-            titulo: 'Prestamos de equipos',
+            titulo: 'Préstamos de equipos',
           }),
         );
         
@@ -185,21 +185,21 @@
         if (esSolicitante) {
           actualizarTextoSiExiste(
             'subtitulo-panel-prestamo',
-            'Envia pedidos y segui aca mismo si fueron aprobados, siguen pendientes o fueron denegados.',
+            'Envia pedidos y seguí acá mismo si fueron aprobados, siguen pendientes o fueron denegados.',
           );
         } else if (esTecnico) {
           document.getElementById('titulo-panel-prestamo').textContent =
-            'Bandeja tecnica de prestamos';
+            'Bandeja técnica de préstamos';
           actualizarTextoSiExiste(
             'subtitulo-panel-prestamo',
-            'Aca llegan los pedidos para que el equipo tecnico los revise y les de respuesta.',
+            'Acá llegan los pedidos para que el equipo técnico los revise y les de respuesta.',
           );
         } else if (esAdministrativo) {
           document.getElementById('titulo-panel-prestamo').textContent =
-            'Gestion de prestamos';
+            'Gestión de préstamos';
           actualizarTextoSiExiste(
             'subtitulo-panel-prestamo',
-            'Desde aca podes crear pedidos y revisar los prestamos que llegan al sistema.',
+            'Desde acá podés crear pedidos y revisar los préstamos que llegan al sistema.',
           );
         }
         
@@ -220,9 +220,12 @@
           nombresCategoriasCatalogo = datosCategorias[1].map(function (categoria) {
             return categoria.nombre;
           });
-          // El selector filtra la lista: solo ofrece los tipos que tienen equipos.
-          const grupos = agruparEquiposPorTipo(equiposPrestamoDisponibles, nombresCategoriasCatalogo);
-          let opciones = '<option value= data-clave="todas_las_categorias">Todas las categorias</option>';
+          // Solo se ofrecen las categorías con equipos disponibles; hasta elegir una no se lista nada.
+          const grupos = agruparEquiposPorTipo(
+            equiposPrestamoDisponibles.filter(equipoEstaDisponibleParaPrestamo),
+            nombresCategoriasCatalogo,
+          );
+          let opciones = '<option value="" data-clave="elegir_categoria">Elegir categoría</option>';
           for (let i = 0; i < grupos.length; i++) {
             opciones +=
               '<option value="' + escaparHtml(grupos[i].clave) + '">' + escaparHtml(grupos[i].etiqueta) + '</option>';
@@ -303,7 +306,7 @@
           let html = '';
           if (prestamos.length === 0) {
             html =
-              '<div class="empty-inline regla-diseno-043">Todavia no hay prestamos para mostrar con este perfil.</div>';
+              '<div class="empty-inline regla-diseno-043">Todavía no hay préstamos para mostrar con este perfil.</div>';
           } else {
             for (let i = 0; i < prestamos.length; i++) {
               let acciones = '';
@@ -315,7 +318,7 @@
                 }
                 if (prestamos[i].estado === 'Aprobado' || prestamos[i].estado === 'Denegado' || prestamos[i].estado === 'Devuelto') {
                   if (!prestamos[i].comentarioResolucion) {
-                    acciones += '<label class="input-stack"><span>' + escaparHtml(t('Comentario asociado')) + '</span><textarea class="textarea-input" data-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '" placeholder="' + escaparAtributo(t('Escribi un comentario sobre el prestamo')) + '"></textarea></label><button class="boton boton--outline boton--sm" data-guardar-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '">' + escaparHtml(t('Guardar comentario')) + '</button>';
+                    acciones += '<label class="input-stack"><span>' + escaparHtml(t('Comentario asociado')) + '</span><textarea class="textarea-input" data-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '" placeholder="' + escaparAtributo(t('Escribí un comentario sobre el préstamo')) + '"></textarea></label><button class="boton boton--outline boton--sm" data-guardar-comentario-prestamo="' + escaparHtml(prestamos[i].id) + '">' + escaparHtml(t('Guardar comentario')) + '</button>';
                   }
                 }
                 if (prestamos[i].estado === 'Pendiente' || prestamos[i].estado === 'Aprobado') {
@@ -415,7 +418,7 @@
           try {
             const recursosSeleccionados = obtenerRecursosSeleccionados();
             if (!recursosSeleccionados.ok) {
-              return;
+              throw new Error(recursosSeleccionados.mensaje);
             }
             await guardarNuevoPrestamo({
               recursosDetalle: recursosSeleccionados.recursos,

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bateria de ataques F-01..F-11 contra una instalacion LOCAL de prueba (usa las cuentas de ejemplo de database.sql).
+# Bateria de ataques F-01..F-11 contra una instalacion LOCAL de prueba (necesita las cuentas 57324099 y 57847417, que database.sql ya no trae: crearlas antes o adaptar el script al seed de containers/seed).
 # Incluye las defensas de la 3ra entrega: verificacion en dos pasos, cuenta robada, proxy, modo de ataque y bloqueo de IP.
 # Uso (Git Bash):  bash seguridad/pruebas_ataques.sh
 # ATENCION: solo contra una base de PRUEBA. Bloquea 15 min la cuenta 57324099, activa el segundo factor de 57847417

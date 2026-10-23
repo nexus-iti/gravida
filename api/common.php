@@ -96,21 +96,37 @@ function autorizarEndpoint(string $recurso): ?array {
             segExigirRegistroAbierto();
             segLimitarPeticiones('registro', SEG_REGISTROS_POR_HORA, 3600, true);
         }
+        // Cota propia de las escrituras publicas: sin ella solo rige el bucket generico de la API.
+        if ($recurso === 'reportes_error') {
+            segLimitarPeticiones('reportes-error', SEG_REPORTES_POR_HORA, 3600, true);
+        }
+        if ($recurso === 'recuperacion') {
+            segLimitarPeticiones('recuperacion', SEG_RECUPERACIONES_POR_HORA, 3600, true);
+        }
         return null;
     }
     $usuario = exigirSesion();
     $administrador = ['Administrador'];
     $gestion = ['Tecnico_Asistente', 'Administrador'];
+    // Deny por defecto: un recurso que no figura aca no se atiende con "cualquier sesion".
+    $conocidos = ['cambios_rol', 'catalogos', 'configuracion', 'equipos', 'foto_perfil', 'historial', 'incidencias',
+        'planilla_ta', 'prestamos', 'recuperacion', 'reportes_error', 'servicios', 'solicitudes_registro',
+        'tareas', 'ubicaciones', 'usuarios'];
+    if (!in_array($recurso, $conocidos, true)) {
+        errorApi('No tenes permisos para realizar esta operacion.', 403);
+    }
     if ((in_array($recurso, ['catalogos', 'configuracion'], true) && $metodo !== 'GET')
         || $recurso === 'solicitudes_registro'
         || ($recurso === 'usuarios' && in_array($metodo, ['POST', 'DELETE'], true))
         || ($recurso === 'cambios_rol' && $metodo !== 'POST')) {
         $usuario = exigirRol($administrador);
-    } elseif (in_array($recurso, ['planilla_ta', 'reportes_error'], true)) {
+    } elseif (in_array($recurso, ['planilla_ta', 'reportes_error', 'historial', 'configuracion'], true)) {
+        // Auditoria, configuracion y tablero de tareas son datos operativos de TI: el Solicitante no los lee.
         $usuario = exigirRol($gestion);
     } elseif ($recurso === 'recuperacion') {
         $usuario = exigirRol($gestion);
-    } elseif (in_array($recurso, ['equipos', 'ubicaciones', 'tareas'], true) && $metodo !== 'GET') {
+    } elseif ($recurso === 'tareas'
+        || (in_array($recurso, ['equipos', 'ubicaciones'], true) && $metodo !== 'GET')) {
         $usuario = exigirRol($gestion);
     } elseif (in_array($recurso, ['incidencias', 'prestamos', 'servicios'], true) && $metodo === 'POST') {
         $usuario = exigirRol(['Solicitante', 'Administrador']);

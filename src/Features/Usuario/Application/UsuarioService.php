@@ -22,7 +22,7 @@ final class UsuarioService
         return $this->presentar(['cedula'=>$d['cedula']->value(),'nombre'=>$d['nombre'],'apellido'=>$d['apellido'],'correo_electronico'=>$d['correo'],'estado'=>$d['estado'],'rol'=>$d['rol'],'descripcion'=>'','fecha_registro'=>date('Y-m-d'),'foto_perfil'=>'','debe_cambiar_contrasena'=>0]);
     }
     public function baja(Cedula $c): void{if(!$this->repo->baja($c))throw new DomainException('No existe la cuenta activa indicada.',404);}
-    public function cambiarContrasena(Cedula $c,string $clave): void{if(strlen($clave)<7)throw new DomainException('La contraseña debe tener al menos 7 caracteres.');$this->validarCaracteres($clave);$this->exigir($c);$this->repo->cambiarContrasena($c,password_hash($clave,PASSWORD_DEFAULT));}
+    public function cambiarContrasena(Cedula $c,string $clave): int{if(strlen($clave)<7)throw new DomainException('La contraseña debe tener al menos 7 caracteres.');$this->validarCaracteres($clave);$this->exigir($c);return $this->repo->cambiarContrasena($c,password_hash($clave,PASSWORD_DEFAULT));}
     public function actualizarPerfil(Cedula $c,array $d): void{if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL))throw new DomainException('El correo no es valido.');$this->exigir($c);$this->repo->actualizarPerfil($c,$d);}
     public function cambiarEstado(Cedula $c,string $estado): void{$this->exigir($c);$this->repo->cambiarEstado($c,$estado==='Inactivo'?'Inactivo':'Activo');}
     private function validarCaracteres(string $clave): void{if(PasswordCharset::contieneEnie($clave))throw new DomainException(PasswordCharset::MENSAJE);}

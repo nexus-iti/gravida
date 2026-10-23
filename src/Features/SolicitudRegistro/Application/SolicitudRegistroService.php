@@ -18,7 +18,15 @@ final class SolicitudRegistroService
         if(!filter_var($d['correo'],FILTER_VALIDATE_EMAIL)||$d['contrasena']==='')throw new DomainException('Cedula, correo y contrasena son obligatorios.');
         if($d['nombre']==='')throw new DomainException('El nombre es obligatorio.');
         if(PasswordCharset::contieneEnie($d['contrasena']))throw new DomainException(PasswordCharset::MENSAJE);
-        $d['rol']=Rol::desdeCliente($d['rol'])->value();$d['hash']=$this->hasher->hash($d['contrasena']);$id=$this->repo->crearConUsuario($d);
+        // El auto-registro no elige privilegios: Administrador solo se concede desde cambios_rol. El rol tecnico
+        // se puede pedir, pero queda inactivo hasta que un administrador lo revise.
+        $rol=Rol::desdeCliente($d['rol'])->value();$d['rol']=$rol==='Administrador'?'Solicitante':$rol;$d['hash']=$this->hasher->hash($d['contrasena']);
+        try{$id=$this->repo->crearConUsuario($d);}
+        catch(\PDOException $e){
+            // Cedula o correo ya tomados: misma respuesta que un alta nueva, asi el registro no sirve para saber quien existe.
+            if($e->getCode()!=='23000')throw $e;
+            return ['ok'=>true,'solicitud'=>['id'=>'0','cedula'=>$d['cedula']->value()]];
+        }
         return ['ok'=>true,'solicitud'=>['id'=>(string)$id,'cedula'=>$d['cedula']->value()]];
     }
     public function resolver(int $id,string $estado,Cedula $admin):void

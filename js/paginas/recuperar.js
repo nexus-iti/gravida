@@ -25,12 +25,13 @@ document.getElementById('form-recuperar').addEventListener('submit', async funct
       '<div class="form-message form-message--success recovery-result"><span>' +
       escaparRecuperacion(textoRecuperacion('Solicitud registrada correctamente')) +
       '</span><small>' +
-      escaparRecuperacion(textoRecuperacion('Guardá este código para consultar el estado:')) +
-      '</small><strong class="mono recovery-code">' +
-      escaparRecuperacion(respuesta.codigo) +
-      '</strong></div>';
+      escaparRecuperacion(
+        textoRecuperacion(
+          'Si los datos corresponden a una cuenta activa, un técnico te entregará el código de seguimiento después de verificar tu identidad.',
+        ),
+      ) +
+      '</small></div>';
     document.getElementById('con-cedula').value = document.getElementById('rec-cedula').value;
-    document.getElementById('con-codigo').value = respuesta.codigo;
   } catch (error) {
     mensajeRecuperacion.innerHTML =
       '<div class="form-message form-message--error">' +

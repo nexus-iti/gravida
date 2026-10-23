@@ -8,7 +8,7 @@ ejecutar(function()use($servicio):void{
     if($_SERVER['REQUEST_METHOD']==='GET')responder($servicio->estado($cedula,$admin,SEG_2FA_OBLIGATORIO_ADMIN));
     exigirCsrf();$d=cuerpoJson();$accion=texto($d['accion']??'',30);segLimitarPeticiones('cuenta-'.$cedula->value(),10,900,true);
     if($accion==='iniciar_2fa')responder($servicio->iniciar($cedula,(string)($d['contrasena']??'')));
-    if($accion==='confirmar_2fa'){$servicio->confirmar($cedula,(string)($d['codigo']??''));responder(['ok'=>true]);}
+    if($accion==='confirmar_2fa'){$servicio->confirmar($cedula,(string)($d['codigo']??''),(string)($d['codigoActual']??''));responder(['ok'=>true]);}
     if($accion==='desactivar_2fa'){$servicio->desactivar($cedula,(string)($d['contrasena']??''),(string)($d['codigo']??''),$admin&&SEG_2FA_OBLIGATORIO_ADMIN);responder(['ok'=>true]);}
     if($accion==='restablecer_2fa'){if(!$admin)throw new DomainException('No tenes permisos para realizar esta operacion.',403);$servicio->restablecer($cedula,new Cedula(texto($d['cedula']??'',15)));responder(['ok'=>true]);}
     if($accion==='cerrar_sesiones'){$version=$servicio->cerrarSesiones($cedula);actualizarSesion($version);responder(['ok'=>true,'csrf'=>segCsrf()]);}

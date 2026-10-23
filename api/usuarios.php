@@ -27,7 +27,9 @@ ejecutar(function()use($servicio,$sesionActual):void{
     $accion=texto($d['accion']??'',30);
     if($accion==='cambiar_contrasena'){
         if(($sesionActual['cedula']??'')!==$cedula->value()&&!$esAdmin)throw new DomainException('No podes cambiar la contraseña de otro usuario.',403);
-        $servicio->cambiarContrasena($cedula,texto($d['contrasena']??'',255));
+        $version=$servicio->cambiarContrasena($cedula,texto($d['contrasena']??'',255));
+        // Las demas sesiones del titular quedan revocadas; la que hizo el cambio sigue valida.
+        if(($sesionActual['cedula']??'')===$cedula->value()){$_SESSION['usuario']['version']=$version;session_regenerate_id(true);segReenviarCookie();}
     }elseif($accion==='actualizar_perfil'){
         if(($sesionActual['cedula']??'')!==$cedula->value()&&!$esAdmin)throw new DomainException('No podes modificar el perfil de otro usuario.',403);
         [$nombre,$apellido]=dividirNombre(texto($d['nombreCompleto']??'',161));

@@ -62,6 +62,10 @@ services:
       DB_NAME: nexus
       DB_USER: ${DB_USER:-nexus_app}
       DB_PASSWORD: ${DB_PASSWORD:?definir en containers/.env}
+      # El unico par que ve php-fpm es el front (red interna). Se confia en el para leer la IP real
+      # del cliente (CF-Connecting-IP / X-Forwarded-For): sin esto los limites, el bloqueo y el
+      # baneo por IP serian un solo cubo compartido por todos los clientes.
+      SGRSI_PROXIES_CONFIABLES: ${SGRSI_PROXIES_CONFIABLES:-10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
     volumes:
       - uploads:/var/www/html/uploads
     depends_on:

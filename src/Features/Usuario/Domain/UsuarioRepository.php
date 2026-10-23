@@ -8,7 +8,7 @@ interface UsuarioRepository
     public function existe(Cedula $cedula): bool;
     public function crear(array $datos): void;
     public function baja(Cedula $cedula): bool;
-    public function cambiarContrasena(Cedula $cedula,string $hash): void;
+    public function cambiarContrasena(Cedula $cedula,string $hash): int;
     public function actualizarPerfil(Cedula $cedula,array $datos): void;
     public function cambiarEstado(Cedula $cedula,string $estado): void;
     public function registroHabilitado(): bool;

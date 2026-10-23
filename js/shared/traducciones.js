@@ -773,18 +773,19 @@ Object.assign(traduccionesPortal.es, {
     'Creá una solicitud y consultá su avance sin iniciar sesión. Un técnico o administrador verificará el caso antes de emitir una contraseña temporal.',
   pasos_recuperacion: 'Pasos de recuperación',
   crea_ticket: 'Creá el ticket',
-  guarda_codigo: 'Guardá el código',
+  guarda_codigo: 'Pedí el código a un técnico',
   consulta_respuesta: 'Consultá la respuesta',
   crear_solicitud: 'Crear solicitud',
   datos_registrados: 'Ingresá los mismos datos registrados en tu cuenta.',
   correo_registrado: 'Correo registrado',
   crear_ticket: 'Crear ticket',
   consultar_solicitud: 'Consultar solicitud',
-  usar_codigo_seguimiento: 'Usá el código de seguimiento entregado al crear el ticket.',
+  usar_codigo_seguimiento: 'Usá el código de seguimiento que te entregó el técnico.',
   codigo_seguimiento: 'Código de seguimiento',
   consultar_estado: 'Consultar estado',
   solicitud_registrada: 'Solicitud registrada correctamente',
-  guarda_codigo_consulta: 'Guardá este código para consultar el estado:',
+  guarda_codigo_consulta:
+    'Si los datos corresponden a una cuenta activa, un técnico te entregará el código de seguimiento después de verificar tu identidad.',
   estado_etiqueta: 'Estado:',
   contrasena_temporal: 'Tu contraseña temporal',
   credencial_un_solo_uso:
@@ -827,18 +828,19 @@ Object.assign(traduccionesPortal.en, {
     'Create a request and check its progress without signing in. A technician or administrator will verify the case before issuing a temporary password.',
   pasos_recuperacion: 'Recovery steps',
   crea_ticket: 'Create the ticket',
-  guarda_codigo: 'Save the code',
+  guarda_codigo: 'Ask a technician for the code',
   consulta_respuesta: 'Check the response',
   crear_solicitud: 'Create request',
   datos_registrados: 'Enter the same information registered with your account.',
   correo_registrado: 'Registered email',
   crear_ticket: 'Create ticket',
   consultar_solicitud: 'Check request',
-  usar_codigo_seguimiento: 'Use the tracking code provided when the ticket was created.',
+  usar_codigo_seguimiento: 'Use the tracking code the technician gave you.',
   codigo_seguimiento: 'Tracking code',
   consultar_estado: 'Check status',
   solicitud_registrada: 'Request created successfully',
-  guarda_codigo_consulta: 'Save this code to check the status:',
+  guarda_codigo_consulta:
+    'If the details match an active account, a technician will give you the tracking code after verifying your identity.',
   estado_etiqueta: 'Status:',
   contrasena_temporal: 'Your temporary password',
   credencial_un_solo_uso:
@@ -1137,8 +1139,6 @@ Object.assign(traduccionesPortal.es, {
   revisa_los_campos_marcados_antes_de_continuar: 'Revisá los campos marcados antes de continuar.',
   no_se_pudo_completar_la_accion_intenta_nuevamente:
     'No se pudo completar la acción. Intentá nuevamente.',
-  la_contrasena_necesita_al_menos_7_caracteres_una_mayusc:
-    'La contraseña necesita al menos 7 caracteres, una mayúscula, una minúscula y un número.',
   solo_un_usuario_administrativo_puede_aprobar_registros:
     'Solo un usuario administrativo puede aprobar registros.',
   registro_aprobado_la_persona_ya_puede_iniciar_sesion:
@@ -1448,7 +1448,6 @@ Object.assign(traduccionesPortal.es, {
   la_contrasena_actual_no_es_correcta: 'La contraseña actual no es correcta.',
   la_contrasena_necesita_entre_8_y_128_caracteres_una_may:
     'La contraseña necesita entre 8 y 128 caracteres, una mayúscula, una minúscula y un número.',
-  la_contrasena_debe_tener_al_menos_7_caracteres: 'La contraseña debe tener al menos 7 caracteres.',
   la_descripcion_de_la_tarea_es_obligatoria: 'La descripción de la tarea es obligatoria.',
   la_fecha_deseada_es_obligatoria: 'La fecha deseada es obligatoria.',
   la_fecha_deseada_no_puede_ser_anterior_a_hoy: 'La fecha deseada no puede ser anterior a hoy.',
@@ -1721,8 +1720,6 @@ Object.assign(traduccionesPortal.en, {
   revisa_los_campos_marcados_antes_de_continuar: 'Review the highlighted fields before continuing.',
   no_se_pudo_completar_la_accion_intenta_nuevamente:
     'The action could not be completed. Please try again.',
-  la_contrasena_necesita_al_menos_7_caracteres_una_mayusc:
-    'The password needs at least 7 characters, an uppercase letter, a lowercase letter and a number.',
   solo_un_usuario_administrativo_puede_aprobar_registros:
     'Only an administrative user can approve registrations.',
   registro_aprobado_la_persona_ya_puede_iniciar_sesion:
@@ -2032,7 +2029,6 @@ Object.assign(traduccionesPortal.en, {
   la_contrasena_actual_no_es_correcta: 'The current password is not correct.',
   la_contrasena_necesita_entre_8_y_128_caracteres_una_may:
     'The password needs between 8 and 128 characters, an uppercase letter, a lowercase letter and a number.',
-  la_contrasena_debe_tener_al_menos_7_caracteres: 'The password must have at least 7 characters.',
   la_descripcion_de_la_tarea_es_obligatoria: 'The task description is required.',
   la_fecha_deseada_es_obligatoria: 'The desired date is required.',
   la_fecha_deseada_no_puede_ser_anterior_a_hoy: 'The desired date cannot be earlier than today.',

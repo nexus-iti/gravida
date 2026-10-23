@@ -64,6 +64,9 @@ usar `nexus-deploy.sh`, que no crea la db.
 
 - El front se publica **solo en loopback**: nginx del host es el único que le habla y
   es quien aplica el gate de Cloudflare Access.
+- La IP real del cliente la lee `back` de `CF-Connecting-IP` / `X-Forwarded-For` solo si el par TCP está en
+  `SGRSI_PROXIES_CONFIABLES` (compose lo deja en rangos privados). El nginx del host tiene que pasar `Host` y
+  dejar llegar `CF-Connecting-IP`; si no, los límites por IP vuelven a ser un solo cubo.
 - No hay blue/green todavía: el deploy recrea front y back en el mismo puerto (unos
   segundos de corte). El rollback es por tag de imagen, no por slot. Si el entorno pasa
   a usarse para demos en vivo, conviene migrar a dos slots con upstream en nginx.

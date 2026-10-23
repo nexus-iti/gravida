@@ -37,28 +37,40 @@ function registrarIntento(PDO $pdo, string $identificador, bool $exito): void {
     $consulta->execute([segIp(), $identificador, $exito ? 1 : 0]);
 }
 
-function segundosDeBloqueo(PDO $pdo, string $columna, string $valor, int $maximo): int {
+function segundosDeBloqueo(PDO $pdo, string $columna, string $valor, int $maximo, ?string $ip = null): int {
     // Por cuenta, un ingreso correcto reinicia el contador; por IP no (si no, una cuenta propia lo resetearia).
     $desdeExito = $columna === 'identificador'
         ? "AND fecha > COALESCE((SELECT MAX(fecha) FROM seguridad_intentos_login
                                  WHERE identificador = :valor2 AND exito = 1), '1970-01-01')"
         : '';
+    $porIp = $ip !== null ? 'AND ip = :ip' : '';
     $consulta = $pdo->prepare(
         "SELECT COUNT(*) AS fallos,
                 TIMESTAMPDIFF(SECOND, NOW(), MAX(fecha) + INTERVAL " . SEG_LOGIN_VENTANA . " SECOND) AS espera
          FROM seguridad_intentos_login
          WHERE {$columna} = :valor AND exito = 0 AND fecha > NOW() - INTERVAL " . SEG_LOGIN_VENTANA . " SECOND
-         {$desdeExito}"
+         {$desdeExito} {$porIp}"
     );
-    $consulta->execute($desdeExito ? ['valor' => $valor, 'valor2' => $valor] : ['valor' => $valor]);
+    $parametros = ['valor' => $valor];
+    if ($desdeExito) {
+        $parametros['valor2'] = $valor;
+    }
+    if ($ip !== null) {
+        $parametros['ip'] = $ip;
+    }
+    $consulta->execute($parametros);
     $fila = $consulta->fetch(PDO::FETCH_ASSOC);
     return (int) $fila['fallos'] >= $maximo ? max(1, (int) $fila['espera']) : 0;
 }
 
 
 function bloquearSiCorresponde(PDO $pdo, string $identificadorHash): void {
+    // Los fallos de la cuenta se cuentan por IP de origen: cinco intentos de un tercero cierran la
+    // puerta a ese tercero, no al titular que entra desde otra IP. El tope por cuenta sin importar
+    // la IP queda alto, solo para frenar un ataque distribuido.
     $espera = max(
-        segundosDeBloqueo($pdo, 'identificador', $identificadorHash, SEG_LOGIN_MAX_FALLOS_CUENTA),
+        segundosDeBloqueo($pdo, 'identificador', $identificadorHash, SEG_LOGIN_MAX_FALLOS_CUENTA, segIp()),
+        segundosDeBloqueo($pdo, 'identificador', $identificadorHash, SEG_LOGIN_MAX_FALLOS_CUENTA_TOTAL),
         segundosDeBloqueo($pdo, 'ip', segIp(), SEG_LOGIN_MAX_FALLOS_IP)
     );
     if ($espera > 0) {
@@ -149,6 +161,9 @@ ejecutar(function () use ($pdo): void {
             'csrf' => segCsrf(),
         ]);
     }
+
+    // El POST de login no lleva token (todavia no hay sesion), pero no puede venir de otro sitio.
+    segExigirOrigenPropio();
 
     $datos = datosLogin();
     $accion = texto($datos['accion'] ?? '', 20);

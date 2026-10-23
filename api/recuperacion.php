@@ -13,7 +13,7 @@ ejecutar(function()use($servicio,$sesionActual):void{
     if($metodo==='POST'){
         $cedula=new Cedula(texto($d['cedula']??'',15));
         if(texto($d['accion']??'',20)==='consultar')responder($servicio->consultar($cedula,texto($d['codigo']??'',12)));
-        $resultado=$servicio->solicitar($cedula,texto($d['correo']??'',150));responder($resultado,!empty($resultado['existente'])?200:201);
+        responder($servicio->solicitar($cedula,texto($d['correo']??'',150)));
     }
     $resultado=$servicio->gestionar(entero($d['id']??null,'id'),texto($d['accion']??'',20),new Cedula((string)$sesionActual['cedula']));responder($resultado);
 });

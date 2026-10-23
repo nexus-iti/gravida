@@ -1,15 +1,23 @@
 {
   "name": "nexus-codigo",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "private": true,
   "description": "Sistema de Gestión de Recursos y Servicios de Informática (SGRSI / NEXUS)",
   "scripts": {
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "oxfmt js css",
-    "format:check": "oxfmt --check js css"
+    "format:check": "oxfmt --check js css",
+    "dev": "bun scripts/servidor-dev.mjs",
+    "build": "bun run iconos && bun run movimiento && bun run format && bun run assets:version",
+    "iconos": "bun scripts/generar-iconos.mjs",
+    "movimiento": "bun scripts/generar-movimiento.mjs",
+    "assets:version": "bun scripts/versionar-assets.mjs",
+    "assets:check": "bun scripts/versionar-assets.mjs --check"
   },
   "devDependencies": {
+    "lucide": "0.469.0",
+    "motion": "13.5.1",
     "oxfmt": "^0.74.0",
     "oxlint": "^1.89.0"
   },

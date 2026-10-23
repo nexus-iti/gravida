@@ -101,6 +101,21 @@ function segEsLocal(): bool {
     return in_array($host, ['localhost', '127.0.0.1', '::1', '[::1]'], true) || str_ends_with($host, '.localhost');
 }
 
+/*
+ * Modo desarrollo de `bun run dev` (scripts/servidor-dev.mjs). Solo se activa si se
+ * cumplen las tres condiciones, así que en Apache o php-fpm queda siempre apagado:
+ *   - corre en el servidor integrado de PHP (`php -S`), que nunca se usa en producción;
+ *   - el script de dev definió NEXUS_DEV=1 en el entorno;
+ *   - el pedido llega desde la propia máquina (el servidor de Bun solo escucha en loopback).
+ * Lo usa login.php para omitir el segundo factor al probar en local.
+ */
+function segModoDesarrolloLocal(): bool {
+    $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
+    return PHP_SAPI === 'cli-server'
+        && getenv('NEXUS_DEV') === '1'
+        && in_array($ip, ['127.0.0.1', '::1'], true);
+}
+
 function segEsIpPrivada(string $ip): bool {
     if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
         $valor = (int) sprintf('%u', ip2long($ip));

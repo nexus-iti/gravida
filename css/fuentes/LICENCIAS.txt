@@ -1,0 +1,12 @@
+Fuentes incluidas (subconjunto latino, woff2 variable), todas bajo la
+SIL Open Font License 1.1: https://openfontlicense.org
+
+- Bricolage Grotesque  - Copyright 2022 The Bricolage Grotesque Project Authors
+                         https://github.com/ateliertriay/bricolage
+- Host Grotesk         - Copyright 2024 The Host Grotesk Project Authors
+                         https://github.com/Element-Type/HostGrotesk
+- Space Grotesk        - Copyright 2020 The Space Grotesk Project Authors
+                         https://github.com/floriankarsten/space-grotesk
+
+Origen de los archivos: Google Fonts (fonts.gstatic.com), descargados el
+2026-10-22 con los ejes de peso que usa el design system Nexus.

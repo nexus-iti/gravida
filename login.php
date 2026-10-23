@@ -226,7 +226,10 @@ ejecutar(function () use ($pdo): void {
     $rol = (string) $fila['rol'];
     $tieneSegundoFactor = (string) ($fila['totp_secreto'] ?? '') !== '';
     $debeActivar = !$tieneSegundoFactor && $rol === 'Administrador' && SEG_2FA_OBLIGATORIO_ADMIN;
-    if ($tieneSegundoFactor || $debeActivar) {
+    if (($tieneSegundoFactor || $debeActivar) && segModoDesarrolloLocal()) {
+        // Solo `bun run dev` en la propia máquina (ver segModoDesarrolloLocal). Queda auditado.
+        segRegistrarEvento($pdo, 'login_2fa_omitido_dev', $cedula);
+    } elseif ($tieneSegundoFactor || $debeActivar) {
         // F-08: la contrasena sola no alcanza. La sesion todavia NO se abre: queda un estado
         // pendiente que solo se completa con el codigo del telefono. Tampoco se registra exito,
         // asi la contrasena correcta no reinicia el contador de codigos fallidos.

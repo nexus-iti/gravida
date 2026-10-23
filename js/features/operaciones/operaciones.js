@@ -305,7 +305,7 @@ async function subirFotoPerfil(archivo) {
   const formData = new FormData();
   formData.append('cedula', usuarioEnSesion.cedula);
   formData.append('foto', archivo);
-  const respuesta = await fetch(rutaNexus('api/foto_perfil.php'), {
+  const respuesta = await pedirAlServidor(rutaNexus('api/foto_perfil.php'), {
     method: 'POST',
     credentials: 'same-origin',
     body: formData,

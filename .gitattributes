@@ -1,0 +1,6 @@
+# Binarios: sin conversión de fin de línea. scripts/versionar-assets.mjs hashea
+# css/ y js/, y una fuente alterada por autocrlf cambiaría el ?v= de la CI.
+*.woff2 binary
+*.png binary
+*.jpg binary
+*.jpeg binary

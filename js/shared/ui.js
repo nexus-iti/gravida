@@ -25,14 +25,72 @@ let responsablesTareaCache = [];
 function mostrarEn(idDelDiv, htmlComoTexto) {
   const elemento = document.getElementById(idDelDiv);
   if (elemento) {
+    // Primera carga de un contenedor con esqueleto: el contenido entra animado.
+    const reemplazaEsqueleto =
+      elemento.hasAttribute('data-esqueleto') && elemento.childElementCount === 0;
     elemento.innerHTML = htmlComoTexto;
     inicializarSelectsPersonalizados(elemento);
+    if (reemplazaEsqueleto && typeof animarLlegadaDeContenido === 'function') {
+      animarLlegadaDeContenido(elemento);
+    }
   }
+}
+
+/*
+ * router.js carga un subconjunto de Lucide con los íconos que usa el portal.
+ * Si un <i data-lucide> queda sin reemplazar (ícono nuevo que no se regeneró
+ * con `bun run iconos`), se baja una única vez el paquete completo en segundo
+ * plano. Si ese respaldo también falla, los íconos quedan vacíos sin romper la
+ * página.
+ */
+const RUTA_LUCIDE_COMPLETO = 'js/shared/vendor/lucide-0.469.0.min.js';
+let estadoLucideCompleto = 'sin-cargar';
+
+function hayIconosPendientes() {
+  return document.querySelector('i[data-lucide], span[data-lucide]') !== null;
+}
+
+function cargarLucideCompleto() {
+  if (estadoLucideCompleto !== 'sin-cargar') {
+    return;
+  }
+  estadoLucideCompleto = 'cargando';
+  const pendientes = Array.from(document.querySelectorAll('i[data-lucide], span[data-lucide]'))
+    .map((icono) => icono.getAttribute('data-lucide'))
+    .filter((nombre, indice, lista) => nombre && lista.indexOf(nombre) === indice);
+  console.warn(
+    '[NEXUS] Íconos fuera del subconjunto (correr `bun run iconos`): ' + pendientes.join(', '),
+  );
+
+  const script = document.createElement('script');
+  script.src =
+    (window.NEXUS_BASE || '../') + RUTA_LUCIDE_COMPLETO + (window.NEXUS_SUFIJO_VERSION || '');
+  script.async = true;
+  script.addEventListener('load', () => {
+    estadoLucideCompleto = 'listo';
+    if (window.lucide && window.lucide.icons) {
+      window.lucide.createIcons({ icons: window.lucide.icons });
+    }
+  });
+  script.addEventListener('error', () => {
+    estadoLucideCompleto = 'error';
+    console.warn('[NEXUS] No se pudo cargar el respaldo de íconos; se muestran sin ícono.');
+  });
+  document.head.appendChild(script);
 }
 
 function dibujarIconos() {
   if (window.lucide) {
-    window.lucide.createIcons();
+    try {
+      window.lucide.createIcons(
+        estadoLucideCompleto === 'listo' ? { icons: window.lucide.icons } : undefined,
+      );
+    } catch (error) {
+      console.warn('[NEXUS] Error al dibujar íconos', error);
+    }
+    if (estadoLucideCompleto === 'sin-cargar' && hayIconosPendientes()) {
+      cargarLucideCompleto();
+    }
   }
   aplicarIdiomaActualAlDom();
   inicializarSelectsPersonalizados(document);
@@ -734,6 +792,9 @@ function alternarMenuPrincipalNavbar(boton) {
   const estabaAbierto = navbar.classList.contains('barra-superior--menu-open');
   cerrarMenusDeCuenta();
   navbar.classList.toggle('barra-superior--menu-open', !estabaAbierto);
+  if (!estabaAbierto && typeof animarDesplegable === 'function') {
+    animarDesplegable(navbar.querySelector('[data-navbar-menu]'));
+  }
   boton.setAttribute('aria-expanded', estabaAbierto ? 'false' : 'true');
 }
 
@@ -750,6 +811,9 @@ function alternarMenuDeCuenta(boton) {
   cerrarMenusDeCuenta();
   cerrarMenuPrincipalNavbar();
   menu.hidden = estabaAbierto;
+  if (!estabaAbierto && typeof animarDesplegable === 'function') {
+    animarDesplegable(menu);
+  }
   boton.setAttribute('aria-expanded', estabaAbierto ? 'false' : 'true');
   contenedor.classList.toggle('barra-superior__account--open', !estabaAbierto);
   sincronizarBotonesDeTema();
@@ -761,15 +825,29 @@ function abrirModal(idDelModal) {
   if (modal) {
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    if (typeof animarAperturaModal === 'function') {
+      animarAperturaModal(modal);
+    }
   }
 }
 
 function cerrarModal(idDelModal) {
   const modal = document.getElementById(idDelModal);
-  if (modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
+  if (!modal) {
+    return;
   }
+  document.body.style.overflow = '';
+  if (typeof animarCierreModal !== 'function' || modal.style.display === 'none') {
+    modal.style.display = 'none';
+    return;
+  }
+  // Se oculta al terminar la salida, salvo que se haya vuelto a abrir.
+  animarCierreModal(modal).then((sigueCerrando) => {
+    if (sigueCerrando) {
+      modal.style.display = 'none';
+      delete modal.dataset.estadoModal;
+    }
+  });
 }
 
 function alternarVisibilidadPassword(boton) {
@@ -881,6 +959,9 @@ function abrirSelectPersonalizado(raiz) {
   }
   if (lista) {
     lista.hidden = false;
+    if (typeof animarDesplegable === 'function') {
+      animarDesplegable(lista);
+    }
   }
 }
 

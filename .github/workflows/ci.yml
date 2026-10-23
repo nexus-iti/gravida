@@ -41,6 +41,11 @@ jobs:
       - name: Lint
         run: bun run lint
 
+      # CSS/JS se sirven con caché immutable de un año: si cambian sin que cambie el
+      # ?v= de las páginas, los navegadores seguirían con la versión vieja.
+      - name: Versionado de assets
+        run: bun run assets:check
+
       - name: Sintaxis PHP
         run: |
           fallos=0

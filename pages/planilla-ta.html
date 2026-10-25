@@ -4,13 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Planilla de T.A. | Portal de Gestión TI</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="../css/global.css?v=4.1.4" />
+    <link rel="icon" href="data:," />
+    <link rel="preload" as="font" type="font/woff2" href="../css/fuentes/host-grotesk-latin.woff2" crossorigin />
+    <link rel="preload" as="style" href="../css/fuentes.css?v=da36595f64" onload="this.onload=null;this.rel='stylesheet'" onerror="this.onerror=null;this.remove();document.documentElement.classList.add('fuentes-no-disponibles')" />
+    <noscript><link rel="stylesheet" href="../css/fuentes.css?v=da36595f64" /></noscript>
+    <script>try{var t=String(localStorage.getItem('tema')||'').replace(/"/g,'');if(t!=='oscuro'&&t!=='claro')t=matchMedia('(prefers-color-scheme: dark)').matches?'oscuro':'claro';document.documentElement.setAttribute('data-tema',t)}catch(e){}</script>
+    <link rel="stylesheet" href="../css/global.css?v=da36595f64" data-css-critico />
 </head>
   <body data-section="planilla-ta" data-requires-auth="true">
     <div id="cabecera-superior"></div>
@@ -27,11 +26,10 @@
             </p>
           </div>
         </div>
-        <div id="grid-planilla-ta" class="planilla-grid regla-diseno-013"></div>
+        <div id="grid-planilla-ta" data-esqueleto="tarjetas" class="planilla-grid regla-diseno-013"></div>
       </section>
     </main>
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script src="../js/router.js?v=5.0.0"></script>
+    <script src="../js/router.js?v=da36595f64"></script>
     
     
     

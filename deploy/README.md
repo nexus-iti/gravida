@@ -49,9 +49,32 @@ bash deploy/nexus-deploy.sh rollback   # vuelve al deploy anterior sano
 
 Ningún secreto pasa por GitHub: el workflow no tiene secrets, lee el env del servidor.
 
+## Arranque automático
+
+El stack lo levanta `nexus-test-stack.service` (unit de usuario de systemd, habilitado en
+`default.target`) al bootear el VPS. Sin eso el stack quedaba abajo después de cada
+reinicio —`podman-restart.service` está deshabilitado y `restart: unless-stopped` solo se
+honra si ese servicio corre— y el siguiente deploy moría en el preflight con
+`No hay servicio db en el proyecto nexus-test`.
+
+El unit llama a `~/deploy/services/nexus-test-stack.sh`, que:
+
+1. si los tres contenedores existen, los arranca en orden (db → espera `healthy` →
+   back y front). No recrea nada: respeta el tag que dejó el deploy;
+2. si falta alguno (por ejemplo después de un `compose down`), recrea el stack con el
+   tag activo de `~/deploy/state/nexus-deploy.env` y sin build;
+3. al apagar, para front y back y cierra la db con `mariadb-admin shutdown`. MariaDB no
+   atiende el SIGTERM que le llega a través de catatonit: `podman stop` se comía 30 s y
+   terminaba en SIGKILL (exit 137), o sea InnoDB sin cerrar.
+
+```bash
+systemctl --user status nexus-test-stack.service
+~/deploy/services/nexus-test-stack.sh status   # tag activo, contenedores y login.php
+```
+
 ## Primera vez / recuperar el entorno
 
-Si el stack no existe (por ejemplo después de un reinicio del VPS sin autostart):
+Si el stack no existe y el unit no tiene tag de deploy del cual agarrarse:
 
 ```bash
 podman compose -f containers/compose.yaml --env-file ~/deploy/env/nexus-test.env up -d

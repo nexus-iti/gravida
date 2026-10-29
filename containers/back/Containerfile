@@ -1,4 +1,12 @@
-FROM docker.io/library/php:8.3-fpm-alpine
+# PHP fijado al patch exacto, no a 8.3-fpm-alpine: con el tag flotante la version que
+# terminaba en la imagen dependia de cuando se construia, asi que un CVE critico se tapaba
+# por suerte y no por decision. Fijado, el salto de version es un diff revisable.
+#
+# 8.3.36 es el release de seguridad del 21 Oct 2026 que corrige CVE-2026-109619 (RCE por
+# estado global sin resetear entre requests) y CVE-2026-109618 (RCE por corrupcion al
+# quedarse sin memoria en el parseo del body; FPM figura como susceptible en el analisis
+# del advisory). Al subir el patch: cambiar el tag aca, PR y mergear (el deploy corre solo).
+FROM docker.io/library/php:8.3.36-fpm-alpine
 
 # pdo_mysql para la API. Argon2id (password_hash) ya viene compilado en la imagen oficial.
 RUN docker-php-ext-install pdo_mysql

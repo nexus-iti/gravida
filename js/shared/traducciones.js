@@ -454,7 +454,7 @@ Object.assign(traduccionesPortal.es, {
   vista_calendario_tecnico: 'Vista del calendario técnico',
   volver_login: 'Volver al inicio de sesión',
   ya_tenes_cuenta: 'Ya tenés cuenta?',
-  usuario_campus_placeholder: 'usuario@campus.local',
+  usuario_campus_placeholder: 'usuario@correo.com',
 });
 
 Object.assign(traduccionesPortal.es, {
@@ -687,7 +687,7 @@ Object.assign(traduccionesPortal.en, {
   vista_calendario_tecnico: 'Technical calendar view',
   volver_login: 'Back to sign in',
   ya_tenes_cuenta: 'Already have an account?',
-  usuario_campus_placeholder: 'user@campus.local',
+  usuario_campus_placeholder: 'user@email.com',
 });
 
 Object.assign(traduccionesPortal.en, {
@@ -931,6 +931,13 @@ Object.assign(traduccionesPortal.es, {
   aprobar: 'Aprobar',
   denegar: 'Denegar',
   devuelto: 'Devuelto',
+  login_identificador_placeholder: 'usuario@correo.com o cédula',
+  contrasena_placeholder: 'Mínimo 8 caracteres, sin Ñ',
+  repetir_contrasena_placeholder: 'Repetí la contraseña nueva',
+  recurso_disponible: 'disponible',
+  recursos_disponibles: 'disponibles',
+  servicio_mantenimiento_hardware: 'Realizar mantenimiento del hardware',
+  servicio_instalacion_software: 'Instalación de software',
   marcar_como_devuelto: 'Marcar como devuelto',
   reservados: 'Reservados',
   disponibles: 'Disponibles',
@@ -965,6 +972,13 @@ Object.assign(traduccionesPortal.en, {
   aprobar: 'Approve',
   denegar: 'Deny',
   devuelto: 'Returned',
+  login_identificador_placeholder: 'user@email.com or ID number',
+  contrasena_placeholder: 'At least 8 characters, no Ñ',
+  repetir_contrasena_placeholder: 'Repeat the new password',
+  recurso_disponible: 'available',
+  recursos_disponibles: 'available',
+  servicio_mantenimiento_hardware: 'Perform hardware maintenance',
+  servicio_instalacion_software: 'Software installation',
   marcar_como_devuelto: 'Mark as returned',
   reservados: 'Reserved',
   disponibles: 'Available',

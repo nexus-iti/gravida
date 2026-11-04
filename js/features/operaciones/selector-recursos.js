@@ -74,12 +74,12 @@ function agruparEquiposPorTipo(equipos, categoriasCatalogo) {
     nombresCatalogo[normalizarTipoRecurso(nombre)] = nombre;
   });
   /* Tipos del inventario ("all-in-one" -> "All in one"): evitan mostrar el valor crudo. */
-  (typeof tiposDeEquipoInventario !== 'undefined' ? tiposDeEquipoInventario : []).forEach(
-    function (tipo) {
-      const clave = normalizarTipoRecurso(tipo.valor);
-      if (!nombresCatalogo[clave]) nombresCatalogo[clave] = tipo.etiqueta;
-    }
-  );
+  const tiposInventario =
+    typeof tiposDeEquipoInventario !== 'undefined' ? tiposDeEquipoInventario : [];
+  tiposInventario.forEach(function (tipo) {
+    const clave = normalizarTipoRecurso(tipo.valor);
+    if (!nombresCatalogo[clave]) nombresCatalogo[clave] = tipo.etiqueta;
+  });
   const grupos = {};
   equipos.forEach(function (equipo) {
     const clave = normalizarTipoRecurso(equipo.tipo);
@@ -152,9 +152,7 @@ function crearHtmlModeloPrestamo(modelo) {
   const detalle =
     escaparHtml(modelo.disponibles) +
     ' ' +
-    escaparHtml(
-      tClave(modelo.disponibles === 1 ? 'recurso_disponible' : 'recursos_disponibles')
-    );
+    escaparHtml(tClave(modelo.disponibles === 1 ? 'recurso_disponible' : 'recursos_disponibles'));
   return (
     '<div class="loan-model" data-loan-model="' +
     escaparHtml(modelo.clave) +

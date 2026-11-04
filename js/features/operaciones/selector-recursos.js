@@ -152,7 +152,9 @@ function crearHtmlModeloPrestamo(modelo) {
   const detalle =
     escaparHtml(modelo.disponibles) +
     ' ' +
-    escaparHtml(modelo.disponibles === 1 ? t('disponible') : t('disponibles'));
+    escaparHtml(
+      tClave(modelo.disponibles === 1 ? 'recurso_disponible' : 'recursos_disponibles')
+    );
   return (
     '<div class="loan-model" data-loan-model="' +
     escaparHtml(modelo.clave) +

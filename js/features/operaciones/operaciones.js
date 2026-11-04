@@ -302,6 +302,9 @@ async function subirFotoPerfil(archivo) {
   if (!usuarioEnSesion || !archivo) {
     return null;
   }
+  if (['image/jpeg', 'image/png', 'image/webp'].indexOf(archivo.type) === -1) {
+    throw new Error('Elegí una imagen JPG, PNG o WebP.');
+  }
   const formData = new FormData();
   formData.append('cedula', usuarioEnSesion.cedula);
   formData.append('foto', archivo);

@@ -639,7 +639,7 @@ CREATE TABLE `servicio_disponible` (
 
 LOCK TABLES `servicio_disponible` WRITE;
 /*!40000 ALTER TABLE `servicio_disponible` DISABLE KEYS */;
-INSERT INTO `servicio_disponible` VALUES (1,'Realizar mantenimiento del hardware','',1);
+INSERT INTO `servicio_disponible` VALUES (1,'Realizar mantenimiento del hardware','',1),(2,'Instalación de software','',1);
 /*!40000 ALTER TABLE `servicio_disponible` ENABLE KEYS */;
 UNLOCK TABLES;
 

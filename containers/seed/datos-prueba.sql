@@ -73,7 +73,7 @@ VALUES
   (903, 'Router de prueba 01', 'Redes', 'Router ficticio para practicas', 'Marca Ficticia',
    3, 1, 'Disponible', '2026-09-06', 903),
   (904, 'Kit de herramientas 01', 'Herramientas', 'Kit ficticio de mantemiento', 'Marca Ficticia',
-   1, 1, 'Mantenimiento', '2026-09-06', 903),
+   1, 1, 'Realizar mantenimiento del hardware', '2026-09-06', 903),
   (905, 'Switch de prueba 01', 'Redes', 'Switch ficticio de 8 puertos', 'Marca Ficticia',
    1, 1, 'Disponible', '2026-09-07', 903)
 ON DUPLICATE KEY UPDATE
@@ -89,9 +89,9 @@ INSERT INTO servicio
   (id_servicio, tipo_de_servicio, estado, descripcion, titulo, lugar,
    fecha_de_solicitud, cedula, fecha_deseada, esta_activo)
 VALUES
-  (901, 'Mantenimiento', 'Pendiente', 'Revision ficticia de las maquinas del laboratorio 2',
+  (901, 'Realizar mantenimiento del hardware', 'Pendiente', 'Revision ficticia de las maquinas del laboratorio 2',
    'Mantenimiento de laboratorio', 'Laboratorio 2', '2026-10-01', '90000004', '2026-10-15', 1),
-  (902, 'Instalacion', 'En proceso', 'Instalacion ficticia de software de practicas',
+  (902, 'Instalación de software', 'En proceso', 'Instalacion ficticia de software de practicas',
    'Instalacion de software', 'Laboratorio 2', '2026-10-03', '90000005', '2026-10-18', 1),
   (903, 'Soporte', 'Finalizado', 'Configuracion ficticia de red del aula',
    'Configuracion de red', 'Deposito A', '2026-09-20', '90000004', '2026-09-28', 1)

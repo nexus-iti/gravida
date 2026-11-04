@@ -73,6 +73,13 @@ function agruparEquiposPorTipo(equipos, categoriasCatalogo) {
   (categoriasCatalogo || []).forEach(function (nombre) {
     nombresCatalogo[normalizarTipoRecurso(nombre)] = nombre;
   });
+  /* Tipos del inventario ("all-in-one" -> "All in one"): evitan mostrar el valor crudo. */
+  (typeof tiposDeEquipoInventario !== 'undefined' ? tiposDeEquipoInventario : []).forEach(
+    function (tipo) {
+      const clave = normalizarTipoRecurso(tipo.valor);
+      if (!nombresCatalogo[clave]) nombresCatalogo[clave] = tipo.etiqueta;
+    }
+  );
   const grupos = {};
   equipos.forEach(function (equipo) {
     const clave = normalizarTipoRecurso(equipo.tipo);

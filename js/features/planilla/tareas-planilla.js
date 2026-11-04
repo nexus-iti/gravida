@@ -54,6 +54,26 @@ function obtenerResponsableTareaIdValido(responsableId) {
   return responsables.length > 0 ? responsables[0].id : '';
 }
 
+/* Acepta la prioridad con etiqueta visible ("Crítica", "High") y la lleva al valor del servidor. */
+function normalizarPrioridadTarea(valor) {
+  const clave = String(valor || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLowerCase();
+  const alias = {
+    baja: 'Baja',
+    low: 'Baja',
+    media: 'Media',
+    medium: 'Media',
+    alta: 'Alta',
+    high: 'Alta',
+    critica: 'Critica',
+    critical: 'Critica',
+  };
+  return alias[clave] || valor;
+}
+
 function normalizarValorPermitido(valor, permitidos, valorPorDefecto) {
   for (let i = 0; i < permitidos.length; i++) {
     if (permitidos[i] === valor) {
@@ -67,6 +87,8 @@ function crearDatosTareaCalendario(datos, tareaExistente) {
   const base = tareaExistente || {};
   const hoy = fechaIsoLocal(new Date());
   const tieneDescripcion = Object.prototype.hasOwnProperty.call(datos, 'descripcion');
+  const prioridadSolicitada =
+    datos.prioridad || datos.dificultad || base.prioridad || base.dificultad;
   const plazoInicio = normalizarFechaIso(datos.plazoInicio || base.plazoInicio, hoy);
   let plazoFin = normalizarFechaIso(datos.plazoFin || base.plazoFin, plazoInicio);
   if (compararFechasIso(plazoFin, plazoInicio) < 0) {
@@ -77,7 +99,7 @@ function crearDatosTareaCalendario(datos, tareaExistente) {
     titulo: String(datos.titulo || base.titulo || 'Nueva tarea').trim(),
     descripcion: String(tieneDescripcion ? datos.descripcion : base.descripcion || '').trim(),
     prioridad: normalizarValorPermitido(
-      datos.prioridad || datos.dificultad || base.prioridad || base.dificultad,
+      normalizarPrioridadTarea(prioridadSolicitada),
       prioridadesTareaTA,
       'Media',
     ),

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy del entorno de prueba de NEXUS (nexus.wefaber.net).
+# Deploy del entorno de prueba de NEXUS (gravida.wefaber.net).
 #
 #   deploy/nexus-deploy.sh              deploya el HEAD del checkout
 #   IMAGE_TAG=<tag> deploy/nexus-deploy.sh

@@ -1,8 +1,8 @@
 # Deploy del entorno de prueba
 
-`nexus.wefaber.net` corre el stack de `containers/compose.yaml` (front nginx, back
+`gravida.wefaber.net` corre el stack de `containers/compose.yaml` (front nginx, back
 php-fpm, db MariaDB) con Podman rootless del usuario `hermes` en el VPS, y nginx del
-host lo publica con Cloudflare Access adelante.
+host lo publica detrás del edge de Cloudflare. El sitio es público a propósito (la defensa de Nexus lo prueba desde afuera): no hay Cloudflare Access delante.
 
 El deploy es automático: cada push a `dev` dispara
 `.github/workflows/deploy.yml` en el runner self-hosted `vps-nexus`, que ejecuta
@@ -86,7 +86,7 @@ usar `nexus-deploy.sh`, que no crea la db.
 ## Notas
 
 - El front se publica **solo en loopback**: nginx del host es el único que le habla y
-  es quien aplica el gate de Cloudflare Access.
+  es quien aplica el gate del edge de Cloudflare (solo acepta conexiones que vengan de Cloudflare).
 - La IP real del cliente la lee `back` de `CF-Connecting-IP` / `X-Forwarded-For` solo si el par TCP está en
   `SGRSI_PROXIES_CONFIABLES` (compose lo deja en rangos privados). El nginx del host tiene que pasar `Host` y
   dejar llegar `CF-Connecting-IP`; si no, los límites por IP vuelven a ser un solo cubo.

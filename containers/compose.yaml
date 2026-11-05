@@ -39,6 +39,8 @@ services:
       # Datos ficticios de prueba (usuarios de los tres roles, equipos, prestamos...).
       # Solo corre en la primera inicializacion; para cargarlo a mano ver containers/seed/README.md
       - ./seed/datos-prueba.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+      # Datos variados (todos los estados, inactivos, vencidos, kanban...). Mismo criterio: primera inicializacion.
+      - ./seed/datos-variados.sql:/docker-entrypoint-initdb.d/03-seed-variados.sql:ro
       - db-data:/var/lib/mysql
     networks:
       - internal

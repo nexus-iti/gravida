@@ -8,5 +8,8 @@ COPY css /usr/share/nginx/html/css
 COPY js /usr/share/nginx/html/js
 COPY images /usr/share/nginx/html/images
 COPY pages /usr/share/nginx/html/pages
+# Solo el front de prueba: credenciales ficticias para el pill del login (js/features/dev-login).
+# Sin este archivo el pill no se dibuja, asi que ningun otro despliegue lo muestra.
+COPY containers/seed/usuarios-prueba.json /usr/share/nginx/html/dev-usuarios.json
 
 EXPOSE 80

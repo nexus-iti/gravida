@@ -176,7 +176,7 @@ fuera para no reescribir el marcado ni el código servidor.
 Cada push y cada PR corren `.github/workflows/ci.yml`: formato, lint, versionado de
 assets, sintaxis PHP y validación del compose. Si algo falla, el merge queda bloqueado.
 
-Cada push a `dev` deploya el entorno de prueba (`nexus.wefaber.net`) con
+Cada push a `dev` deploya el entorno de prueba (`gravida.wefaber.net`) con
 `.github/workflows/deploy.yml` en el runner self-hosted del VPS: build de imágenes
 taggeadas con el commit, recreación de front y back, healthcheck real contra la base
 de datos y rollback automático si no levanta. La db no se toca en un deploy.

@@ -1,4 +1,4 @@
--- Datos de prueba VARIADOS para el entorno de Nexus en Podman (nexus.wefaber.net).
+-- Datos de prueba VARIADOS para el entorno de Nexus en Podman (gravida.wefaber.net).
 --
 -- Complementa a datos-prueba.sql (que trae solo 5 usuarios y 3 filas por tabla): cubre los tres roles,
 -- cuentas inactivas / pendientes / con cambio de contrasena obligatorio, todos los estados de

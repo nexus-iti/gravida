@@ -25,6 +25,8 @@ const PUERTO = Number(process.env.DEV_PORT || 8080);
 const PUERTO_PHP = Number(process.env.DEV_PHP_PORT || PUERTO + 1);
 const PANEL_API = join(RAIZ, 'scripts', 'dev', 'panel-api.js');
 const RUTA_PANEL = '/__dev/panel-api.js';
+const USUARIOS_PRUEBA = join(RAIZ, 'containers', 'seed', 'usuarios-prueba.json');
+const RUTA_USUARIOS_PRUEBA = '/dev-usuarios.json';
 
 // Mismos bloqueos que el .htaccess: no servir secretos ni internos.
 const PROHIBIDO =
@@ -136,6 +138,13 @@ Bun.serve({
     if (ruta === RUTA_PANEL) {
       return new Response(Bun.file(PANEL_API), {
         headers: { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'no-cache' },
+      });
+    }
+    // Pill de usuarios de prueba del login: mismo archivo que publica el front de Podman. Solo en
+    // desarrollo (127.0.0.1); el servidor real no lo sirve y el pill no se dibuja.
+    if (ruta === RUTA_USUARIOS_PRUEBA) {
+      return new Response(Bun.file(USUARIOS_PRUEBA), {
+        headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' },
       });
     }
     if (PROHIBIDO.test(ruta)) return new Response('Prohibido', { status: 403 });

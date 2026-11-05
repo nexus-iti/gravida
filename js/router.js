@@ -62,7 +62,7 @@
   var RUTAS = {
     // Acceso
     index: { base: 'completa', modulos: [] },
-    login: { base: 'completa', modulos: ['paginas/login.js'] },
+    login: { base: 'completa', modulos: ['paginas/login.js', 'features/dev-login/dev-login.js'] },
     register: { base: 'completa', modulos: [] },
     recuperar: { base: 'publica', modulos: ['paginas/recuperar.js'] },
 

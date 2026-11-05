@@ -1,0 +1,22 @@
+{
+  "_aviso": "Solo entorno de prueba (nexus.wefaber.net). Lo copia containers/front/Containerfile como /dev-usuarios.json: el pill del login (js/features/dev-login/dev-login.js) lo lee y, si no existe, no se muestra nada. No va en ningun despliegue de produccion.",
+  "usuarios": [
+    { "cedula": "39251846", "nombre": "Valentina Rocha", "rol": "Administrador", "password": "NexusAdmin2026!", "totp": "JBSWY3DPEHPK3PXP", "nota": "2FA activo" },
+    { "cedula": "43762914", "nombre": "Martin Echeverria", "rol": "Administrador", "password": "NexusAdmin2026!", "nota": "sin 2FA: ve el enrolamiento con QR" },
+
+    { "cedula": "51284732", "nombre": "Camila Duarte", "rol": "Tecnico_Asistente", "password": "NexusTecnico2026!", "nota": "hardware, turno manana" },
+    { "cedula": "46510299", "nombre": "Joaquin Pereira", "rol": "Tecnico_Asistente", "password": "NexusTecnico2026!", "nota": "redes, turno tarde" },
+    { "cedula": "53908144", "nombre": "Agustina Lemos", "rol": "Tecnico_Asistente", "password": "NexusTecnico2026!", "nota": "software, turno noche" },
+    { "cedula": "55471268", "nombre": "Federico Sosa", "rol": "Tecnico_Asistente", "password": "NexusTecnico2026!", "nota": "debe cambiar la contrasena" },
+    { "cedula": "37184520", "nombre": "Nicolas Barreto", "rol": "Tecnico_Asistente", "password": "NexusTecnico2026!", "estado": "inactivo", "nota": "dado de baja" },
+
+    { "cedula": "42839152", "nombre": "Marcela Techera", "rol": "Solicitante", "password": "NexusSolicitante2026!", "nota": "docente, prestamos al dia" },
+    { "cedula": "38642076", "nombre": "Diego Olivera", "rol": "Solicitante", "password": "NexusSolicitante2026!", "nota": "pidio pasar a tecnico" },
+    { "cedula": "49756311", "nombre": "Paula Ferreira", "rol": "Solicitante", "password": "NexusSolicitante2026!" },
+    { "cedula": "35427681", "nombre": "Gonzalo Acosta", "rol": "Solicitante", "password": "NexusSolicitante2026!", "nota": "prestamo vencido" },
+    { "cedula": "56120496", "nombre": "Rocio Viera", "rol": "Solicitante", "password": "NexusSolicitante2026!", "nota": "registro aprobado" },
+    { "cedula": "41087538", "nombre": "Ignacio Silva", "rol": "Solicitante", "password": "NexusSolicitante2026!", "estado": "inactivo", "nota": "dado de baja" },
+    { "cedula": "57332806", "nombre": "Carolina Nunez", "rol": "Solicitante", "password": "NexusSolicitante2026!", "estado": "pendiente", "nota": "registro sin aprobar" },
+    { "cedula": "44693126", "nombre": "Hernan Bauza", "rol": "Solicitante", "password": "NexusSolicitante2026!", "estado": "pendiente", "nota": "registro rechazado" }
+  ]
+}
